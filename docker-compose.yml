@@ -1,0 +1,58 @@
+services:
+  # TimescaleDB Database Service
+  timescaledb:
+    build:
+      context: ./timescaledb-stack
+      dockerfile: Dockerfile
+    container_name: timescaledb_container
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: eo_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - timescale_data:/var/lib/postgresql/data
+      - ./timescaledb-stack/db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+    networks:
+      - eo_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d eo_db"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # FastAPI Backend Service
+  fastapi:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fastapi_container
+    restart: unless-stopped
+    environment:
+      DB_HOST: timescaledb
+      DB_PORT: 5432
+      DB_NAME: eo_db
+      DB_USER: postgres
+      DB_PASSWORD: password
+    ports:
+      - "8000:8000"
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+    networks:
+      - eo_network
+    volumes:
+      # Optional: Mount for development (comment out for production)
+      - ./backend:/app
+    command:
+      ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+networks:
+  eo_network:
+    driver: bridge
+
+volumes:
+  timescale_data:
