@@ -1,0 +1,4 @@
+# Ignore geotiffs folder
+geotiffs/
+.DS_Store
+__pycache__/

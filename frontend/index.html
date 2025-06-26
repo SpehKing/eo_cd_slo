@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sentinel-2 Image Viewer</title>
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        text-align: center;
+      }
+
+      .header h1 {
+        color: #4a5568;
+        margin-bottom: 10px;
+        font-size: 2.5em;
+        font-weight: 300;
+      }
+
+      .header p {
+        color: #718096;
+        font-size: 1.1em;
+      }
+
+      .controls {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+      }
+
+      .controls h2 {
+        color: #4a5568;
+        margin-bottom: 20px;
+        font-size: 1.5em;
+        font-weight: 400;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 25px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-group label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #4a5568;
+      }
+
+      .form-group input {
+        padding: 12px 15px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border-color 0.3s ease;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .button-group {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+      }
+
+      .btn-secondary {
+        background: #e2e8f0;
+        color: #4a5568;
+      }
+
+      .btn-secondary:hover {
+        background: #cbd5e0;
+      }
+
+      .stats {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        display: none;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+      }
+
+      .stat-item {
+        text-align: center;
+        padding: 15px;
+        background: #f7fafc;
+        border-radius: 10px;
+      }
+
+      .stat-value {
+        font-size: 1.8em;
+        font-weight: bold;
+        color: #667eea;
+        margin-bottom: 5px;
+      }
+
+      .stat-label {
+        color: #718096;
+        font-size: 0.9em;
+      }
+
+      .results {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        display: none;
+      }
+
+      .results h2 {
+        color: #4a5568;
+        margin-bottom: 20px;
+        font-size: 1.5em;
+        font-weight: 400;
+      }
+
+      /* Map and timeline container */
+      .map-container {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        display: none;
+      }
+
+      .map-section {
+        display: flex;
+        gap: 20px;
+        height: 600px;
+      }
+
+      #map {
+        flex: 2;
+        height: 100%;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .timeline-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .timeline-controls {
+        background: #f7fafc;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+      }
+
+      .timeline-controls h3 {
+        color: #4a5568;
+        margin-bottom: 15px;
+        font-size: 1.2em;
+      }
+
+      .time-slider-container {
+        margin-bottom: 20px;
+      }
+
+      .time-slider {
+        width: 100%;
+        height: 6px;
+        border-radius: 3px;
+        background: #e2e8f0;
+        outline: none;
+        -webkit-appearance: none;
+      }
+
+      .time-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #667eea;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+      }
+
+      .time-slider::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #667eea;
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+      }
+
+      .current-time {
+        text-align: center;
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 15px;
+        padding: 10px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .play-controls {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .play-btn {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 6px;
+        background: #667eea;
+        color: white;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.3s ease;
+      }
+
+      .play-btn:hover {
+        background: #5a67d8;
+      }
+
+      .play-btn:disabled {
+        background: #cbd5e0;
+        cursor: not-allowed;
+      }
+
+      .speed-control {
+        margin-bottom: 20px;
+      }
+
+      .speed-control label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #4a5568;
+      }
+
+      .speed-select {
+        width: 100%;
+        padding: 8px;
+        border: 2px solid #e2e8f0;
+        border-radius: 6px;
+        background: white;
+      }
+
+      .image-info-panel {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      .image-info-panel h4 {
+        color: #4a5568;
+        margin-bottom: 15px;
+        font-size: 1.1em;
+      }
+
+      .info-item {
+        margin-bottom: 12px;
+        padding: 8px;
+        background: #f7fafc;
+        border-radius: 6px;
+      }
+
+      .info-label {
+        font-weight: 600;
+        color: #667eea;
+        font-size: 0.9em;
+      }
+
+      .info-value {
+        color: #4a5568;
+        font-size: 0.9em;
+        word-break: break-word;
+      }
+
+      @media (max-width: 1024px) {
+        .map-section {
+          flex-direction: column;
+          height: auto;
+        }
+
+        #map {
+          height: 400px;
+        }
+
+        .timeline-container {
+          height: auto;
+        }
+      }
+
+      .image-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+      }
+
+      .image-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .image-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      }
+
+      .image-preview {
+        width: 100%;
+        height: 200px;
+        background: #f7fafc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #718096;
+        font-size: 14px;
+      }
+
+      .image-info {
+        padding: 20px;
+      }
+
+      .image-time {
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 10px;
+        font-size: 1.1em;
+      }
+
+      .image-bbox {
+        color: #718096;
+        font-size: 0.9em;
+        margin-bottom: 15px;
+        word-break: break-all;
+      }
+
+      .image-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn-small {
+        padding: 8px 16px;
+        font-size: 12px;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 40px;
+        color: #718096;
+        font-style: italic;
+      }
+
+      .error {
+        background: #fed7d7;
+        color: #c53030;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 20px 0;
+        border-left: 4px solid #e53e3e;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+
+      .modal-content {
+        background: white;
+        margin: 5% auto;
+        padding: 30px;
+        border-radius: 15px;
+        max-width: 90%;
+        max-height: 80%;
+        overflow: auto;
+        position: relative;
+      }
+
+      .close {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        color: #718096;
+      }
+
+      .close:hover {
+        color: #4a5568;
+      }
+
+      .modal img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+      }
+
+      /* Custom styles for satellite image overlays */
+      .satellite-image-overlay {
+        z-index: 200;
+      }
+
+      .image-border {
+        z-index: 201;
+      }
+
+      .image-border-no-data {
+        z-index: 201;
+      }
+
+      .current-image-highlight {
+        z-index: 202;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 10px;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .button-group {
+          flex-direction: column;
+        }
+
+        .image-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🛰️ Sentinel-2 Image Viewer</h1>
+        <p>Browse and download satellite imagery from your TimescaleDB</p>
+      </div>
+
+      <div class="controls">
+        <h2>🔍 Search Parameters</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="startTime">Start Time</label>
+            <input
+              type="datetime-local"
+              id="startTime"
+              placeholder="YYYY-MM-DD HH:MM:SS"
+            />
+          </div>
+          <div class="form-group">
+            <label for="endTime">End Time</label>
+            <input
+              type="datetime-local"
+              id="endTime"
+              placeholder="YYYY-MM-DD HH:MM:SS"
+            />
+          </div>
+          <div class="form-group">
+            <label for="minLon">Min Longitude</label>
+            <input
+              type="number"
+              id="minLon"
+              step="0.000001"
+              placeholder="e.g., 28.726330"
+            />
+          </div>
+          <div class="form-group">
+            <label for="minLat">Min Latitude</label>
+            <input
+              type="number"
+              id="minLat"
+              step="0.000001"
+              placeholder="e.g., 41.248773"
+            />
+          </div>
+          <div class="form-group">
+            <label for="maxLon">Max Longitude</label>
+            <input
+              type="number"
+              id="maxLon"
+              step="0.000001"
+              placeholder="e.g., 28.759632"
+            />
+          </div>
+          <div class="form-group">
+            <label for="maxLat">Max Latitude</label>
+            <input
+              type="number"
+              id="maxLat"
+              step="0.000001"
+              placeholder="e.g., 41.274581"
+            />
+          </div>
+          <div class="form-group">
+            <label for="limit">Max Results</label>
+            <input type="number" id="limit" value="20" min="1" max="100" />
+          </div>
+        </div>
+        <div class="button-group">
+          <button class="btn btn-primary" onclick="searchImages()">
+            🔍 Search Images
+          </button>
+          <button class="btn btn-secondary" onclick="clearFilters()">
+            🗑️ Clear Filters
+          </button>
+          <button class="btn btn-secondary" onclick="setDefaultBounds()">
+            📍 Use Default Bounds
+          </button>
+        </div>
+      </div>
+
+      <!-- Map and Timeline Section -->
+      <div class="map-container" id="mapContainer">
+        <h2>🗺️ Image Timeline Map</h2>
+        <div class="map-section">
+          <div id="map"></div>
+          <div class="timeline-container">
+            <div class="timeline-controls">
+              <h3>⏰ Time Controls</h3>
+              <div class="current-time" id="currentTime">No images loaded</div>
+              <div class="time-slider-container">
+                <input
+                  type="range"
+                  id="timeSlider"
+                  class="time-slider"
+                  min="0"
+                  max="0"
+                  value="0"
+                  disabled
+                />
+              </div>
+              <div class="play-controls">
+                <button
+                  class="play-btn"
+                  id="playBtn"
+                  onclick="togglePlay()"
+                  disabled
+                >
+                  ▶️ Play
+                </button>
+                <button
+                  class="play-btn"
+                  onclick="resetTimeline()"
+                  disabled
+                  id="resetBtn"
+                >
+                  ⏹️ Reset
+                </button>
+              </div>
+              <div class="speed-control">
+                <label for="speedSelect">Animation Speed:</label>
+                <select
+                  id="speedSelect"
+                  class="speed-select"
+                  onchange="updateSpeed()"
+                >
+                  <option value="2000">Slow (2s)</option>
+                  <option value="1000" selected>Normal (1s)</option>
+                  <option value="500">Fast (0.5s)</option>
+                  <option value="250">Very Fast (0.25s)</option>
+                </select>
+              </div>
+              <div class="speed-control">
+                <label>
+                  <input
+                    type="checkbox"
+                    id="showSatelliteImages"
+                    checked
+                    onchange="toggleSatelliteImages()"
+                    style="margin-right: 8px"
+                  />
+                  Show Satellite Images
+                </label>
+              </div>
+            </div>
+            <div class="image-info-panel">
+              <h4>📊 Current Image Info</h4>
+              <div id="currentImageInfo">
+                <div class="info-item">
+                  <div class="info-label">Status:</div>
+                  <div class="info-value">No image selected</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="results" id="results">
+        <h2>🖼️ Search Results</h2>
+        <div id="imageGrid" class="image-grid">
+          <!-- Images will be populated here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for image preview -->
+    <div id="imageModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div id="modalContent">
+          <!-- Modal content will be populated here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Leaflet JavaScript -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+
+    <script>
+      const API_BASE_URL = "http://localhost:8000";
+
+      // Global variables for map and timeline
+      let map;
+      let imageData = [];
+      let currentImageIndex = 0;
+      let isPlaying = false;
+      let playInterval;
+      let playSpeed = 1000; // milliseconds
+      let imageLayer;
+      let imageLayers = []; // Array to store all image layers
+      let imageOverlays = []; // Array to store image overlays
+
+      // Initialize map
+      function initMap() {
+        if (map) {
+          map.remove();
+        }
+
+        map = L.map("map").setView([41.261577, 28.742981], 12);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: "© OpenStreetMap contributors",
+        }).addTo(map);
+
+        // Add satellite tile layer option
+        const satellite = L.tileLayer(
+          "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+          {
+            attribution: "Tiles © Esri",
+          }
+        );
+
+        const baseMaps = {
+          OpenStreetMap: L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          ),
+          Satellite: satellite,
+        };
+
+        L.control.layers(baseMaps).addTo(map);
+      }
+
+      // Parse WKT polygon to Leaflet coordinates
+      function parseWKTPolygon(wkt) {
+        // Extract coordinates from WKT POLYGON string
+        const coordString = wkt.match(/POLYGON\(\((.*?)\)\)/)[1];
+        const coordPairs = coordString.split(",");
+
+        return coordPairs.map((pair) => {
+          const [lon, lat] = pair.trim().split(" ").map(Number);
+          return [lat, lon]; // Leaflet uses [lat, lon] format
+        });
+      }
+
+      // Create image overlay from base64 data
+      function createImageOverlay(image) {
+        try {
+          const coordinates = parseWKTPolygon(image.bbox_wkt);
+
+          // Get the bounds from coordinates
+          const lats = coordinates.map((coord) => coord[0]);
+          const lngs = coordinates.map((coord) => coord[1]);
+          const bounds = [
+            [Math.min(...lats), Math.min(...lngs)], // Southwest
+            [Math.max(...lats), Math.max(...lngs)], // Northeast
+          ];
+
+          // Validate image data
+          if (!image.image_data || !image.image_data.startsWith("data:")) {
+            console.warn(
+              `Invalid image data for image ${image.image_id}. Creating border only.`
+            );
+
+            // Create only border polygon if image data is invalid
+            const borderPolygon = L.polygon(coordinates, {
+              color: "#ff0000", // Red border
+              weight: 1,
+              opacity: 1,
+              fillColor: "#cccccc", // Light gray fill to indicate missing image
+              fillOpacity: 0.2,
+              className: "image-border-no-data",
+            });
+
+            const popupContent = `
+              <div style="min-width: 200px;">
+                <h4>📅 ${new Date(image.time).toLocaleString()}</h4>
+                <p><strong>Image ID:</strong> ${image.image_id}</p>
+                <p><strong>Size:</strong> ${(
+                  image.size_bytes /
+                  1024 /
+                  1024
+                ).toFixed(2)} MB</p>
+                <p><strong>Status:</strong> ⚠️ Image conversion failed</p>
+                <p style="color: #888; font-size: 0.9em;">Only boundary is shown</p>
+                <button onclick="downloadOriginalTiff('${image.image_id}', '${
+              image.time
+            }')" 
+                        style="margin-top: 10px; padding: 5px 10px; background: #667eea; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                  ⬇️ Download Original TIFF
+                </button>
+              </div>
+            `;
+
+            borderPolygon.bindPopup(popupContent);
+
+            return {
+              overlay: null,
+              border: borderPolygon,
+              image: image,
+            };
+          }
+
+          // Create image overlay using the JPG data (converted from TIFF)
+          const imageOverlay = L.imageOverlay(image.image_data, bounds, {
+            opacity: 0.8,
+            className: "satellite-image-overlay",
+          });
+
+          // Create border polygon
+          const borderPolygon = L.polygon(coordinates, {
+            color: "#00ff00", // Green border for successfully converted images
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0, // No fill, just border
+            className: "image-border",
+          });
+
+          // Add popup with image info
+          const popupContent = `
+            <div style="min-width: 200px;">
+              <h4>📅 ${new Date(image.time).toLocaleString()}</h4>
+              <p><strong>Image ID:</strong> ${image.image_id}</p>
+              <p><strong>Display Size:</strong> ${(
+                image.size_bytes /
+                1024 /
+                1024
+              ).toFixed(2)} MB (JPG)</p>
+              <p style="color: #28a745; font-size: 0.9em;">✅ Converted for web display</p>
+              <div style="margin-top: 10px;">
+                <button onclick="downloadImageData('${image.image_data}', '${
+            image.time
+          }', 'jpg')" 
+                        style="padding: 5px 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 5px;">
+                  ⬇️ Download JPG
+                </button>
+                <button onclick="downloadOriginalTiff('${image.image_id}', '${
+            image.time
+          }')" 
+                        style="padding: 5px 10px; background: #667eea; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                  ⬇️ Download TIFF
+                </button>
+              </div>
+            </div>
+          `;
+
+          imageOverlay.bindPopup(popupContent);
+          borderPolygon.bindPopup(popupContent);
+
+          return {
+            overlay: imageOverlay,
+            border: borderPolygon,
+            image: image,
+          };
+        } catch (error) {
+          console.error("Error creating image overlay:", error);
+          return null;
+        }
+      }
+
+      // Add all image overlays to map
+      function addAllImageOverlays() {
+        // Clear existing overlays
+        clearAllImageOverlays();
+
+        if (!map || !imageData.length) return;
+
+        imageData.forEach((image, index) => {
+          const overlayData = createImageOverlay(image);
+          if (overlayData) {
+            // Add overlay to map if it exists
+            if (overlayData.overlay) {
+              overlayData.overlay.addTo(map);
+            }
+            // Always add border
+            overlayData.border.addTo(map);
+
+            // Store references
+            imageOverlays.push(overlayData);
+          }
+        });
+
+        // Fit map to show all images
+        if (imageOverlays.length > 0) {
+          const group = new L.featureGroup(
+            imageOverlays.map((item) => item.border)
+          );
+          map.fitBounds(group.getBounds(), { padding: [20, 20] });
+        }
+      }
+
+      // Clear all image overlays
+      function clearAllImageOverlays() {
+        imageOverlays.forEach((overlayData) => {
+          if (overlayData.overlay && map.hasLayer(overlayData.overlay)) {
+            map.removeLayer(overlayData.overlay);
+          }
+          if (overlayData.border && map.hasLayer(overlayData.border)) {
+            map.removeLayer(overlayData.border);
+          }
+        });
+        imageOverlays = [];
+      }
+
+      // Update map with current image (for timeline)
+      function updateMapDisplay(index) {
+        if (!map || !imageData.length) return;
+
+        // Remove existing highlight layer
+        if (imageLayer) {
+          map.removeLayer(imageLayer);
+        }
+
+        const image = imageData[index];
+        currentImageIndex = index;
+
+        // Parse the bounding box and create highlight polygon
+        try {
+          const coordinates = parseWKTPolygon(image.bbox_wkt);
+
+          // Create a highlight overlay for the current image
+          imageLayer = L.polygon(coordinates, {
+            color: "#ffff00", // Yellow highlight
+            weight: 3,
+            opacity: 1,
+            fillColor: "#ffff00",
+            fillOpacity: 0.2,
+            className: "current-image-highlight",
+          }).addTo(map);
+
+          // Add popup with image info
+          imageLayer.bindPopup(`
+            <div style="min-width: 200px;">
+              <h4>📅 ${new Date(image.time).toLocaleString()}</h4>
+              <p><strong>Image ID:</strong> ${image.image_id}</p>
+              <p><strong>Display Size:</strong> ${(
+                image.size_bytes /
+                1024 /
+                1024
+              ).toFixed(2)} MB (JPG)</p>
+              <p><strong>Timeline Position:</strong> ${index + 1} of ${
+            imageData.length
+          }</p>
+              <div style="margin-top: 10px;">
+                <button onclick="downloadImageData('${image.image_data}', '${
+            image.time
+          }', 'jpg')" 
+                        style="padding: 5px 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 5px;">
+                  ⬇️ Download JPG
+                </button>
+                <button onclick="downloadOriginalTiff('${image.image_id}', '${
+            image.time
+          }')" 
+                        style="padding: 5px 10px; background: #667eea; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                  ⬇️ Download TIFF
+                </button>
+              </div>
+            </div>
+          `);
+
+          // Center map on current image
+          map.setView(imageLayer.getBounds().getCenter(), map.getZoom());
+        } catch (error) {
+          console.error("Error parsing WKT:", error);
+          showError("Error displaying image boundary on map");
+        }
+
+        // Update current time display
+        updateCurrentTimeDisplay(image);
+
+        // Update slider position
+        const timeSlider = document.getElementById("timeSlider");
+        if (timeSlider) {
+          timeSlider.value = index;
+        }
+
+        // Update image info panel
+        updateImageInfoPanel(image);
+      }
+
+      // Update current time display
+      function updateCurrentTimeDisplay(image) {
+        const timeElement = document.getElementById("currentTime");
+        if (timeElement) {
+          timeElement.innerHTML = `
+            📅 ${new Date(image.time).toLocaleDateString()}<br>
+            🕐 ${new Date(image.time).toLocaleTimeString()}
+          `;
+        }
+      }
+
+      // Update image info panel
+      function updateImageInfoPanel(image) {
+        const infoPanel = document.getElementById("currentImageInfo");
+        if (infoPanel) {
+          infoPanel.innerHTML = `
+            <div class="info-item">
+              <div class="info-label">📅 Date & Time:</div>
+              <div class="info-value">${new Date(
+                image.time
+              ).toLocaleString()}</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">🆔 Image ID:</div>
+              <div class="info-value">${image.image_id}</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">💾 File Size:</div>
+              <div class="info-value">${(
+                image.size_bytes /
+                1024 /
+                1024
+              ).toFixed(2)} MB</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">📍 Bounding Box:</div>
+              <div class="info-value">${image.bbox_wkt}</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">📊 Timeline Position:</div>
+              <div class="info-value">${currentImageIndex + 1} of ${
+            imageData.length
+          }</div>
+            </div>
+          `;
+        }
+      }
+
+      // Timeline control functions
+      function togglePlay() {
+        const playBtn = document.getElementById("playBtn");
+
+        if (isPlaying) {
+          // Stop playing
+          clearInterval(playInterval);
+          isPlaying = false;
+          playBtn.innerHTML = "▶️ Play";
+        } else {
+          // Start playing
+          if (imageData.length === 0) return;
+
+          isPlaying = true;
+          playBtn.innerHTML = "⏸️ Pause";
+
+          playInterval = setInterval(() => {
+            if (currentImageIndex < imageData.length - 1) {
+              updateMapDisplay(currentImageIndex + 1);
+            } else {
+              // Loop back to beginning
+              updateMapDisplay(0);
+            }
+          }, playSpeed);
+        }
+      }
+
+      function resetTimeline() {
+        if (isPlaying) {
+          togglePlay();
+        }
+        if (imageData.length > 0) {
+          updateMapDisplay(0);
+        }
+      }
+
+      function updateSpeed() {
+        const speedSelect = document.getElementById("speedSelect");
+        playSpeed = parseInt(speedSelect.value);
+
+        // If currently playing, restart with new speed
+        if (isPlaying) {
+          clearInterval(playInterval);
+          playInterval = setInterval(() => {
+            if (currentImageIndex < imageData.length - 1) {
+              updateMapDisplay(currentImageIndex + 1);
+            } else {
+              updateMapDisplay(0);
+            }
+          }, playSpeed);
+        }
+      }
+
+      // Toggle satellite images visibility
+      function toggleSatelliteImages() {
+        const checkbox = document.getElementById("showSatelliteImages");
+        const showImages = checkbox.checked;
+
+        imageOverlays.forEach((overlayData) => {
+          if (overlayData.overlay) {
+            if (showImages) {
+              if (!map.hasLayer(overlayData.overlay)) {
+                overlayData.overlay.addTo(map);
+              }
+            } else {
+              if (map.hasLayer(overlayData.overlay)) {
+                map.removeLayer(overlayData.overlay);
+              }
+            }
+          }
+          // Always keep borders visible
+          if (overlayData.border && !map.hasLayer(overlayData.border)) {
+            overlayData.border.addTo(map);
+          }
+        });
+      }
+
+      // Event listener for time slider
+      function setupTimeSlider() {
+        const timeSlider = document.getElementById("timeSlider");
+        timeSlider.addEventListener("input", (e) => {
+          if (isPlaying) {
+            togglePlay(); // Stop playing when user interacts with slider
+          }
+          const index = parseInt(e.target.value);
+          updateMapDisplay(index);
+        });
+      }
+
+      // Set default bounds based on the ROI in the script
+      function setDefaultBounds() {
+        document.getElementById("minLon").value = "14.105951";
+        document.getElementById("minLat").value = "46.056946";
+        document.getElementById("maxLon").value = "14.905751";
+        document.getElementById("maxLat").value = "46.956946";
+      }
+
+      function clearFilters() {
+        document.getElementById("startTime").value = "";
+        document.getElementById("endTime").value = "";
+        document.getElementById("minLon").value = "";
+        document.getElementById("minLat").value = "";
+        document.getElementById("maxLon").value = "";
+        document.getElementById("maxLat").value = "";
+        document.getElementById("limit").value = "20";
+
+        // Clear map overlays
+        clearAllImageOverlays();
+        if (imageLayer && map) {
+          map.removeLayer(imageLayer);
+          imageLayer = null;
+        }
+
+        // Hide map container
+        const mapContainer = document.getElementById("mapContainer");
+        if (mapContainer) {
+          mapContainer.style.display = "none";
+        }
+
+        // Reset timeline controls
+        const timeSlider = document.getElementById("timeSlider");
+        const playBtn = document.getElementById("playBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        if (timeSlider) {
+          timeSlider.disabled = true;
+          timeSlider.value = 0;
+        }
+        if (playBtn) {
+          playBtn.disabled = true;
+          playBtn.innerHTML = "▶️ Play";
+        }
+        if (resetBtn) {
+          resetBtn.disabled = true;
+        }
+
+        // Clear global data
+        imageData = [];
+        currentImageIndex = 0;
+        isPlaying = false;
+        if (playInterval) {
+          clearInterval(playInterval);
+        }
+      }
+
+      async function searchImages() {
+        try {
+          showLoading("results");
+
+          const requestBody = {};
+
+          const startTime = document.getElementById("startTime").value;
+          const endTime = document.getElementById("endTime").value;
+          const minLon = document.getElementById("minLon").value;
+          const minLat = document.getElementById("minLat").value;
+          const maxLon = document.getElementById("maxLon").value;
+          const maxLat = document.getElementById("maxLat").value;
+          const limit = document.getElementById("limit").value;
+
+          if (startTime)
+            requestBody.start_time = startTime.replace("T", " ") + ":00";
+          if (endTime) requestBody.end_time = endTime.replace("T", " ") + ":00";
+          if (minLon) requestBody.min_lon = parseFloat(minLon);
+          if (minLat) requestBody.min_lat = parseFloat(minLat);
+          if (maxLon) requestBody.max_lon = parseFloat(maxLon);
+          if (maxLat) requestBody.max_lat = parseFloat(maxLat);
+          if (limit) requestBody.limit = parseInt(limit);
+
+          console.log("Sending request:", requestBody);
+
+          const response = await fetch(
+            `${API_BASE_URL}/api/v1/public/changes`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(requestBody),
+            }
+          );
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+              `HTTP error! status: ${response.status}, message: ${errorText}`
+            );
+          }
+
+          const images = await response.json();
+          console.log("Received images:", images);
+
+          // Validate that images is an array
+          if (!Array.isArray(images)) {
+            throw new Error("Expected array of images, got: " + typeof images);
+          }
+
+          displayImages(images);
+          displayImagesOnMap(images);
+        } catch (error) {
+          console.error("Search error:", error);
+          showError("Failed to search images: " + error.message);
+          hideSection("results");
+          hideSection("mapContainer");
+        }
+      }
+
+      function displayImages(images) {
+        console.log("displayImages called with", images.length, "images");
+
+        const imageGrid = document.getElementById("imageGrid");
+
+        if (!imageGrid) {
+          console.error("Image grid element not found");
+          return;
+        }
+
+        if (images.length === 0) {
+          imageGrid.innerHTML =
+            '<div class="loading">No images found matching your criteria.</div>';
+        } else {
+          imageGrid.innerHTML = images
+            .map((image) => {
+              // Safely handle the image data and escape quotes
+              const imageDataSafe = image.image_data
+                ? image.image_data.replace(/'/g, "&#39;")
+                : "";
+              const timeSafe = image.time
+                ? image.time.replace(/'/g, "&#39;")
+                : "";
+              const bboxSafe = image.bbox_wkt
+                ? image.bbox_wkt.replace(/'/g, "&#39;")
+                : "";
+
+              return `
+                    <div class="image-card">
+                        <div class="image-preview">
+                            ${
+                              image.image_data &&
+                              image.image_data.startsWith("data:image/jpeg")
+                                ? `<img src="${imageDataSafe}" alt="Satellite Image" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;" 
+                                   onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                               <div style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; color: #718096; font-size: 14px; text-align: center;">
+                                 🖼️ Image Preview Failed<br><small>Click "View" to see details</small>
+                               </div>`
+                                : `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #718096; font-size: 14px; text-align: center;">
+                                 ${
+                                   image.image_data
+                                     ? "⚠️ Conversion Failed"
+                                     : "🖼️ Processing..."
+                                 }<br><small>Click "View" to see details</small>
+                               </div>`
+                            }
+                        </div>
+                        <div class="image-info">
+                            <div class="image-time">📅 ${new Date(
+                              image.time
+                            ).toLocaleString()}</div>
+                            <div class="image-bbox">📍 ${bboxSafe}</div>
+                            <div class="image-size">💾 ${(
+                              image.size_bytes /
+                              1024 /
+                              1024
+                            ).toFixed(2)} MB ${
+                image.image_data &&
+                image.image_data.startsWith("data:image/jpeg")
+                  ? "(JPG)"
+                  : "(Original)"
+              }</div>
+                            <div class="image-actions">
+                                <button class="btn btn-primary btn-small" onclick="viewImage(${
+                                  image.image_id
+                                }, '${timeSafe}', '${bboxSafe}', ${
+                image.size_bytes
+              }, '${imageDataSafe}')">👁️ View</button>
+                                ${
+                                  image.image_data &&
+                                  image.image_data.startsWith("data:image/jpeg")
+                                    ? `<button class="btn btn-secondary btn-small" onclick="downloadImageData('${imageDataSafe}', '${timeSafe}', 'jpg')">⬇️ JPG</button>`
+                                    : ""
+                                }
+                                <button class="btn btn-secondary btn-small" onclick="downloadOriginalTiff('${
+                                  image.image_id
+                                }', '${timeSafe}')">⬇️ TIFF</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            })
+            .join("");
+        }
+
+        const resultsSection = document.getElementById("results");
+        if (resultsSection) {
+          resultsSection.style.display = "block";
+        }
+      }
+
+      function displayImagesOnMap(images) {
+        // Store image data globally for timeline
+        imageData = images.sort((a, b) => new Date(a.time) - new Date(b.time));
+
+        const mapContainer = document.getElementById("mapContainer");
+        if (!mapContainer) {
+          console.error("Map container element not found");
+          return;
+        }
+
+        if (imageData.length === 0) {
+          mapContainer.style.display = "none";
+          return;
+        }
+
+        // Show map container
+        mapContainer.style.display = "block";
+
+        // Initialize map if not already done
+        if (!map) {
+          initMap();
+          setupTimeSlider();
+        }
+
+        // Add all satellite image overlays to the map
+        addAllImageOverlays();
+
+        // Setup timeline slider
+        const timeSlider = document.getElementById("timeSlider");
+        const playBtn = document.getElementById("playBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        if (timeSlider) {
+          timeSlider.max = imageData.length - 1;
+          timeSlider.value = 0;
+          timeSlider.disabled = false;
+        }
+
+        if (playBtn) {
+          playBtn.disabled = false;
+        }
+
+        if (resetBtn) {
+          resetBtn.disabled = false;
+        }
+
+        // Display first image highlight
+        updateMapDisplay(0);
+
+        // Update timeline info
+        const currentTimeElement = document.getElementById("currentTime");
+        if (currentTimeElement) {
+          currentTimeElement.innerHTML = `
+            📊 ${imageData.length} images loaded<br>
+            📅 ${new Date(imageData[0].time).toLocaleDateString()} - ${new Date(
+            imageData[imageData.length - 1].time
+          ).toLocaleDateString()}
+          `;
+        }
+      }
+
+      function viewImage(imageId, time, bboxWkt, sizeBytes, imageData) {
+        showImageModal({
+          image_id: imageId,
+          time: time,
+          bbox_wkt: bboxWkt,
+          size_bytes: sizeBytes,
+          image_data: imageData,
+        });
+      }
+
+      function showImageModal(imageData) {
+        const modalContent = document.getElementById("modalContent");
+        const hasJpgPreview =
+          imageData.image_data &&
+          imageData.image_data.startsWith("data:image/jpeg");
+
+        modalContent.innerHTML = `
+                <h2>🖼️ Image Details</h2>
+                <p><strong>📅 Time:</strong> ${new Date(
+                  imageData.time
+                ).toLocaleString()}</p>
+                <p><strong>📍 Location:</strong> ${imageData.bbox_wkt}</p>
+                <p><strong>💾 Size:</strong> ${(
+                  imageData.size_bytes /
+                  1024 /
+                  1024
+                ).toFixed(2)} MB</p>
+                
+                ${
+                  hasJpgPreview
+                    ? `<div style="margin: 20px 0;">
+                    <h3>🖼️ Preview (Web-optimized JPG)</h3>
+                    <img src="${imageData.image_data}" alt="Satellite Image Preview" 
+                         style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+                  </div>`
+                    : `<div style="margin: 20px 0; padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center;">
+                    <p style="color: #6c757d; margin: 0;">⚠️ Web preview not available</p>
+                    <p style="color: #6c757d; margin: 5px 0 0 0; font-size: 0.9em;">Image conversion failed or is still processing</p>
+                  </div>`
+                }
+                
+                <div style="margin-top: 20px;">
+                    <h3>📥 Download Options</h3>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        ${
+                          hasJpgPreview
+                            ? `<button onclick="downloadImageData('${imageData.image_data}', '${imageData.time}', 'jpg')" 
+                                   style="padding: 10px 15px; background: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                            📸 Download JPG (Web Preview)
+                          </button>`
+                            : ""
+                        }
+                        <button onclick="downloadOriginalTiff('${
+                          imageData.image_id
+                        }', '${imageData.time}')" 
+                                style="padding: 10px 15px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                          🗂️ Download Original TIFF
+                        </button>
+                    </div>
+                    <div style="margin-top: 15px; padding: 15px; background: #e8f4f8; border-radius: 6px; font-size: 0.9em;">
+                        <p><strong>📝 Note:</strong></p>
+                        <p>• <strong>JPG Preview:</strong> Web-optimized for display, may have reduced quality</p>
+                        <p>• <strong>Original TIFF:</strong> Full resolution satellite data, requires GIS software (QGIS, GDAL, etc.)</p>
+                    </div>
+                </div>
+            `;
+        document.getElementById("imageModal").style.display = "block";
+      }
+
+      function downloadImageData(imageDataUrl, time, format = "jpg") {
+        try {
+          if (!imageDataUrl || !imageDataUrl.includes(",")) {
+            throw new Error("Invalid image data");
+          }
+
+          // Extract base64 data from data URL
+          const base64Data = imageDataUrl.split(",")[1];
+          const binaryData = atob(base64Data);
+          const bytes = new Uint8Array(binaryData.length);
+          for (let i = 0; i < binaryData.length; i++) {
+            bytes[i] = binaryData.charCodeAt(i);
+          }
+
+          const mimeType = format === "jpg" ? "image/jpeg" : "image/tiff";
+          const blob = new Blob([bytes], { type: mimeType });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.style.display = "none";
+          a.href = url;
+
+          // Create filename based on timestamp
+          const timestamp = new Date(time)
+            .toISOString()
+            .replace(/[:.]/g, "-")
+            .slice(0, 19);
+          const filename = `sentinel2_${timestamp}_${
+            format === "jpg" ? "preview" : "original"
+          }.${format === "jpg" ? "jpg" : "tif"}`;
+
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+        } catch (error) {
+          showError("Failed to download image: " + error.message);
+        }
+      }
+
+      async function downloadOriginalTiff(imageId, time) {
+        try {
+          showLoading("Downloading original TIFF...");
+
+          // Call a new API endpoint to get original TIFF data
+          const response = await fetch(
+            `${API_BASE_URL}/api/v1/public/image/${imageId}/original`,
+            {
+              method: "GET",
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.style.display = "none";
+          a.href = url;
+
+          // Create filename based on timestamp
+          const timestamp = new Date(time)
+            .toISOString()
+            .replace(/[:.]/g, "-")
+            .slice(0, 19);
+          const filename = `sentinel2_${timestamp}_original.tif`;
+
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+        } catch (error) {
+          showError("Failed to download original TIFF: " + error.message);
+        }
+      }
+
+      function closeModal() {
+        document.getElementById("imageModal").style.display = "none";
+      }
+
+      function showLoading(sectionId) {
+        if (sectionId === "results") {
+          // For results section, only update the imageGrid content, not the entire section
+          const imageGrid = document.getElementById("imageGrid");
+          const resultsSection = document.getElementById("results");
+
+          if (imageGrid) {
+            imageGrid.innerHTML = '<div class="loading">⏳ Loading...</div>';
+          }
+          if (resultsSection) {
+            resultsSection.style.display = "block";
+          }
+        } else {
+          // For other sections, replace the entire content
+          const section = document.getElementById(sectionId);
+          if (section) {
+            section.innerHTML = '<div class="loading">⏳ Loading...</div>';
+            section.style.display = "block";
+          }
+        }
+      }
+
+      function hideSection(sectionId) {
+        const section = document.getElementById(sectionId);
+        if (section) {
+          section.style.display = "none";
+        }
+      }
+
+      function showError(message) {
+        const errorDiv = document.createElement("div");
+        errorDiv.className = "error";
+        errorDiv.innerHTML = `❌ ${message}`;
+
+        // Remove any existing error messages
+        const existingErrors = document.querySelectorAll(".error");
+        existingErrors.forEach((error) => error.remove());
+
+        // Add new error message at the top
+        document
+          .querySelector(".container")
+          .insertBefore(
+            errorDiv,
+            document.querySelector(".container").firstChild
+          );
+
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+          errorDiv.remove();
+        }, 5000);
+      }
+
+      // Close modal when clicking outside of it
+      window.onclick = function (event) {
+        const modal = document.getElementById("imageModal");
+        if (event.target === modal) {
+          closeModal();
+        }
+      };
+
+      // Initialize with default bounds on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        console.log("DOM loaded, initializing...");
+        setDefaultBounds();
+
+        // Verify that key elements exist
+        const imageGrid = document.getElementById("imageGrid");
+        const results = document.getElementById("results");
+        const mapContainer = document.getElementById("mapContainer");
+
+        console.log("Key elements found:", {
+          imageGrid: !!imageGrid,
+          results: !!results,
+          mapContainer: !!mapContainer,
+        });
+
+        // Map will be initialized when first images are loaded
+      });
+
+      // Fallback for older browsers
+      if (
+        document.readyState === "complete" ||
+        document.readyState === "interactive"
+      ) {
+        console.log("Document already ready, initializing...");
+        setDefaultBounds();
+      }
+    </script>
+  </body>
+</html>
