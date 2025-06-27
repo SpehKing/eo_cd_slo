@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import declarative_base
+from sqlalchemy import text
 from .config import settings
 
 # Create async engine
@@ -32,7 +33,7 @@ async def init_db():
     """Initialize database connection"""
     async with engine.begin() as conn:
         # Test connection
-        await conn.execute("SELECT 1")
+        await conn.execute(text("SELECT 1"))
 
 
 async def close_db():
