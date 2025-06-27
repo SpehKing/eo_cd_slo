@@ -27,7 +27,9 @@ class Settings(BaseSettings):
     max_page_size: int = 100
 
     # Logfire configuration
-    logfire_token: Optional[str] = None
+    logfire_token: Optional[str] = (
+        "pylf_v1_eu_lbpYb5Rz7rfccThmqXZ92lB9bpFNXdsGKfdGFCzxzRzY"
+    )
     logfire_project_name: str = "eo-cd-slo"
     logfire_environment: str = "development"
     enable_logfire: bool = True
@@ -41,6 +43,7 @@ class Settings(BaseSettings):
 
     @property
     def database_url(self) -> str:
+        # Use asyncpg with PostGIS support for TimescaleDB
         return f"postgresql+asyncpg://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}"
 
 

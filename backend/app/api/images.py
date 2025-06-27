@@ -15,6 +15,9 @@ from ..models.schemas import (
     ImageMetadata,
     ImageQueryRequest,
     HealthCheck,
+    ChangeMaskListResponse,
+    ChangeMaskMetadata,
+    SpectralBandsRequest,
 )
 
 router = APIRouter()
@@ -230,3 +233,100 @@ async def hello_world():
         "timestamp": datetime.utcnow().isoformat(),
         "tip": "Check your Logfire dashboard to see these logs! 📊",
     }
+
+
+@router.get("/change-masks", response_model=ChangeMaskListResponse)
+async def list_change_masks(
+    start_time: Optional[str] = Query(None, description="Start time in ISO format"),
+    end_time: Optional[str] = Query(None, description="End time in ISO format"),
+    min_lon: Optional[float] = Query(
+        None, ge=-180, le=180, description="Minimum longitude"
+    ),
+    min_lat: Optional[float] = Query(
+        None, ge=-90, le=90, description="Minimum latitude"
+    ),
+    max_lon: Optional[float] = Query(
+        None, ge=-180, le=180, description="Maximum longitude"
+    ),
+    max_lat: Optional[float] = Query(
+        None, ge=-90, le=90, description="Maximum latitude"
+    ),
+    limit: int = Query(50, ge=1, le=100, description="Maximum number of results"),
+    offset: int = Query(0, ge=0, description="Number of results to skip"),
+    service: EoService = Depends(get_eo_service),
+):
+    """
+    List change detection masks with optional filtering by time and spatial bounds.
+    """
+
+    try:
+        # Format timestamps if provided
+        if start_time and not start_time.endswith(("+00", "Z")):
+            start_time += "+00"
+        if end_time and not end_time.endswith(("+00", "Z")):
+            end_time += "+00"
+
+        result = await service.get_change_masks(
+            start_time=start_time,
+            end_time=end_time,
+            min_lon=min_lon,
+            min_lat=min_lat,
+            max_lon=max_lon,
+            max_lat=max_lat,
+            limit=limit,
+            offset=offset,
+        )
+
+        return result
+
+    except Exception as e:
+        if logfire_instance:
+            logfire_instance.error("Failed to retrieve change masks", error=str(e))
+        raise HTTPException(
+            status_code=500, detail=f"Failed to retrieve change masks: {str(e)}"
+        )
+
+
+@router.get("/change-masks/{img_a_id}/{img_b_id}")
+async def get_change_mask(
+    img_a_id: int, img_b_id: int, service: EoService = Depends(get_eo_service)
+):
+    """
+    Get change detection mask binary data for a specific image pair.
+    """
+    # Ensure img_a_id < img_b_id per database constraint
+    if img_a_id >= img_b_id:
+        raise HTTPException(
+            status_code=400, detail="img_a_id must be less than img_b_id"
+        )
+
+    mask_data = await service.get_change_mask_data(img_a_id, img_b_id)
+    if not mask_data:
+        raise HTTPException(
+            status_code=404, detail="Change mask not found for the specified image pair"
+        )
+
+    return Response(
+        content=mask_data,
+        media_type="application/octet-stream",
+        headers={
+            "Content-Disposition": f"attachment; filename=change_mask_{img_a_id}_{img_b_id}.bin",
+            "Content-Length": str(len(mask_data)),
+        },
+    )
+
+
+@router.post("/images/{image_id}/bands")
+async def get_spectral_bands(
+    image_id: int,
+    request: SpectralBandsRequest,
+    service: EoService = Depends(get_eo_service),
+):
+    """
+    Get specific spectral bands for an image.
+    """
+    result = await service.get_spectral_bands(image_id, request.bands)
+    if not result:
+        raise HTTPException(status_code=404, detail="Image not found")
+
+    return result

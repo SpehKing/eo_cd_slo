@@ -26,9 +26,11 @@ def setup_logfire() -> Optional[logfire.Logfire]:
         # Configure Logfire
         logfire.configure(**logfire_config)
 
-        # Set up Python logging to integrate with Logfire
+        # Integrate Python logging with Logfire
         logfire.install_auto_tracing(
-            modules=["sqlalchemy", "asyncpg", "httpx", "requests"]
+            modules=["sqlalchemy", "asyncpg", "httpx", "requests"],
+            min_duration=0.1,  # Minimum duration in seconds to trace
+            check_imported_modules="ignore",  # Ignore already imported modules
         )
 
         return logfire

@@ -54,3 +54,39 @@ class HealthCheck(BaseModel):
     status: str
     database: str
     timestamp: datetime
+
+
+class ChangeMaskMetadata(BaseModel):
+    """Change detection mask metadata response model"""
+
+    img_a_id: int
+    img_b_id: int
+    period_start: datetime
+    period_end: datetime
+    bbox_wkt: str
+    mask_size_bytes: int
+
+    class Config:
+        from_attributes = True
+
+
+class ChangeMaskListResponse(BaseModel):
+    """Response model for change mask list"""
+
+    masks: List[ChangeMaskMetadata]
+    total: int
+    limit: int
+    offset: int
+    has_more: bool
+
+
+class SpectralBandsRequest(BaseModel):
+    """Request model for specific spectral bands"""
+
+    bands: List[str] = Field(
+        default=["b02", "b03", "b04"],
+        description="List of band names (b01-b12, b8a)",
+    )
+
+    class Config:
+        schema_extra = {"example": {"bands": ["b02", "b03", "b04"]}}  # RGB bands

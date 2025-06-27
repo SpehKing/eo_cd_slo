@@ -14,9 +14,17 @@ async def lifespan(app: FastAPI):
     """Application lifespan manager"""
     # Startup
     logger.info("Starting up application...")
+    if logfire_instance:
+        logfire.info("🚀 Starting up Sentinel-2 API application", event="startup")
     try:
         await init_db()
         logger.info("Database initialized successfully")
+        if logfire_instance:
+            logfire.info(
+                "✅ Database connection established",
+                database="timescaledb",
+                event="db_init",
+            )
     except Exception as e:
         logger.error(f"Failed to initialize database: {e}")
         raise
