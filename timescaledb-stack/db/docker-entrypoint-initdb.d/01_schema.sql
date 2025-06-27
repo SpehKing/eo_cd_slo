@@ -14,7 +14,7 @@ CREATE EXTENSION IF NOT EXISTS postgis;
 -- 2. Master imagery table  : eo
 ------------------------------------------------------------
 CREATE TABLE eo (
-    id     BIGSERIAL,                           -- surrogate key
+    id     SERIAL,                           -- surrogate key
     time   TIMESTAMPTZ              NOT NULL,   -- observation time
     bbox   GEOGRAPHY(POLYGON, 4326) NOT NULL,   -- footprint
 
@@ -38,7 +38,7 @@ CREATE TABLE eo (
 );
 
 -- Create hypertable AFTER the table is created with proper primary key
-SELECT create_hypertable('eo', 'time');
+SELECT create_hypertable('eo', by_range('time', INTERVAL '1 month'));
 
 CREATE INDEX IF NOT EXISTS eo_time_idx  ON eo (time);
 CREATE INDEX IF NOT EXISTS eo_bbox_gix ON eo USING GIST (bbox);
@@ -60,10 +60,9 @@ CREATE TABLE eo_change (
     -- Composite primary key including the partitioning column
     CONSTRAINT eo_change_pk       PRIMARY KEY (img_a_id, img_b_id, period_start),
     CONSTRAINT img_a_lt_img_b     CHECK (img_a_id < img_b_id)
-    -- Note: Foreign key constraints removed due to TimescaleDB partitioning limitations
 );
 
-SELECT create_hypertable('eo_change', 'period_start');
+SELECT create_hypertable('eo_change', by_range('period_start', INTERVAL '1 month'));
 
 CREATE INDEX IF NOT EXISTS eo_change_bbox_gix       ON eo_change USING GIST (bbox);
 CREATE INDEX IF NOT EXISTS eo_change_period_end_idx ON eo_change (period_end);
