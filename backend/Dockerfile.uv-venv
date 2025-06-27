@@ -1,0 +1,64 @@
+# Alternative Dockerfile using UV's project management capabilities
+# Use Python 3.10 slim image
+FROM python:3.10-slim as builder
+
+# Install system dependencies needed for building packages
+RUN apt-get update && apt-get install -y \
+    gdal-bin \
+    libgdal-dev \
+    gcc \
+    g++ \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set GDAL environment variables
+ENV GDAL_CONFIG=/usr/bin/gdal-config
+ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
+ENV C_INCLUDE_PATH=/usr/include/gdal
+
+# Install UV package manager
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
+
+# Set working directory
+WORKDIR /app
+
+# Copy dependency files first (for better Docker layer caching)
+COPY requirements.txt pyproject.toml ./
+
+# Create a virtual environment using UV and install dependencies
+RUN uv venv /opt/venv --python 3.10
+ENV PATH="/opt/venv/bin:$PATH"
+RUN uv pip install --no-cache -r requirements.txt
+
+# Production stage
+FROM python:3.10-slim as production
+
+# Install runtime system dependencies
+RUN apt-get update && apt-get install -y \
+    gdal-bin \
+    libgdal-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set GDAL environment variables
+ENV GDAL_CONFIG=/usr/bin/gdal-config
+ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
+ENV C_INCLUDE_PATH=/usr/include/gdal
+
+# Copy the virtual environment from builder stage
+COPY --from=builder /opt/venv /opt/venv
+
+# Make sure we use venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Set working directory
+WORKDIR /app
+
+# Copy application code
+COPY . .
+
+# Expose port
+EXPOSE 8000
+
+# Command to run the application
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
