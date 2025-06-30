@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Optional, List, Dict
 from datetime import datetime
 
 
@@ -32,6 +32,11 @@ class ImageMetadata(BaseModel):
     id: int
     time: datetime
     bbox_wkt: str
+    width: Optional[int] = Field(None, description="Image width in pixels")
+    height: Optional[int] = Field(None, description="Image height in pixels")
+    data_type: Optional[str] = Field(
+        None, description="Image data type (e.g., 'uint16', 'float32')"
+    )
     size_bytes: int
 
     class Config:
@@ -90,3 +95,28 @@ class SpectralBandsRequest(BaseModel):
 
     class Config:
         schema_extra = {"example": {"bands": ["b02", "b03", "b04"]}}  # RGB bands
+
+
+class SpectralBandsResponse(BaseModel):
+    """Response model for spectral bands"""
+
+    id: int
+    time: datetime
+    bbox_wkt: str
+    bands: Dict[str, str] = Field(
+        description="Dictionary of band names to base64-encoded binary data"
+    )
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "id": 1,
+                "time": "2021-07-28T10:07:54Z",
+                "bbox_wkt": "POLYGON((...))",
+                "bands": {
+                    "b02": "iVBORw0KGgoAAAANSUhEUgAA...",
+                    "b03": "iVBORw0KGgoAAAANSUhEUgAA...",
+                    "b04": "iVBORw0KGgoAAAANSUhEUgAA...",
+                },
+            }
+        }

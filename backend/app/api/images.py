@@ -18,12 +18,11 @@ from ..models.schemas import (
     ChangeMaskListResponse,
     ChangeMaskMetadata,
     SpectralBandsRequest,
+    SpectralBandsResponse,
 )
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
-
-router = APIRouter()
 
 
 def get_eo_repository(session: AsyncSession = Depends(get_db_session)) -> EoRepository:
@@ -59,8 +58,8 @@ async def list_images(
     """
     List images with optional filtering by time and spatial bounds.
 
-    - **start_time**: ISO format timestamp (e.g., "2023-01-01T00:00:00+00")
-    - **end_time**: ISO format timestamp
+    - **start_time**: ISO format timestamp (e.g., "2021-07-28T10:07:54Z")
+    - **end_time**: ISO format timestamp (e.g., "2024-07-28T10:07:54Z")
     - **min_lon, min_lat, max_lon, max_lat**: Bounding box coordinates
     - **limit**: Maximum number of results (1-100)
     - **offset**: Number of results to skip for pagination
@@ -201,40 +200,6 @@ async def health_check(service: EoService = Depends(get_eo_service)):
     )
 
 
-@router.get("/hello")
-async def hello_world():
-    """
-    Hello world endpoint to test Logfire integration
-    """
-    logger.info("Hello world endpoint called")
-
-    # Demo various Logfire log levels
-    if logfire_instance:
-        logfire_instance.info("Hello, Logfire! 🌍", endpoint="hello_world")
-        logfire_instance.debug("This is a debug message from the hello endpoint")
-        logfire_instance.warn("This is a warning - everything is fine though!")
-
-        # Log with structured data
-        logfire_instance.info(
-            "Structured logging example",
-            user_id="demo_user",
-            action="hello_world_access",
-            timestamp=datetime.utcnow().isoformat(),
-            metadata={
-                "service": "eo-cd-slo-api",
-                "version": "1.0.0",
-                "endpoint": "/hello",
-            },
-        )
-
-    return {
-        "message": "Hello from Sentinel-2 API!",
-        "logfire_enabled": logfire_instance is not None,
-        "timestamp": datetime.utcnow().isoformat(),
-        "tip": "Check your Logfire dashboard to see these logs! 📊",
-    }
-
-
 @router.get("/change-masks", response_model=ChangeMaskListResponse)
 async def list_change_masks(
     start_time: Optional[str] = Query(None, description="Start time in ISO format"),
@@ -316,7 +281,7 @@ async def get_change_mask(
     )
 
 
-@router.post("/images/{image_id}/bands")
+@router.post("/images/{image_id}/bands", response_model=SpectralBandsResponse)
 async def get_spectral_bands(
     image_id: int,
     request: SpectralBandsRequest,
@@ -324,9 +289,40 @@ async def get_spectral_bands(
 ):
     """
     Get specific spectral bands for an image.
+
+    Returns band data as base64-encoded strings in JSON format.
     """
     result = await service.get_spectral_bands(image_id, request.bands)
     if not result:
         raise HTTPException(status_code=404, detail="Image not found")
 
     return result
+
+
+@router.get("/change-masks/{img_a_id}/{img_b_id}/preview.jpg")
+async def get_change_mask_preview(
+    img_a_id: int, img_b_id: int, service: EoService = Depends(get_eo_service)
+):
+    """
+    Get a JPEG preview of the change detection mask with colormap visualization.
+    """
+    # Ensure img_a_id < img_b_id per database constraint
+    if img_a_id >= img_b_id:
+        raise HTTPException(
+            status_code=400, detail="img_a_id must be less than img_b_id"
+        )
+
+    jpeg_data = await service.get_change_mask_preview(img_a_id, img_b_id)
+    if not jpeg_data:
+        raise HTTPException(
+            status_code=404, detail="Change mask not found or preview generation failed"
+        )
+
+    return Response(
+        content=jpeg_data,
+        media_type="image/jpeg",
+        headers={
+            "Cache-Control": "public, max-age=86400",  # Cache for 24 hours
+            "Content-Length": str(len(jpeg_data)),
+        },
+    )

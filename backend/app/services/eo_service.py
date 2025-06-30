@@ -6,7 +6,7 @@ from ..models.schemas import (
     ChangeMaskMetadata,
     ChangeMaskListResponse,
 )
-from .image_service import ImageProcessingService
+from .image_service import ImageProcessingService, ImageMetadata as ImageMeta
 import logging
 
 logger = logging.getLogger(__name__)
@@ -17,7 +17,6 @@ class EoService:
 
     def __init__(self, repository: EoRepository):
         self.repository = repository
-        self.image_service = ImageProcessingService()
 
     async def get_images(
         self,
@@ -82,6 +81,9 @@ class EoService:
             id=image_data["id"],
             time=image_data["time"],
             bbox_wkt=image_data["bbox_wkt"],
+            width=image_data.get("width"),
+            height=image_data.get("height"),
+            data_type=image_data.get("data_type"),
             size_bytes=image_data["size_bytes"],
         )
 
@@ -101,14 +103,24 @@ class EoService:
                 logger.warning(f"RGB bands not available for image {image_id}")
                 return None
 
-            # Convert RGB bands to JPEG
-            rgb_bands = {
-                "red": bytes(image_data["b04"]),  # Band 4 (Red)
-                "green": bytes(image_data["b03"]),  # Band 3 (Green)
-                "blue": bytes(image_data["b02"]),  # Band 2 (Blue)
+            # Create bands data dictionary
+            bands_data = {
+                "b04": bytes(image_data["b04"]),  # Red
+                "b03": bytes(image_data["b03"]),  # Green
+                "b02": bytes(image_data["b02"]),  # Blue
             }
 
-            jpeg_data = await self.image_service.convert_rgb_bands_to_jpeg(rgb_bands)
+            # Create ImageMetadata object
+            image_metadata = ImageMeta(
+                width=image_data.get("width", 512),  # Default fallback
+                height=image_data.get("height", 512),  # Default fallback
+                data_type=image_data.get("data_type", "uint16"),  # Default fallback
+                bbox=image_data.get("bbox_wkt"),
+            )
+
+            jpeg_data = await ImageProcessingService.convert_bands_to_jpeg(
+                bands_data, image_metadata
+            )
             return jpeg_data
         except Exception as e:
             logger.error(f"Failed to generate preview for image {image_id}: {e}")
@@ -121,12 +133,28 @@ class EoService:
         if not result:
             return None
 
-        image_data, timestamp = result
-        filename = self.image_service.generate_filename(
-            timestamp.strftime("%Y%m%d_%H%M%S")
-        )
+        bands_data, timestamp, metadata = result
 
-        return image_data, filename
+        # Create a proper TIFF from the bands
+        try:
+            # Create ImageMetadata object from the database metadata
+            image_metadata = ImageMeta(
+                width=metadata.get("width", 512),  # Default fallback
+                height=metadata.get("height", 512),  # Default fallback
+                data_type=metadata.get("data_type", "uint16"),  # Default fallback
+                bbox=metadata.get("bbox_wkt"),
+            )
+
+            tiff_data = await ImageProcessingService.create_geotiff_from_bands(
+                bands_data, image_metadata
+            )
+            filename = ImageProcessingService.generate_filename(
+                timestamp.strftime("%Y%m%d_%H%M%S")
+            )
+            return tiff_data, filename
+        except Exception as e:
+            logger.error(f"Failed to create TIFF for image {image_id}: {e}")
+            return None
 
     async def health_check(self) -> bool:
         """Check service health"""
@@ -198,6 +226,7 @@ class EoService:
         self, image_id: int, bands: List[str]
     ) -> Optional[dict]:
         """Get specific spectral bands for an image"""
+        import base64
 
         image_data = await self.repository.get_all_bands_by_id(image_id)
         if not image_data:
@@ -229,6 +258,48 @@ class EoService:
 
         for band in bands:
             if band in valid_bands and band in image_data and image_data[band]:
-                result["bands"][band] = image_data[band]
+                # Convert binary data to base64 string for JSON serialization
+                band_data = image_data[band]
+                if isinstance(band_data, (bytes, memoryview)):
+                    result["bands"][band] = base64.b64encode(bytes(band_data)).decode(
+                        "utf-8"
+                    )
+                else:
+                    result["bands"][band] = band_data
 
         return result
+
+    async def get_change_mask_preview(
+        self, img_a_id: int, img_b_id: int
+    ) -> Optional[bytes]:
+        """Get JPEG preview of a change detection mask"""
+
+        mask_info = await self.repository.get_change_mask_by_images(img_a_id, img_b_id)
+        if not mask_info:
+            return None
+
+        try:
+            # Extract mask data and metadata
+            mask_data = bytes(mask_info["mask"])
+
+            # Create ImageMetadata object for the mask
+            mask_metadata = ImageMeta(
+                width=mask_info.get("width", 512),  # Default fallback
+                height=mask_info.get("height", 512),  # Default fallback
+                data_type=mask_info.get(
+                    "data_type", "uint8"
+                ),  # Default fallback for masks
+                bbox=mask_info.get("bbox_wkt"),
+            )
+
+            # Convert mask to JPEG with colormap visualization
+            jpeg_data = await ImageProcessingService.convert_mask_to_jpeg(
+                mask_data, mask_metadata, colormap="viridis"
+            )
+            return jpeg_data
+
+        except Exception as e:
+            logger.error(
+                f"Failed to generate change mask preview for images {img_a_id}-{img_b_id}: {e}"
+            )
+            return None

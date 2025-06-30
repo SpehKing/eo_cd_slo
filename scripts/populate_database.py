@@ -157,19 +157,27 @@ class DatabasePopulator:
 
         return f"{formatted_date} {formatted_time}+00"
 
-    def read_tiff_as_bands(self, filepath: str) -> Dict[str, bytes]:
+    def read_tiff_as_bands(
+        self, filepath: str
+    ) -> Tuple[Dict[str, bytes], Dict[str, Any]]:
         """
-        Read a TIFF file and return its bands as separate byte arrays
+        Read a TIFF file and return its bands as separate byte arrays along with metadata
 
         Args:
             filepath: Path to the TIFF file
 
         Returns:
-            Dictionary mapping band names to byte data
+            Tuple of (dictionary mapping band names to byte data, metadata dictionary)
         """
         bands_data = {}
+        metadata = {}
 
         with rasterio.open(filepath) as src:
+            # Extract metadata
+            metadata["width"] = src.width
+            metadata["height"] = src.height
+            metadata["data_type"] = str(src.dtypes[0])  # Use first band's dtype
+
             # Read each band
             for i in range(1, src.count + 1):
                 band_data = src.read(i)
@@ -189,7 +197,7 @@ class DatabasePopulator:
                     band_name = f"b{i:02d}"
                     bands_data[band_name] = band_bytes
 
-        return bands_data
+        return bands_data, metadata
 
     def read_mask_file(self) -> bytes:
         """
@@ -207,7 +215,7 @@ class DatabasePopulator:
 
     def create_change_mask(
         self, img_a_path: str, img_b_path: str, grid_bbox: str
-    ) -> bytes:
+    ) -> Tuple[bytes, Dict[str, Any]]:
         """
         Create a synthetic change detection mask for two images
 
@@ -217,7 +225,7 @@ class DatabasePopulator:
             grid_bbox: Bounding box string for the grid cell
 
         Returns:
-            Change mask as bytes
+            Tuple of (change mask as bytes, metadata dictionary)
         """
         # For demonstration, create a simple change mask based on time difference
         # In a real scenario, this would involve actual change detection algorithms
@@ -242,7 +250,14 @@ class DatabasePopulator:
             # Large changes - dense pattern
             mask = self._create_dense_change_mask()
 
-        return mask.tobytes()
+        # Create metadata for the mask
+        metadata = {
+            "width": mask.shape[1],
+            "height": mask.shape[0],
+            "data_type": str(mask.dtype),
+        }
+
+        return mask.tobytes(), metadata
 
     def _create_sparse_change_mask(self, width=512, height=512) -> np.ndarray:
         """Create sparse change pattern (10-20% change)"""
@@ -305,14 +320,14 @@ class DatabasePopulator:
             timestamp = self.extract_timestamp_from_filename(filepath)
             bbox = self.get_grid_bbox_from_filename(filepath)
 
-            # Read band data
-            bands_data = self.read_tiff_as_bands(filepath)
+            # Read band data and metadata
+            bands_data, metadata = self.read_tiff_as_bands(filepath)
 
             # Prepare SQL statement
             # Note: We're only using the bands that exist in our RGB files (b02, b03, b04)
             sql = """
-                INSERT INTO eo (time, bbox, b02, b03, b04)
-                VALUES (%s, {}, %s, %s, %s)
+                INSERT INTO eo (time, bbox, width, height, data_type, b02, b03, b04)
+                VALUES (%s, {}, %s, %s, %s, %s, %s, %s)
                 RETURNING id
             """.format(
                 bbox
@@ -323,6 +338,9 @@ class DatabasePopulator:
                 sql,
                 (
                     timestamp,
+                    metadata["width"],
+                    metadata["height"],
+                    metadata["data_type"],
                     bands_data.get("b02"),  # Blue
                     bands_data.get("b03"),  # Green
                     bands_data.get("b04"),  # Red
@@ -333,7 +351,7 @@ class DatabasePopulator:
             record_id = cursor.fetchone()[0]
 
             print(
-                f"✓ Inserted: {os.path.basename(filepath)} -> {timestamp} (ID: {record_id})"
+                f"✓ Inserted: {os.path.basename(filepath)} -> {timestamp} ({metadata['width']}x{metadata['height']}, {metadata['data_type']}) (ID: {record_id})"
             )
             return record_id
 
@@ -403,21 +421,35 @@ class DatabasePopulator:
                 time_a, time_b = time_b, time_a
                 img_a_path, img_b_path = img_b_path, img_a_path
 
-            # Create change mask
-            mask_data = self.create_change_mask(img_a_path, img_b_path, grid_bbox)
+            # Create change mask with metadata
+            mask_data, mask_metadata = self.create_change_mask(
+                img_a_path, img_b_path, grid_bbox
+            )
 
             # Insert into eo_change table
             sql = """
-                INSERT INTO eo_change (img_a_id, img_b_id, period_start, period_end, bbox, mask)
-                VALUES (%s, %s, %s, %s, {}, %s)
+                INSERT INTO eo_change (img_a_id, img_b_id, period_start, period_end, bbox, width, height, data_type, mask)
+                VALUES (%s, %s, %s, %s, {}, %s, %s, %s, %s)
             """.format(
                 grid_bbox
             )
 
-            cursor.execute(sql, (img_a_id, img_b_id, time_a, time_b, mask_data))
+            cursor.execute(
+                sql,
+                (
+                    img_a_id,
+                    img_b_id,
+                    time_a,
+                    time_b,
+                    mask_metadata["width"],
+                    mask_metadata["height"],
+                    mask_metadata["data_type"],
+                    mask_data,
+                ),
+            )
 
             print(
-                f"✓ Inserted change mask: {os.path.basename(img_a_path)} -> {os.path.basename(img_b_path)}"
+                f"✓ Inserted change mask: {os.path.basename(img_a_path)} -> {os.path.basename(img_b_path)} ({mask_metadata['width']}x{mask_metadata['height']}, {mask_metadata['data_type']})"
             )
 
         except Exception as e:

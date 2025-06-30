@@ -16,6 +16,7 @@ dependencies = [
     "numpy==1.24.3",
     "aiofiles==23.2.0",
     "logfire[fastapi]==3.21.1",
+    "matplotlib==3.7.2",
 ]
 
 [tool.uv]

@@ -17,7 +17,12 @@ CREATE TABLE eo (
     id     SERIAL,                           -- surrogate key
     time   TIMESTAMPTZ              NOT NULL,   -- observation time
     bbox   GEOGRAPHY(POLYGON, 4326) NOT NULL,   -- footprint
-
+    
+    -- image metadata
+    width       INTEGER,                      -- image width in pixels
+    height      INTEGER,                      -- image height in pixels
+    data_type   VARCHAR(50),                  -- data type (e.g., 'uint16', 'float32')
+    
     -- sensor bands (opaque blobs)
     b01    BYTEA,
     b02    BYTEA,
@@ -55,6 +60,12 @@ CREATE TABLE eo_change (
     period_start TIMESTAMPTZ NOT NULL,          -- LEAST(time_a,time_b)
     period_end   TIMESTAMPTZ NOT NULL,          -- GREATEST(time_a,time_b)
     bbox         GEOGRAPHY(POLYGON, 4326) NOT NULL,
+    
+    -- change mask metadata
+    width        INTEGER,                       -- mask width in pixels
+    height       INTEGER,                       -- mask height in pixels
+    data_type    VARCHAR(50),                   -- data type (e.g., 'uint8', 'float32')
+    
     mask         BYTEA NOT NULL,                -- neural-net output
 
     -- Composite primary key including the partitioning column

@@ -1,4 +1,5 @@
 # Ignore geotiffs folder
 geotiffs/
+oscd/
 .DS_Store
 __pycache__/

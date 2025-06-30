@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text, select, func
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Dict, Any
 from datetime import datetime
 import logging
 
@@ -12,6 +12,13 @@ class EoRepository:
 
     def __init__(self, session: AsyncSession):
         self.session = session
+
+    def _parse_timestamp(self, timestamp_str: str) -> datetime:
+        """Parse ISO timestamp string to datetime object"""
+        # Handle ISO format with 'Z' suffix
+        if timestamp_str.endswith("Z"):
+            timestamp_str = timestamp_str[:-1] + "+00:00"
+        return datetime.fromisoformat(timestamp_str)
 
     async def get_image_count(
         self,
@@ -25,12 +32,12 @@ class EoRepository:
         params = {}
 
         if start_time:
-            query += " AND time >= :start_time::TIMESTAMPTZ"
-            params["start_time"] = start_time
+            query += " AND time >= :start_time"
+            params["start_time"] = self._parse_timestamp(start_time)
 
         if end_time:
-            query += " AND time <= :end_time::TIMESTAMPTZ"
-            params["end_time"] = end_time
+            query += " AND time <= :end_time"
+            params["end_time"] = self._parse_timestamp(end_time)
 
         if bbox:
             min_lon, min_lat, max_lon, max_lat = bbox
@@ -43,7 +50,7 @@ class EoRepository:
                     "max_lat": max_lat,
                 }
             )
-
+        print(f"Executing count query: {query} with params: {params}")
         result = await self.session.execute(text(query), params)
         return result.scalar()
 
@@ -62,6 +69,9 @@ class EoRepository:
                 id,
                 time,
                 ST_AsText(bbox) as bbox_wkt,
+                width,
+                height,
+                data_type,
                 COALESCE(LENGTH(b01), 0) + COALESCE(LENGTH(b02), 0) + COALESCE(LENGTH(b03), 0) +
                 COALESCE(LENGTH(b04), 0) + COALESCE(LENGTH(b05), 0) + COALESCE(LENGTH(b06), 0) +
                 COALESCE(LENGTH(b07), 0) + COALESCE(LENGTH(b08), 0) + COALESCE(LENGTH(b8a), 0) +
@@ -73,12 +83,12 @@ class EoRepository:
         params = {}
 
         if start_time:
-            query += " AND time >= :start_time::TIMESTAMPTZ"
-            params["start_time"] = start_time
+            query += " AND time >= :start_time"
+            params["start_time"] = self._parse_timestamp(start_time)
 
         if end_time:
-            query += " AND time <= :end_time::TIMESTAMPTZ"
-            params["end_time"] = end_time
+            query += " AND time <= :end_time"
+            params["end_time"] = self._parse_timestamp(end_time)
 
         if bbox:
             min_lon, min_lat, max_lon, max_lat = bbox
@@ -109,6 +119,9 @@ class EoRepository:
                 id,
                 time,
                 ST_AsText(bbox) as bbox_wkt,
+                width,
+                height,
+                data_type,
                 COALESCE(LENGTH(b01), 0) + COALESCE(LENGTH(b02), 0) + COALESCE(LENGTH(b03), 0) +
                 COALESCE(LENGTH(b04), 0) + COALESCE(LENGTH(b05), 0) + COALESCE(LENGTH(b06), 0) +
                 COALESCE(LENGTH(b07), 0) + COALESCE(LENGTH(b08), 0) + COALESCE(LENGTH(b8a), 0) +
@@ -125,11 +138,11 @@ class EoRepository:
 
     async def get_original_image_data(
         self, image_id: int
-    ) -> Optional[Tuple[bytes, datetime]]:
-        """Get original TIFF image data by ID - returns RGB bands for now"""
+    ) -> Optional[Tuple[bytes, datetime, Dict[str, Any]]]:
+        """Get original image data by ID - returns RGB bands and metadata for reconstruction"""
 
         query = """
-            SELECT b02, b03, b04, time
+            SELECT b02, b03, b04, time, ST_AsText(bbox) as bbox_wkt, width, height, data_type
             FROM eo 
             WHERE id = :image_id
         """
@@ -138,10 +151,22 @@ class EoRepository:
         row = result.first()
 
         if row and row.b02 and row.b03 and row.b04:
-            # For now, we'll return the RGB bands concatenated
-            # In a real implementation, you might want to create a proper GeoTIFF
-            rgb_data = bytes(row.b02) + bytes(row.b03) + bytes(row.b04)
-            return rgb_data, row.time
+            # Return the RGB bands and metadata for proper TIFF reconstruction
+            bands_data = {
+                "b02": bytes(row.b02),  # Blue
+                "b03": bytes(row.b03),  # Green
+                "b04": bytes(row.b04),  # Red
+            }
+
+            metadata = {
+                "bbox_wkt": row.bbox_wkt,
+                "timestamp": row.time,
+                "width": row.width,
+                "height": row.height,
+                "data_type": row.data_type,
+            }
+
+            return bands_data, row.time, metadata
         return None
 
     async def health_check(self) -> bool:
@@ -170,6 +195,9 @@ class EoRepository:
                 period_start,
                 period_end,
                 ST_AsText(bbox) as bbox_wkt,
+                width,
+                height,
+                data_type,
                 LENGTH(mask) as mask_size_bytes
             FROM eo_change 
             WHERE 1=1
@@ -177,12 +205,12 @@ class EoRepository:
         params = {}
 
         if start_time:
-            query += " AND period_start >= :start_time::TIMESTAMPTZ"
-            params["start_time"] = start_time
+            query += " AND period_start >= :start_time"
+            params["start_time"] = self._parse_timestamp(start_time)
 
         if end_time:
-            query += " AND period_end <= :end_time::TIMESTAMPTZ"
-            params["end_time"] = end_time
+            query += " AND period_end <= :end_time"
+            params["end_time"] = self._parse_timestamp(end_time)
 
         if bbox:
             min_lon, min_lat, max_lon, max_lat = bbox
@@ -215,6 +243,9 @@ class EoRepository:
                 period_start,
                 period_end,
                 ST_AsText(bbox) as bbox_wkt,
+                width,
+                height,
+                data_type,
                 LENGTH(mask) as mask_size_bytes,
                 mask
             FROM eo_change 
@@ -237,7 +268,7 @@ class EoRepository:
             FROM eo 
             WHERE id = :image_id
         """
-
+        print(f"Executing query get_all_bands_by_id: {query} with image_id: {image_id}")
         result = await self.session.execute(text(query), {"image_id": image_id})
         row = result.first()
         return dict(row._mapping) if row else None
