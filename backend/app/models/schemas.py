@@ -120,3 +120,69 @@ class SpectralBandsResponse(BaseModel):
                 },
             }
         }
+
+
+# Batch request/response models
+class ImageBatchRequest(BaseModel):
+    """Request model for batch image retrieval"""
+
+    image_ids: List[int] = Field(description="List of image IDs to retrieve")
+    format: str = Field(
+        default="metadata",
+        description="Data format to return: 'metadata' or 'preview'",
+    )
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "image_ids": [1, 2, 3, 4],
+                "format": "metadata",
+            }
+        }
+
+
+class ImageBatchResponse(BaseModel):
+    """Response model for batch image retrieval"""
+
+    images: Dict[int, Dict] = Field(
+        description="Map of image_id to data (metadata or base64 preview)"
+    )
+    total: int = Field(description="Number of successfully retrieved images")
+    errors: Dict[int, str] = Field(
+        default_factory=dict,
+        description="Map of image_id to error message for failed items",
+    )
+
+
+class ChangeMaskBatchRequest(BaseModel):
+    """Request model for batch change mask retrieval"""
+
+    mask_pairs: List[Dict[str, int]] = Field(
+        description="List of image pair objects with img_a_id and img_b_id"
+    )
+    format: str = Field(
+        default="metadata",
+        description="Data format to return: 'metadata' or 'preview'",
+    )
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "mask_pairs": [
+                    {"img_a_id": 1, "img_b_id": 2},
+                    {"img_a_id": 2, "img_b_id": 3},
+                ],
+                "format": "metadata",
+            }
+        }
+
+
+class ChangeMaskBatchResponse(BaseModel):
+    """Response model for batch change mask retrieval"""
+
+    masks: Dict[str, Dict] = Field(description="Map of 'img_a_id_img_b_id' to data")
+    total: int = Field(description="Number of successfully retrieved masks")
+    errors: Dict[str, str] = Field(
+        default_factory=dict,
+        description="Map of 'img_a_id_img_b_id' to error message for failed items",
+    )

@@ -17,6 +17,10 @@ from ..models.schemas import (
     ChangeMaskListResponse,
     SpectralBandsRequest,
     SpectralBandsResponse,
+    ImageBatchRequest,
+    ImageBatchResponse,
+    ChangeMaskBatchRequest,
+    ChangeMaskBatchResponse,
 )
 
 router = APIRouter()
@@ -307,6 +311,186 @@ async def get_change_masks(
             logfire_instance.error("Failed to retrieve change masks", error=str(e))
         raise HTTPException(
             status_code=500, detail=f"Failed to retrieve change masks: {str(e)}"
+        )
+
+
+@router.post("/images/batch", response_model=ImageBatchResponse)
+async def get_images_batch(
+    request: ImageBatchRequest,
+    service: EoService = Depends(get_eo_service),
+):
+    """
+    Get multiple images data in batch for efficient frontend processing.
+
+    - **image_ids**: List of image IDs to retrieve
+    - **format**: "metadata" (default) or "preview" (base64-encoded JPEG)
+
+    Returns a map of image_id -> data for successful requests,
+    and a map of image_id -> error_message for failed requests.
+    """
+    if logfire_instance:
+        logfire_instance.info(
+            "Images batch request received",
+            image_ids=request.image_ids,
+            format=request.format,
+            count=len(request.image_ids),
+        )
+
+    images = {}
+    errors = {}
+
+    try:
+        for image_id in request.image_ids:
+            try:
+                if request.format == "metadata":
+                    metadata = await service.get_image_metadata(image_id)
+                    if metadata:
+                        images[image_id] = metadata
+                    else:
+                        errors[image_id] = "Image not found"
+
+                elif request.format == "preview":
+                    jpeg_data = await service.get_image_preview(image_id)
+                    if jpeg_data:
+                        import base64
+
+                        images[image_id] = base64.b64encode(jpeg_data).decode("utf-8")
+                    else:
+                        errors[image_id] = (
+                            "Image not found or preview generation failed"
+                        )
+
+            except Exception as e:
+                errors[image_id] = str(e)
+
+        if logfire_instance:
+            logfire_instance.info(
+                "Images batch request completed",
+                successful_count=len(images),
+                error_count=len(errors),
+            )
+
+        return ImageBatchResponse(
+            images=images,
+            total=len(images),
+            errors=errors,
+        )
+
+    except Exception as e:
+        if logfire_instance:
+            logfire_instance.error("Failed to process images batch", error=str(e))
+        raise HTTPException(
+            status_code=500, detail=f"Failed to process images batch: {str(e)}"
+        )
+
+
+@router.post("/change-masks/batch", response_model=ChangeMaskBatchResponse)
+async def get_change_masks_batch(
+    request: ChangeMaskBatchRequest,
+    service: EoService = Depends(get_eo_service),
+):
+    """
+    Get multiple change detection masks data in batch for efficient frontend processing.
+
+    - **mask_pairs**: List of {"img_a_id": int, "img_b_id": int} objects
+    - **format**: "metadata" (default) or "preview" (base64-encoded JPEG)
+
+    Returns a map of "img_a_id_img_b_id" -> data for successful requests,
+    and a map of "img_a_id_img_b_id" -> error_message for failed requests.
+
+    Note: img_a_id must be less than img_b_id for each pair.
+    """
+    if logfire_instance:
+        logfire_instance.info(
+            "Change masks batch request received",
+            mask_pairs=request.mask_pairs,
+            format=request.format,
+            count=len(request.mask_pairs),
+        )
+
+    masks = {}
+    errors = {}
+
+    try:
+        for pair in request.mask_pairs:
+            img_a_id = pair.get("img_a_id")
+            img_b_id = pair.get("img_b_id")
+
+            if not img_a_id or not img_b_id:
+                key = f"{img_a_id}_{img_b_id}"
+                errors[key] = "Both img_a_id and img_b_id are required"
+                continue
+
+            if img_a_id >= img_b_id:
+                key = f"{img_a_id}_{img_b_id}"
+                errors[key] = "img_a_id must be less than img_b_id"
+                continue
+
+            key = f"{img_a_id}_{img_b_id}"
+
+            try:
+                if request.format == "metadata":
+                    # For metadata, we need to get the mask info from the list endpoint
+                    # This is a simplified approach - you might want to implement a specific batch method in the service
+                    mask_list = await service.get_change_masks(
+                        start_time=None,
+                        end_time=None,
+                        min_lon=None,
+                        min_lat=None,
+                        max_lon=None,
+                        max_lat=None,
+                        limit=1000,  # Large limit to find our specific mask
+                        offset=0,
+                    )
+
+                    # Find the specific mask in the list
+                    found_mask = None
+                    for mask in mask_list.masks:
+                        if mask.img_a_id == img_a_id and mask.img_b_id == img_b_id:
+                            found_mask = mask
+                            break
+
+                    if found_mask:
+                        masks[key] = found_mask
+                    else:
+                        errors[key] = (
+                            "Change mask not found for the specified image pair"
+                        )
+
+                elif request.format == "preview":
+                    jpeg_data = await service.get_change_mask_preview(
+                        img_a_id, img_b_id
+                    )
+                    if jpeg_data:
+                        import base64
+
+                        masks[key] = base64.b64encode(jpeg_data).decode("utf-8")
+                    else:
+                        errors[key] = (
+                            "Change mask not found or preview generation failed"
+                        )
+
+            except Exception as e:
+                errors[key] = str(e)
+
+        if logfire_instance:
+            logfire_instance.info(
+                "Change masks batch request completed",
+                successful_count=len(masks),
+                error_count=len(errors),
+            )
+
+        return ChangeMaskBatchResponse(
+            masks=masks,
+            total=len(masks),
+            errors=errors,
+        )
+
+    except Exception as e:
+        if logfire_instance:
+            logfire_instance.error("Failed to process change masks batch", error=str(e))
+        raise HTTPException(
+            status_code=500, detail=f"Failed to process change masks batch: {str(e)}"
         )
 
 
