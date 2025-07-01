@@ -16,6 +16,8 @@ const mapContainer = ref<HTMLElement>();
 const selectedImage = ref<ImageMetadata | null>(null);
 const showSidebar = ref(false);
 const imageLayer = ref<L.LayerGroup | null>(null);
+const boundaryLayer = ref<L.LayerGroup | null>(null);
+const layerControl = ref<L.Control.Layers | null>(null);
 
 let map: L.Map | null = null;
 
@@ -61,8 +63,13 @@ onMounted(async () => {
         "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
     });
 
-    // Create a layer group for image overlays
-    imageLayer.value = L.layerGroup().addTo(map);
+    // Create layer groups for different types of overlays
+    imageLayer.value = L.layerGroup();
+    boundaryLayer.value = L.layerGroup();
+
+    // Add layer groups to map
+    imageLayer.value.addTo(map);
+    boundaryLayer.value.addTo(map);
 
     // Load images for current map bounds
     await loadImagesForCurrentView();
@@ -99,29 +106,55 @@ async function loadImagesForCurrentView() {
   }
 }
 
-function displayImagesOnMap() {
-  if (!map || !imageLayer.value) return;
+async function displayImagesOnMap() {
+  if (!map || !imageLayer.value || !boundaryLayer.value) return;
 
-  // Clear existing image overlays
+  // Clear existing overlays
   imageLayer.value.clearLayers();
+  boundaryLayer.value.clearLayers();
 
-  // Add each image as a polygon overlay
-  imageStore.images.forEach((image) => {
+  // Add each image as both an image overlay and boundary
+  for (const image of imageStore.images) {
     const polygonData = parseWktPolygon(image.bbox_wkt);
-    if (!polygonData) return;
+    if (!polygonData) continue;
 
     const color = getImageColor(image.time);
 
-    // Create polygon overlay
-    const polygon = L.polygon(polygonData.bounds, {
+    try {
+      // Create image overlay with preview
+      const imageUrl = apiService.getImagePreviewUrl(image.id);
+
+      // Create image overlay
+      const imageOverlay = L.imageOverlay(imageUrl, polygonData.bounds, {
+        opacity: 0.7,
+        interactive: true,
+        crossOrigin: true,
+      });
+
+      // Add click handler to image overlay
+      imageOverlay.on("click", () => {
+        selectImageHandler(image);
+      });
+
+      // Add image overlay to image layer
+      imageLayer.value?.addLayer(imageOverlay);
+    } catch (error) {
+      console.warn(
+        `Failed to load image overlay for image ${image.id}:`,
+        error
+      );
+    }
+
+    // Always create boundary polygon (whether image loads or not)
+    const boundaryPolygon = L.polygon(polygonData.bounds, {
       color: color,
       weight: 2,
       opacity: 0.8,
-      fillOpacity: 0.3,
+      fillOpacity: 0.1, // Subtle fill
       fillColor: color,
     });
 
-    // Add popup with image info
+    // Add popup with image info to boundary
     const popupContent = `
       <div class="p-2 min-w-[200px]">
         <h3 class="font-bold text-sm mb-2">Satellite Image</h3>
@@ -131,6 +164,7 @@ function displayImagesOnMap() {
         <p class="text-xs mb-1"><strong>Size:</strong> ${formatFileSize(
           image.size_bytes
         )}</p>
+        <p class="text-xs mb-1"><strong>ID:</strong> ${image.id}</p>
         <button 
           onclick="window.selectImage(${image.id})" 
           class="mt-2 px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600"
@@ -140,16 +174,14 @@ function displayImagesOnMap() {
       </div>
     `;
 
-    polygon.bindPopup(popupContent);
-
-    // Add click handler
-    polygon.on("click", () => {
+    boundaryPolygon.bindPopup(popupContent);
+    boundaryPolygon.on("click", () => {
       selectImageHandler(image);
     });
 
-    // Add to layer group
-    imageLayer.value?.addLayer(polygon);
-  });
+    // Add boundary to boundary layer
+    boundaryLayer.value?.addLayer(boundaryPolygon);
+  }
 }
 
 function selectImageHandler(image: ImageMetadata) {
@@ -198,6 +230,29 @@ async function downloadOriginalImage() {
     console.error("Failed to download image:", error);
   }
 }
+
+// Toggle layer visibility
+function toggleImageLayer(event: Event) {
+  const target = event.target as HTMLInputElement;
+  if (imageLayer.value && map) {
+    if (target.checked) {
+      imageLayer.value.addTo(map);
+    } else {
+      map.removeLayer(imageLayer.value as unknown as L.Layer);
+    }
+  }
+}
+
+function toggleBoundaryLayer(event: Event) {
+  const target = event.target as HTMLInputElement;
+  if (boundaryLayer.value && map) {
+    if (target.checked) {
+      boundaryLayer.value.addTo(map);
+    } else {
+      map.removeLayer(boundaryLayer.value as unknown as L.Layer);
+    }
+  }
+}
 </script>
 
 <template>
@@ -237,10 +292,40 @@ async function downloadOriginalImage() {
       </p>
     </div>
 
+    <!-- Layer Toggle Controls -->
+    <div
+      class="absolute top-16 right-4 bg-white bg-opacity-90 px-3 py-2 rounded-lg shadow-lg z-[1000] space-y-1"
+    >
+      <div class="flex items-center space-x-2">
+        <input
+          id="imageLayer"
+          type="checkbox"
+          checked
+          @change="toggleImageLayer"
+          class="rounded"
+        />
+        <label for="imageLayer" class="text-xs font-medium"
+          >Satellite Images</label
+        >
+      </div>
+      <div class="flex items-center space-x-2">
+        <input
+          id="boundaryLayer"
+          type="checkbox"
+          checked
+          @change="toggleBoundaryLayer"
+          class="rounded"
+        />
+        <label for="boundaryLayer" class="text-xs font-medium"
+          >Boundaries</label
+        >
+      </div>
+    </div>
+
     <!-- Sidebar Toggle Button -->
     <button
       @click="toggleSidebar"
-      class="absolute top-20 right-4 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg shadow-lg z-[1000] transition-colors"
+      class="absolute top-32 right-4 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg shadow-lg z-[1000] transition-colors"
     >
       <svg
         class="w-5 h-5"
