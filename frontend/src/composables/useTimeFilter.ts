@@ -23,7 +23,7 @@ export function useTimeFilter() {
   async function initializeDateRanges() {
     try {
       // Fetch a few images to determine the available date range
-      const response = await apiService.fetchImages({ limit: 1000 });
+      const response = await apiService.fetchImages({ limit: 100 });
       const images = response.images;
 
       if (images.length > 0) {

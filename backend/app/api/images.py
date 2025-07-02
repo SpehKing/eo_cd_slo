@@ -439,7 +439,7 @@ async def get_change_masks_batch(
                         min_lat=None,
                         max_lon=None,
                         max_lat=None,
-                        limit=1000,  # Large limit to find our specific mask
+                        limit=100,  # Large limit to find our specific mask
                         offset=0,
                     )
 
