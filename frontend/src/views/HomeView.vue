@@ -75,10 +75,8 @@ async function onExecuteQuery() {
   const timeRange = timeFilter.timeRange.value;
 
   if (selectedBounds.length > 0 && timeRange) {
-    // Execute query for each selected grid square
-    for (const bounds of selectedBounds) {
-      await mapImages.loadImagesForBounds(bounds, timeRange);
-    }
+    // Execute a single grouped query for all selected grid squares
+    await mapImages.loadImagesForMultipleBounds(selectedBounds, timeRange);
   }
 }
 

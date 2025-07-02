@@ -38,6 +38,39 @@ export function useMapImages() {
     }
   }
 
+  // Load images for multiple bounds at once by combining them into a single query
+  async function loadImagesForMultipleBounds(boundsList: L.LatLngBounds[], timeRange?: { start?: string; end?: string }) {
+    if (boundsList.length === 0) return;
+
+    // Combine all bounds into a single bounding box that encompasses all selected areas
+    let minLon = Infinity;
+    let minLat = Infinity;
+    let maxLon = -Infinity;
+    let maxLat = -Infinity;
+
+    boundsList.forEach(bounds => {
+      minLon = Math.min(minLon, bounds.getWest());
+      minLat = Math.min(minLat, bounds.getSouth());
+      maxLon = Math.max(maxLon, bounds.getEast());
+      maxLat = Math.max(maxLat, bounds.getNorth());
+    });
+
+    const combinedBounds: BoundingBox = {
+      minLon,
+      minLat,
+      maxLon,
+      maxLat,
+    };
+
+    try {
+      await imageStore.fetchImagesByBounds(combinedBounds, timeRange);
+      await displayImagesOnMap();
+      imageStore.preloadImagePreviews();
+    } catch (error) {
+      console.error("Failed to load images for multiple bounds:", error);
+    }
+  }
+
   // Display images on map
   async function displayImagesOnMap() {
     if (!imageLayer.value || !boundaryLayer.value) return;
@@ -192,6 +225,7 @@ export function useMapImages() {
     // Methods
     initializeLayers,
     loadImagesForBounds,
+    loadImagesForMultipleBounds,
     displayImagesOnMap,
     selectImage,
     getImageById,
