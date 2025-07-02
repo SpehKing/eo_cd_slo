@@ -1,11 +1,11 @@
 <template>
   <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-[1000]">
     <div
-      class="dashboard-container bg-white rounded-3xl shadow-2xl p-6 min-w-[800px] max-w-[90vw]"
+      class="dashboard-container bg-white rounded-3xl shadow-2xl p-6 min-w-[1000px] max-w-[90vw]"
     >
       <!-- Date Range Slider Row -->
-      <div class="mb-6">
-        <label class="block text-sm font-medium text-gray-700 mb-3">
+      <div class="!p-6">
+        <label class="block text-sm font-medium text-gray-700 !mb-3">
           Select Time Range
         </label>
         <div class="relative">
@@ -39,16 +39,16 @@
                 />
               </div>
             </div>
-            <span class="text-xs text-gray-500 min-w-[80px]">
+            <span class="text-xs text-gray-500 min-w-[80px] !ml-2">
               {{ formatDate(maxDate) }}
             </span>
           </div>
           <!-- Selected range display -->
-          <div class="flex justify-center mt-2 space-x-4 text-sm">
+          <div class="flex justify-center !mt-2 space-x-4 text-sm">
             <span class="text-blue-600 font-medium">
               {{ formatDate(selectedStartDate) }}
             </span>
-            <span class="text-gray-400">to</span>
+            <span class="text-gray-400 !ml-4 !mr-3">to</span>
             <span class="text-blue-600 font-medium">
               {{ formatDate(selectedEndDate) }}
             </span>
@@ -57,18 +57,20 @@
       </div>
 
       <!-- Controls Row -->
-      <div class="controls-grid grid grid-cols-3 gap-6">
+      <div class="controls-grid grid grid-cols-3 gap-6 !px-6 !pb-6">
         <!-- Grid Stats Column -->
         <div class="space-y-3">
           <h3 class="text-sm font-medium text-gray-700">Grid Selection</h3>
           <div class="space-y-2 text-sm">
             <div class="flex justify-between">
               <span class="text-gray-600">Squares:</span>
-              <span class="font-medium">{{ selectedCount }}</span>
+              <span class="font-medium text-gray-600">{{ selectedCount }}</span>
             </div>
             <div class="flex justify-between">
               <span class="text-gray-600">Area:</span>
-              <span class="font-medium">{{ formatArea(totalArea) }}</span>
+              <span class="font-medium text-gray-600">{{
+                formatArea(totalArea)
+              }}</span>
             </div>
           </div>
         </div>
@@ -84,7 +86,7 @@
                 @change="$emit('toggle-image-layer', $event)"
                 class="rounded text-blue-600 focus:ring-blue-500"
               />
-              <span class="text-sm">Satellite Images</span>
+              <span class="text-sm text-gray-600">Satellite Images</span>
             </label>
             <label class="flex items-center space-x-2 cursor-pointer">
               <input
@@ -93,7 +95,7 @@
                 @change="$emit('toggle-boundary-layer', $event)"
                 class="rounded text-blue-600 focus:ring-blue-500"
               />
-              <span class="text-sm">Boundaries</span>
+              <span class="text-sm text-gray-600">Boundaries</span>
             </label>
           </div>
         </div>
