@@ -1,23 +1,20 @@
 <script lang="ts" setup>
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref, onBeforeUnmount } from "vue";
 import L from "leaflet";
-import { cacheService } from "@/services/cache";
 import type { ImageMetadata } from "@/types/api";
 
 // Components
 import MapComponent from "@/components/MapComponent.vue";
-import MapOverlays from "@/components/MapOverlays.vue";
-import LayerControls from "@/components/LayerControls.vue";
-import TimeFilter from "@/components/TimeFilter.vue";
+import FloatingDashboard from "@/components/FloatingDashboard.vue";
 import ImageSidebar from "@/components/ImageSidebar.vue";
 
 // Composables
 import { useMapImages } from "@/composables/useMapImages";
 import { useTimeFilter } from "@/composables/useTimeFilter";
+import { useGridSelection } from "@/composables/useGridSelection";
 
 // State
 const showSidebar = ref(false);
-const showCacheStats = ref(false);
 const imageLayerVisible = ref(true);
 const boundaryLayerVisible = ref(true);
 
@@ -26,43 +23,21 @@ let map: L.Map | null = null;
 // Composables
 const mapImages = useMapImages();
 const timeFilter = useTimeFilter();
-
-// Computed properties
-const cacheStats = computed(() => {
-  if (!showCacheStats.value) return null;
-  const stats = cacheService.getCacheStatistics();
-  return {
-    ...stats,
-    totalSizeMB: (stats.totalSize / (1024 * 1024)).toFixed(2),
-    maxSizeMB: (stats.maxSize / (1024 * 1024)).toFixed(0),
-    usagePercent: ((stats.totalSize / stats.maxSize) * 100).toFixed(1),
-  };
-});
+const gridSelection = useGridSelection();
 
 // Event handlers
 onMounted(async () => {
   await timeFilter.initializeDateRanges();
-  mapImages.exposeGlobalSelectImage();
+});
+
+onBeforeUnmount(() => {
+  gridSelection.cleanup();
 });
 
 async function onMapReady(mapInstance: L.Map) {
   map = mapInstance;
   mapImages.initializeLayers(map);
-  await loadImagesForCurrentView();
-}
-
-async function onBoundsChanged() {
-  // Debounce map updates to avoid too many API calls
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  await loadImagesForCurrentView();
-}
-
-async function loadImagesForCurrentView() {
-  if (!map) return;
-  await mapImages.loadImagesForBounds(
-    map.getBounds(),
-    timeFilter.timeRange.value || undefined
-  );
+  gridSelection.initializeGrid(map);
 }
 
 function onImageSelected(image: ImageMetadata) {
@@ -73,14 +48,6 @@ function onImageSelected(image: ImageMetadata) {
 function closeSidebar() {
   showSidebar.value = false;
   mapImages.selectImage(null as any);
-}
-
-function toggleSidebar() {
-  showSidebar.value = !showSidebar.value;
-}
-
-function toggleCacheStats() {
-  showCacheStats.value = !showCacheStats.value;
 }
 
 // Layer controls
@@ -100,14 +67,31 @@ function onToggleBoundaryLayer(event: Event) {
   }
 }
 
-// Time filter handlers
-function onApplyTimeFilter() {
-  loadImagesForCurrentView();
+// Dashboard handlers
+async function onExecuteQuery() {
+  if (!map) return;
+
+  const selectedBounds = gridSelection.getSelectedBounds();
+  const timeRange = timeFilter.timeRange.value;
+
+  if (selectedBounds.length > 0 && timeRange) {
+    // Execute query for each selected grid square
+    for (const bounds of selectedBounds) {
+      await mapImages.loadImagesForBounds(bounds, timeRange);
+    }
+  }
 }
 
-function onClearTimeFilter() {
-  timeFilter.clearTimeFilter();
-  loadImagesForCurrentView();
+function onClearSelection() {
+  gridSelection.clearSelection();
+}
+
+function onUpdateStartDate(value: string) {
+  timeFilter.selectedStartDate.value = value;
+}
+
+function onUpdateEndDate(value: string) {
+  timeFilter.selectedEndDate.value = value;
 }
 
 // Download handler
@@ -120,48 +104,26 @@ function onDownloadImage(image: ImageMetadata) {
   <div class="relative">
     <!-- Map Container -->
     <div class="map-container">
-      <MapComponent @map-ready="onMapReady" @bounds-changed="onBoundsChanged" />
+      <MapComponent @map-ready="onMapReady" />
     </div>
 
-    <!-- Overlays Component -->
-    <MapOverlays
-      :is-loading="mapImages.isLoading.value"
-      :has-error="mapImages.hasError.value"
-      :error="mapImages.error.value"
-      :image-count="mapImages.imageCount.value"
-      :show-cache-stats="showCacheStats"
-      :cache-stats="cacheStats"
-      :show-sidebar="showSidebar"
-      :show-time-filter="timeFilter.showTimeFilter.value"
-      @toggle-cache-stats="toggleCacheStats"
-      @toggle-sidebar="toggleSidebar"
-      @close-sidebar="closeSidebar"
-    />
-
-    <!-- Layer Controls -->
-    <LayerControls
+    <!-- Floating Dashboard -->
+    <FloatingDashboard
+      :selected-count="gridSelection.selectedCount.value"
+      :total-area="gridSelection.totalArea.value"
       :image-layer-visible="imageLayerVisible"
       :boundary-layer-visible="boundaryLayerVisible"
-      :show-cache-stats="showCacheStats"
-      @toggle-image-layer="onToggleImageLayer"
-      @toggle-boundary-layer="onToggleBoundaryLayer"
-    />
-
-    <!-- Time Filter -->
-    <TimeFilter
-      :visible="timeFilter.showTimeFilter.value"
-      :start-date="timeFilter.selectedStartDate.value"
-      :end-date="timeFilter.selectedEndDate.value"
+      :is-loading="mapImages.isLoading.value"
       :min-date="timeFilter.minDate.value"
       :max-date="timeFilter.maxDate.value"
-      :show-cache-stats="showCacheStats"
-      @toggle-visibility="timeFilter.toggleTimeFilter"
-      @update:start-date="
-        (value) => (timeFilter.selectedStartDate.value = value)
-      "
-      @update:end-date="(value) => (timeFilter.selectedEndDate.value = value)"
-      @apply-filter="onApplyTimeFilter"
-      @clear-filter="onClearTimeFilter"
+      :selected-start-date="timeFilter.selectedStartDate.value"
+      :selected-end-date="timeFilter.selectedEndDate.value"
+      @toggle-image-layer="onToggleImageLayer"
+      @toggle-boundary-layer="onToggleBoundaryLayer"
+      @execute-query="onExecuteQuery"
+      @clear-selection="onClearSelection"
+      @update:start-date="onUpdateStartDate"
+      @update:end-date="onUpdateEndDate"
     />
 
     <!-- Image Details Sidebar -->
