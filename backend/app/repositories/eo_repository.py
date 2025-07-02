@@ -50,7 +50,6 @@ class EoRepository:
                     "max_lat": max_lat,
                 }
             )
-        print(f"Executing count query: {query} with params: {params}")
         result = await self.session.execute(text(query), params)
         return result.scalar()
 
@@ -268,7 +267,6 @@ class EoRepository:
             FROM eo 
             WHERE id = :image_id
         """
-        print(f"Executing query get_all_bands_by_id: {query} with image_id: {image_id}")
         result = await self.session.execute(text(query), {"image_id": image_id})
         row = result.first()
         return dict(row._mapping) if row else None
