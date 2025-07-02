@@ -10,6 +10,7 @@ import {
   getImageColor,
 } from "@/utils/helpers";
 import { apiService } from "@/services/api";
+import { cacheService } from "@/services/cache";
 import type { ImageMetadata } from "@/types/api";
 
 const mapContainer = ref<HTMLElement>();
@@ -18,6 +19,14 @@ const showSidebar = ref(false);
 const imageLayer = ref<L.LayerGroup | null>(null);
 const boundaryLayer = ref<L.LayerGroup | null>(null);
 const layerControl = ref<L.Control.Layers | null>(null);
+const showCacheStats = ref(false);
+const showTimeFilter = ref(false);
+
+// Time filtering state
+const minDate = ref<string>("");
+const maxDate = ref<string>("");
+const selectedStartDate = ref<string>("");
+const selectedEndDate = ref<string>("");
 
 let map: L.Map | null = null;
 
@@ -31,9 +40,31 @@ const sidebarClass = computed(() => ({
 
 const imagePreviewUrl = computed(() =>
   selectedImage.value
-    ? apiService.getImagePreviewUrl(selectedImage.value.id)
+    ? apiService.getImagePreviewUrlSync(selectedImage.value.id)
     : null
 );
+
+const cacheStats = computed(() => {
+  if (!showCacheStats.value) return null;
+  const stats = cacheService.getCacheStatistics();
+  return {
+    ...stats,
+    totalSizeMB: (stats.totalSize / (1024 * 1024)).toFixed(2),
+    maxSizeMB: (stats.maxSize / (1024 * 1024)).toFixed(0),
+    usagePercent: ((stats.totalSize / stats.maxSize) * 100).toFixed(1),
+  };
+});
+
+// Time range computed properties
+const timeRange = computed(() => {
+  if (!selectedStartDate.value && !selectedEndDate.value) return null;
+  return {
+    start: selectedStartDate.value || undefined,
+    end: selectedEndDate.value || undefined,
+  };
+});
+
+const hasTimeFilter = computed(() => Boolean(timeRange.value));
 
 onMounted(async () => {
   if (mapContainer.value) {
@@ -71,6 +102,9 @@ onMounted(async () => {
     imageLayer.value.addTo(map);
     boundaryLayer.value.addTo(map);
 
+    // Initialize date ranges
+    await initializeDateRanges();
+
     // Load images for current map bounds
     await loadImagesForCurrentView();
 
@@ -99,8 +133,14 @@ async function loadImagesForCurrentView() {
   };
 
   try {
-    await imageStore.fetchImagesByBounds(boundsObj);
-    displayImagesOnMap();
+    await imageStore.fetchImagesByBounds(
+      boundsObj,
+      timeRange.value || undefined
+    );
+    await displayImagesOnMap();
+
+    // Preload image previews in the background
+    imageStore.preloadImagePreviews();
   } catch (error) {
     console.error("Failed to load images:", error);
   }
@@ -121,8 +161,8 @@ async function displayImagesOnMap() {
     const color = getImageColor(image.time);
 
     try {
-      // Create image overlay with preview
-      const imageUrl = apiService.getImagePreviewUrl(image.id);
+      // Get image URL (async, but might be from cache)
+      const imageUrl = await apiService.getImagePreviewUrl(image.id);
 
       // Create image overlay
       const imageOverlay = L.imageOverlay(imageUrl, polygonData.bounds, {
@@ -253,6 +293,46 @@ function toggleBoundaryLayer(event: Event) {
     }
   }
 }
+
+// Time filter functions
+function applyTimeFilter() {
+  loadImagesForCurrentView();
+}
+
+function clearTimeFilter() {
+  selectedStartDate.value = minDate.value;
+  selectedEndDate.value = maxDate.value;
+  loadImagesForCurrentView();
+}
+
+function toggleTimeFilter() {
+  showTimeFilter.value = !showTimeFilter.value;
+}
+
+async function initializeDateRanges() {
+  try {
+    // Fetch a few images to determine the available date range
+    const response = await apiService.fetchImages({ limit: 1000 });
+    const images = response.images;
+
+    if (images.length > 0) {
+      const dates = images
+        .map((img) => new Date(img.time))
+        .sort((a, b) => a.getTime() - b.getTime());
+      const earliest = dates[0];
+      const latest = dates[dates.length - 1];
+
+      minDate.value = earliest.toISOString().split("T")[0];
+      maxDate.value = latest.toISOString().split("T")[0];
+
+      // Set initial selection to full range
+      selectedStartDate.value = minDate.value;
+      selectedEndDate.value = maxDate.value;
+    }
+  } catch (error) {
+    console.warn("Failed to initialize date ranges:", error);
+  }
+}
 </script>
 
 <template>
@@ -290,11 +370,34 @@ function toggleBoundaryLayer(event: Event) {
       <p class="text-sm font-medium">
         {{ imageStore.imageCount }} images found
       </p>
+      <button
+        @click="showCacheStats = !showCacheStats"
+        class="text-xs text-blue-600 hover:text-blue-800 mt-1"
+      >
+        {{ showCacheStats ? "Hide" : "Show" }} Cache Stats
+      </button>
+    </div>
+
+    <!-- Cache Stats Display -->
+    <div
+      v-if="showCacheStats && cacheStats"
+      class="absolute top-20 right-4 bg-white bg-opacity-95 px-3 py-2 rounded-lg shadow-lg z-[1000] text-xs"
+    >
+      <div class="space-y-1">
+        <div class="font-medium text-gray-700">Cache Statistics</div>
+        <div class="text-gray-600">Items: {{ cacheStats.itemCount }}</div>
+        <div class="text-gray-600">
+          Size: {{ cacheStats.totalSizeMB }}MB / {{ cacheStats.maxSizeMB }}MB
+        </div>
+        <div class="text-gray-600">Usage: {{ cacheStats.usagePercent }}%</div>
+      </div>
     </div>
 
     <!-- Layer Toggle Controls -->
     <div
-      class="absolute top-16 right-4 bg-white bg-opacity-90 px-3 py-2 rounded-lg shadow-lg z-[1000] space-y-1"
+      class="absolute bg-white bg-opacity-90 px-3 py-2 rounded-lg shadow-lg z-[1000] space-y-1"
+      :class="showCacheStats ? 'top-32' : 'top-16'"
+      :style="{ right: '1rem' }"
     >
       <div class="flex items-center space-x-2">
         <input
@@ -322,10 +425,99 @@ function toggleBoundaryLayer(event: Event) {
       </div>
     </div>
 
+    <!-- Time Filter Controls -->
+    <div
+      class="absolute left-4 bg-white bg-opacity-90 px-3 py-2 rounded-lg shadow-lg z-[1000]"
+      :class="showCacheStats ? 'top-32' : 'top-16'"
+    >
+      <div class="flex items-center space-x-2 mb-2">
+        <button
+          @click="toggleTimeFilter"
+          class="text-xs font-medium text-blue-600 hover:text-blue-800 flex items-center space-x-1"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          <span>{{ showTimeFilter ? "Hide" : "Show" }} Time Filter</span>
+        </button>
+        <span
+          v-if="hasTimeFilter"
+          class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full"
+        >
+          Active
+        </span>
+      </div>
+
+      <div v-if="showTimeFilter" class="space-y-3 min-w-[280px]">
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1"
+              >Start Date</label
+            >
+            <input
+              v-model="selectedStartDate"
+              type="date"
+              :min="minDate"
+              :max="maxDate"
+              @change="applyTimeFilter"
+              class="w-full text-xs border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1"
+              >End Date</label
+            >
+            <input
+              v-model="selectedEndDate"
+              type="date"
+              :min="minDate"
+              :max="maxDate"
+              @change="applyTimeFilter"
+              class="w-full text-xs border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+
+        <div class="text-xs text-gray-600">
+          <div>Available: {{ minDate }} to {{ maxDate }}</div>
+          <div v-if="hasTimeFilter" class="mt-1">
+            Showing: {{ selectedStartDate || "earliest" }} to
+            {{ selectedEndDate || "latest" }}
+          </div>
+        </div>
+
+        <div class="flex space-x-2">
+          <button
+            @click="clearTimeFilter"
+            class="flex-1 px-2 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs rounded transition-colors"
+          >
+            Clear Filter
+          </button>
+          <button
+            @click="applyTimeFilter"
+            class="flex-1 px-2 py-1 bg-blue-500 hover:bg-blue-600 text-white text-xs rounded transition-colors"
+          >
+            Apply
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Sidebar Toggle Button -->
     <button
       @click="toggleSidebar"
-      class="absolute top-32 right-4 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg shadow-lg z-[1000] transition-colors"
+      class="absolute right-4 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg shadow-lg z-[1000] transition-colors"
+      :class="showTimeFilter ? 'top-64' : showCacheStats ? 'top-48' : 'top-32'"
     >
       <svg
         class="w-5 h-5"

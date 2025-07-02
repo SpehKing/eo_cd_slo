@@ -1,4 +1,5 @@
 import type { ImageListResponse, ImageQueryParams, ImageMetadata } from '@/types/api';
+import { cacheService } from './cache';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 const API_PREFIX = '/api/v1/public';
@@ -65,7 +66,35 @@ class ApiService {
     return response.blob();
   }
 
-  getImagePreviewUrl(imageId: number): string {
+  async getImagePreviewUrl(imageId: number): Promise<string> {
+    // Check cache first
+    const cachedUrl = cacheService.getCachedImagePreview(imageId);
+    if (cachedUrl) {
+      return cachedUrl;
+    }
+
+    // Fetch from API and cache
+    try {
+      const blob = await this.fetchImagePreview(imageId);
+      await cacheService.cacheImagePreview(imageId, blob);
+      
+      // Return blob URL
+      return URL.createObjectURL(blob);
+    } catch (error) {
+      console.error(`Failed to get preview for image ${imageId}:`, error);
+      // Return direct URL as fallback
+      return `${this.baseUrl}/images/${imageId}?format=preview`;
+    }
+  }
+
+  // Synchronous method for immediate URL (for existing code compatibility)
+  getImagePreviewUrlSync(imageId: number): string {
+    const cachedUrl = cacheService.getCachedImagePreview(imageId);
+    if (cachedUrl) {
+      return cachedUrl;
+    }
+    
+    // Return direct URL if not cached
     return `${this.baseUrl}/images/${imageId}?format=preview`;
   }
 

@@ -1,6 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { apiService } from '@/services/api'
+import { cacheService } from '@/services/cache'
 import type { ImageMetadata, ImageQueryParams, BoundingBox } from '@/types/api'
 
 export const useImageStore = defineStore('images', () => {
@@ -52,15 +53,53 @@ export const useImageStore = defineStore('images', () => {
   }
 
   async function fetchImagesByBounds(bounds: BoundingBox, timeRange?: { start?: string, end?: string }) {
+    const boundsKey = cacheService.generateBoundsKey(bounds);
+    
+    // Generate cache key that includes time range for proper caching
+    const cacheKey = timeRange ? `${boundsKey}_${timeRange.start || ''}_${timeRange.end || ''}` : boundsKey;
+    
+    // Check cache first
+    const cachedImages = cacheService.getCachedImagesByBounds(cacheKey);
+    if (cachedImages) {
+      console.log('Using cached images for bounds:', cacheKey);
+      images.value = cachedImages;
+      total.value = cachedImages.length;
+      hasMore.value = false;
+      currentOffset.value = cachedImages.length;
+      return;
+    }
+
+    // Fetch from API if not cached
     const params: ImageQueryParams = {
       min_lon: bounds.minLon,
       min_lat: bounds.minLat,
       max_lon: bounds.maxLon,
       max_lat: bounds.maxLat,
-      ...timeRange
+      start_time: timeRange?.start,
+      end_time: timeRange?.end
     }
 
-    await fetchImages(params)
+    try {
+      loading.value = true;
+      error.value = null;
+
+      const response = await apiService.fetchImages(params);
+      
+      images.value = response.images;
+      total.value = response.total;
+      hasMore.value = response.has_more;
+      currentOffset.value = response.images.length;
+
+      // Cache the results
+      cacheService.cacheImageMetadata(response.images, cacheKey);
+      console.log('Cached images for bounds:', cacheKey);
+
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'Failed to fetch images'
+      console.error('Error fetching images:', err)
+    } finally {
+      loading.value = false
+    }
   }
 
   async function loadMoreImages(params: ImageQueryParams = {}) {
@@ -80,6 +119,38 @@ export const useImageStore = defineStore('images', () => {
     return images.value.find(img => img.id === id)
   }
 
+  // Preload image previews for current images
+  async function preloadImagePreviews() {
+    const imageIds = images.value
+      .filter(img => !cacheService.hasImagePreview(img.id))
+      .map(img => img.id);
+
+    if (imageIds.length === 0) return;
+
+    console.log(`Preloading ${imageIds.length} image previews...`);
+    
+    // Preload in batches to avoid overwhelming the server
+    const batchSize = 5;
+    for (let i = 0; i < imageIds.length; i += batchSize) {
+      const batch = imageIds.slice(i, i + batchSize);
+      
+      await Promise.allSettled(
+        batch.map(async (imageId) => {
+          try {
+            await apiService.getImagePreviewUrl(imageId);
+          } catch (error) {
+            console.warn(`Failed to preload preview for image ${imageId}:`, error);
+          }
+        })
+      );
+      
+      // Small delay between batches
+      if (i + batchSize < imageIds.length) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+    }
+  }
+
   return {
     // State
     images,
@@ -97,6 +168,7 @@ export const useImageStore = defineStore('images', () => {
     fetchImagesByBounds,
     loadMoreImages,
     clearImages,
-    getImageById
+    getImageById,
+    preloadImagePreviews
   }
 })
