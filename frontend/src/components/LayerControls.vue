@@ -15,16 +15,6 @@
         >Satellite Images</label
       >
     </div>
-    <div class="flex items-center space-x-2">
-      <input
-        id="boundaryLayer"
-        type="checkbox"
-        :checked="boundaryLayerVisible"
-        @change="$emit('toggle-boundary-layer', $event)"
-        class="rounded"
-      />
-      <label for="boundaryLayer" class="text-xs font-medium">Boundaries</label>
-    </div>
   </div>
 </template>
 
@@ -33,18 +23,15 @@ import { computed } from "vue";
 
 interface LayerControlsProps {
   imageLayerVisible?: boolean;
-  boundaryLayerVisible?: boolean;
   showCacheStats?: boolean;
 }
 
 interface LayerControlsEmits {
   (e: "toggle-image-layer", event: Event): void;
-  (e: "toggle-boundary-layer", event: Event): void;
 }
 
 const props = withDefaults(defineProps<LayerControlsProps>(), {
   imageLayerVisible: true,
-  boundaryLayerVisible: true,
   showCacheStats: false,
 });
 

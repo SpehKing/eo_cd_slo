@@ -3,21 +3,18 @@ import L from "leaflet";
 import type { ImageMetadata, BoundingBox } from "@/types/api";
 import { useImageStore } from "@/stores/counter";
 import { apiService } from "@/services/api";
-import { parseWktPolygon, getImageColor, formatDate, formatFileSize } from "@/utils/helpers";
+import { parseWktPolygon, formatDate, formatFileSize } from "@/utils/helpers";
 
 export function useMapImages() {
   const imageStore = useImageStore();
   const imageLayer = ref<L.LayerGroup | null>(null);
-  const boundaryLayer = ref<L.LayerGroup | null>(null);
   const selectedImage = ref<ImageMetadata | null>(null);
 
   // Initialize layers
   function initializeLayers(map: L.Map) {
     imageLayer.value = L.layerGroup();
-    boundaryLayer.value = L.layerGroup();
     
     imageLayer.value.addTo(map);
-    boundaryLayer.value.addTo(map);
   }
 
   // Load images for current bounds and time range
@@ -73,18 +70,15 @@ export function useMapImages() {
 
   // Display images on map
   async function displayImagesOnMap() {
-    if (!imageLayer.value || !boundaryLayer.value) return;
+    if (!imageLayer.value) return;
 
     // Clear existing overlays
     imageLayer.value.clearLayers();
-    boundaryLayer.value.clearLayers();
 
-    // Add each image as both an image overlay and boundary
+    // Add each image as image overlay only
     for (const image of imageStore.images) {
       const polygonData = parseWktPolygon(image.bbox_wkt);
       if (!polygonData) continue;
-
-      const color = getImageColor(image.time);
 
       try {
         // Get image URL (async, but might be from cache)
@@ -107,25 +101,6 @@ export function useMapImages() {
       } catch (error) {
         console.warn(`Failed to load image overlay for image ${image.id}:`, error);
       }
-
-      // Always create boundary polygon (whether image loads or not)
-      const boundaryPolygon = L.polygon(polygonData.bounds, {
-        color: color,
-        weight: 2,
-        opacity: 0.8,
-        fillOpacity: 0.1,
-        fillColor: color,
-      });
-
-      // Add popup with image info to boundary
-      const popupContent = createPopupContent(image);
-      boundaryPolygon.bindPopup(popupContent);
-      boundaryPolygon.on("click", () => {
-        selectImage(image);
-      });
-
-      // Add boundary to boundary layer
-      boundaryLayer.value?.addLayer(boundaryPolygon);
     }
   }
 
@@ -164,16 +139,6 @@ export function useMapImages() {
         imageLayer.value.addTo(map);
       } else {
         map.removeLayer(imageLayer.value as unknown as L.Layer);
-      }
-    }
-  }
-
-  function toggleBoundaryLayer(map: L.Map, visible: boolean) {
-    if (boundaryLayer.value) {
-      if (visible) {
-        boundaryLayer.value.addTo(map);
-      } else {
-        map.removeLayer(boundaryLayer.value as unknown as L.Layer);
       }
     }
   }
@@ -230,7 +195,6 @@ export function useMapImages() {
     selectImage,
     getImageById,
     toggleImageLayer,
-    toggleBoundaryLayer,
     downloadOriginalImage,
     exposeGlobalSelectImage,
   };

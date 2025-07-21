@@ -60,17 +60,3 @@ export function formatFileSize(bytes: number): string {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
-
-/**
- * Get color for image overlay based on age
- */
-export function getImageColor(dateString: string): string {
-  const date = new Date(dateString);
-  const now = new Date();
-  const monthsAgo = (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24 * 30);
-  
-  if (monthsAgo < 6) return '#FF0000'; // Red for recent images
-  if (monthsAgo < 12) return '#FF8800'; // Orange for medium age
-  if (monthsAgo < 24) return '#FFFF00'; // Yellow for older
-  return '#0088FF'; // Blue for oldest
-}

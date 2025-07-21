@@ -21,7 +21,7 @@ CREATE TABLE eo (
     -- image metadata
     width       INTEGER,                      -- image width in pixels
     height      INTEGER,                      -- image height in pixels
-    data_type   VARCHAR(50),                  -- data type (e.g., 'uint16', 'float32')
+    data_type   TEXT,                  -- data type (e.g., 'uint16', 'float32')
     
     -- sensor bands (opaque blobs)
     b01    BYTEA,
@@ -64,7 +64,7 @@ CREATE TABLE eo_change (
     -- change mask metadata
     width        INTEGER,                       -- mask width in pixels
     height       INTEGER,                       -- mask height in pixels
-    data_type    VARCHAR(50),                   -- data type (e.g., 'uint8', 'float32')
+    data_type    TEXT,                   -- data type (e.g., 'uint8', 'float32')
     
     mask         BYTEA NOT NULL,                -- neural-net output
 

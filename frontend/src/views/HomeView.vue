@@ -11,19 +11,18 @@ import ImageSidebar from "@/components/ImageSidebar.vue";
 // Composables
 import { useMapImages } from "@/composables/useMapImages";
 import { useTimeFilter } from "@/composables/useTimeFilter";
-import { useGridSelection } from "@/composables/useGridSelection";
+import { useBoundingBoxSelection } from "@/composables/useBoundingBoxSelection";
 
 // State
 const showSidebar = ref(false);
 const imageLayerVisible = ref(true);
-const boundaryLayerVisible = ref(true);
 
 let map: L.Map | null = null;
 
 // Composables
 const mapImages = useMapImages();
 const timeFilter = useTimeFilter();
-const gridSelection = useGridSelection();
+const boundingBoxSelection = useBoundingBoxSelection();
 
 // Event handlers
 onMounted(async () => {
@@ -31,13 +30,13 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
-  gridSelection.cleanup();
+  boundingBoxSelection.cleanup();
 });
 
 async function onMapReady(mapInstance: L.Map) {
   map = mapInstance;
   mapImages.initializeLayers(map);
-  gridSelection.initializeGrid(map);
+  boundingBoxSelection.initializeBoundingBox(map);
 }
 
 function onImageSelected(image: ImageMetadata) {
@@ -59,19 +58,11 @@ function onToggleImageLayer(event: Event) {
   }
 }
 
-function onToggleBoundaryLayer(event: Event) {
-  const target = event.target as HTMLInputElement;
-  boundaryLayerVisible.value = target.checked;
-  if (map) {
-    mapImages.toggleBoundaryLayer(map, target.checked);
-  }
-}
-
 // Dashboard handlers
 async function onExecuteQuery() {
   if (!map) return;
 
-  const selectedBounds = gridSelection.getSelectedBounds();
+  const selectedBounds = boundingBoxSelection.getSelectedBounds();
   const timeRange = timeFilter.timeRange.value;
 
   if (selectedBounds.length > 0 && timeRange) {
@@ -81,7 +72,11 @@ async function onExecuteQuery() {
 }
 
 function onClearSelection() {
-  gridSelection.clearSelection();
+  boundingBoxSelection.clearSelection();
+}
+
+function onToggleDrawingMode() {
+  boundingBoxSelection.toggleDrawingMode();
 }
 
 function onUpdateStartDate(value: string) {
@@ -99,7 +94,10 @@ function onDownloadImage(image: ImageMetadata) {
 </script>
 
 <template>
-  <div class="relative">
+  <div
+    class="relative"
+    :class="{ 'drawing-mode': boundingBoxSelection.isDrawing.value }"
+  >
     <!-- Map Container -->
     <div class="map-container">
       <MapComponent @map-ready="onMapReady" />
@@ -107,17 +105,17 @@ function onDownloadImage(image: ImageMetadata) {
 
     <!-- Floating Dashboard -->
     <FloatingDashboard
-      :selected-count="gridSelection.selectedCount.value"
-      :total-area="gridSelection.totalArea.value"
+      :selected-count="boundingBoxSelection.hasSelection.value ? 1 : 0"
+      :total-area="boundingBoxSelection.totalArea.value"
+      :drawing-mode="boundingBoxSelection.drawingMode.value"
       :image-layer-visible="imageLayerVisible"
-      :boundary-layer-visible="boundaryLayerVisible"
       :is-loading="mapImages.isLoading.value"
       :min-date="timeFilter.minDate.value"
       :max-date="timeFilter.maxDate.value"
       :selected-start-date="timeFilter.selectedStartDate.value"
       :selected-end-date="timeFilter.selectedEndDate.value"
       @toggle-image-layer="onToggleImageLayer"
-      @toggle-boundary-layer="onToggleBoundaryLayer"
+      @toggle-drawing-mode="onToggleDrawingMode"
       @execute-query="onExecuteQuery"
       @clear-selection="onClearSelection"
       @update:start-date="onUpdateStartDate"
@@ -156,5 +154,18 @@ function onDownloadImage(image: ImageMetadata) {
 
 :global(.leaflet-popup-content) {
   margin: 0;
+}
+
+/* Drawing mode cursor */
+.drawing-mode .map-container {
+  cursor: crosshair;
+}
+
+/* Disable text selection while drawing */
+.drawing-mode {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 </style>

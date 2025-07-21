@@ -58,19 +58,27 @@
 
       <!-- Controls Row -->
       <div class="controls-grid grid grid-cols-3 gap-6 !px-6 !pb-6">
-        <!-- Grid Stats Column -->
+        <!-- Selection Stats Column -->
         <div class="space-y-3">
-          <h3 class="text-sm font-medium text-gray-700">Grid Selection</h3>
+          <h3 class="text-sm font-medium text-gray-700">Area Selection</h3>
           <div class="space-y-2 text-sm">
             <div class="flex justify-between">
-              <span class="text-gray-600">Squares:</span>
-              <span class="font-medium text-gray-600">{{ selectedCount }}</span>
+              <span class="text-gray-600">Status:</span>
+              <span class="font-medium text-gray-600">{{
+                selectedCount > 0 ? "Selected" : "None"
+              }}</span>
             </div>
             <div class="flex justify-between">
               <span class="text-gray-600">Area:</span>
               <span class="font-medium text-gray-600">{{
                 formatArea(totalArea)
               }}</span>
+            </div>
+            <div v-if="selectedCount === 0" class="text-xs text-gray-500 mt-2">
+              <span v-if="drawingMode"
+                >Click and drag on the map to draw a bounding box</span
+              >
+              <span v-else>Enable drawing mode to select an area</span>
             </div>
           </div>
         </div>
@@ -88,15 +96,38 @@
               />
               <span class="text-sm text-gray-600">Satellite Images</span>
             </label>
-            <label class="flex items-center space-x-2 cursor-pointer">
-              <input
-                type="checkbox"
-                :checked="boundaryLayerVisible"
-                @change="$emit('toggle-boundary-layer', $event)"
-                class="rounded text-blue-600 focus:ring-blue-500"
-              />
-              <span class="text-sm text-gray-600">Boundaries</span>
-            </label>
+          </div>
+
+          <h3 class="text-sm font-medium text-gray-700 pt-2">Selection Mode</h3>
+          <div>
+            <button
+              @click="$emit('toggle-drawing-mode')"
+              :class="[
+                'w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2',
+                drawingMode
+                  ? 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-500',
+              ]"
+            >
+              <div class="flex items-center justify-center space-x-2">
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+                  />
+                </svg>
+                <span>{{
+                  drawingMode ? "Drawing Mode" : "Navigate Mode"
+                }}</span>
+              </div>
+            </button>
           </div>
         </div>
 
@@ -153,8 +184,8 @@ import { computed } from "vue";
 interface FloatingDashboardProps {
   selectedCount?: number;
   totalArea?: number;
+  drawingMode?: boolean;
   imageLayerVisible?: boolean;
-  boundaryLayerVisible?: boolean;
   isLoading?: boolean;
   minDate?: string;
   maxDate?: string;
@@ -164,7 +195,7 @@ interface FloatingDashboardProps {
 
 interface FloatingDashboardEmits {
   (e: "toggle-image-layer", event: Event): void;
-  (e: "toggle-boundary-layer", event: Event): void;
+  (e: "toggle-drawing-mode"): void;
   (e: "execute-query"): void;
   (e: "clear-selection"): void;
   (e: "update:start-date", value: string): void;
@@ -174,8 +205,8 @@ interface FloatingDashboardEmits {
 const props = withDefaults(defineProps<FloatingDashboardProps>(), {
   selectedCount: 0,
   totalArea: 0,
+  drawingMode: false,
   imageLayerVisible: true,
-  boundaryLayerVisible: true,
   isLoading: false,
   minDate: "",
   maxDate: "",
@@ -236,47 +267,55 @@ function formatDate(dateString: string): string {
 }
 
 function formatArea(area: number): string {
+  if (area === 0) return "0 km²";
   if (area < 1) {
     return `${(area * 1000000).toFixed(0)} m²`;
-  } else if (area < 100) {
-    return `${area.toFixed(2)} km²`;
-  } else {
-    return `${area.toFixed(0)} km²`;
   }
+  return `${area.toFixed(2)} km²`;
 }
 
 function updateStartDate(event: Event) {
   const target = event.target as HTMLInputElement;
   const value = parseInt(target.value);
-  if (!props.minDate) return;
-
-  const min = new Date(props.minDate).getTime();
-  const newDate = new Date(min + value);
+  const minTime = new Date(props.minDate).getTime();
+  const newDate = new Date(minTime + value);
   emit("update:start-date", newDate.toISOString().split("T")[0]);
 }
 
 function updateEndDate(event: Event) {
   const target = event.target as HTMLInputElement;
   const value = parseInt(target.value);
-  if (!props.minDate) return;
-
-  const min = new Date(props.minDate).getTime();
-  const newDate = new Date(min + value);
+  const minTime = new Date(props.minDate).getTime();
+  const newDate = new Date(minTime + value);
   emit("update:end-date", newDate.toISOString().split("T")[0]);
 }
 </script>
 
 <style scoped>
-/* Custom slider styling */
+.dashboard-container {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.controls-grid {
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Custom slider styles */
+.slider-thumb {
+  pointer-events: none;
+}
+
 .slider-thumb::-webkit-slider-thumb {
   appearance: none;
   height: 20px;
   width: 20px;
   border-radius: 50%;
   background: #3b82f6;
-  cursor: pointer;
   border: 2px solid white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  pointer-events: all;
 }
 
 .slider-thumb::-moz-range-thumb {
@@ -284,28 +323,9 @@ function updateEndDate(event: Event) {
   width: 20px;
   border-radius: 50%;
   background: #3b82f6;
-  cursor: pointer;
   border: 2px solid white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.slider-thumb:focus::-webkit-slider-thumb {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-}
-
-.slider-thumb:focus::-moz-range-thumb {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-}
-
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-  .dashboard-container {
-    min-width: 350px;
-  }
-
-  .controls-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  pointer-events: all;
 }
 </style>
