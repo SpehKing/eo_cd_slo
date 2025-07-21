@@ -45,7 +45,7 @@
           <div class="relative">
             <!-- Date range slider -->
             <div class="flex items-center !space-x-4">
-              <span class="text-xs text-gray-500 min-w-[80px]">
+              <span class="text-base text-gray-800 min-w-[80px]">
                 {{ formatDate(minDate) }}
               </span>
               <div class="flex-1 relative">
@@ -81,17 +81,17 @@
                   />
                 </div>
               </div>
-              <span class="text-xs text-gray-500 min-w-[80px]">
+              <span class="text-base text-gray-800 min-w-[80px]">
                 {{ formatDate(maxDate) }}
               </span>
             </div>
             <!-- Selected range display -->
             <div class="flex justify-center !mt-3 !space-x-4 !text-sm">
-              <span class="text-blue-600 font-large">
+              <span class="text-blue-800 font-medium text-base">
                 {{ formatDate(selectedStartDate) }}
               </span>
-              <span class="text-gray-400 !px-2">to</span>
-              <span class="text-blue-600 font-medium">
+              <span class="text-gray-800 !px-2 text-base">to</span>
+              <span class="text-blue-800 font-medium text-base">
                 {{ formatDate(selectedEndDate) }}
               </span>
             </div>
@@ -116,7 +116,9 @@
             >
               <div class="flex items-center justify-center space-x-1">
                 <span class="text-base">{{ drawingMode ? "✏️" : "👆" }}</span>
-                <span>{{ drawingMode ? "Drawing" : "Navigate" }}</span>
+                <span class="text-sm">{{
+                  drawingMode ? "Drawing" : "Navigate"
+                }}</span>
               </div>
             </button>
 
@@ -127,7 +129,7 @@
                 @mousedown="handleInteractionStart"
                 @mouseup="handleInteractionEnd"
                 :disabled="!canExecuteQuery"
-                class="w-full h-9 px-2 py-1 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                class="w-full h-9 px-2 py-1 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
               >
                 <div class="flex items-center justify-center space-x-1">
                   <svg
@@ -150,14 +152,16 @@
                       opacity="0.75"
                     />
                   </svg>
-                  <span>{{ isLoading ? "Loading..." : "Execute" }}</span>
+                  <span class="text-sm">{{
+                    isLoading ? "Loading..." : "Execute"
+                  }}</span>
                 </div>
               </button>
               <button
                 @click="$emit('clear-selection')"
                 @mousedown="handleInteractionStart"
                 @mouseup="handleInteractionEnd"
-                class="w-full h-9 px-2 bg-gray-100 text-gray-700 text-xs font-medium rounded hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+                class="w-full h-9 px-2 bg-gray-100 text-gray-700 text-sm font-medium rounded hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
               >
                 Clear
               </button>
@@ -332,7 +336,7 @@ function updateEndDate(event: Event) {
 <style scoped>
 .dashboard-container {
   backdrop-filter: blur(4px);
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.5);
 }
 
 /* Trigger area styles */
