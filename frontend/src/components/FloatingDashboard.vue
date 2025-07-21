@@ -1,176 +1,167 @@
 <template>
   <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-[1000]">
+    <!-- Hidden dashboard trigger area -->
     <div
-      class="dashboard-container bg-white rounded-3xl shadow-2xl p-6 min-w-[1000px] max-w-[90vw]"
+      v-if="shouldShowTrigger"
+      @mouseenter="showDashboard"
+      class="trigger-area fixed bottom-0 left-1/2 transform -translate-x-1/2 w-[1000px] h-8 z-[999] flex items-end justify-center cursor-pointer"
     >
-      <!-- Date Range Slider Row -->
-      <div class="!p-6">
-        <label class="block text-sm font-medium text-gray-700 !mb-3">
-          Select Time Range
-        </label>
-        <div class="relative">
-          <!-- Date range slider -->
-          <div class="flex items-center space-x-4">
-            <span class="text-xs text-gray-500 min-w-[80px]">
-              {{ formatDate(minDate) }}
-            </span>
-            <div class="flex-1 relative">
-              <!-- Custom dual range slider -->
-              <div class="relative h-2 bg-gray-200 rounded-full">
-                <div
-                  class="absolute h-2 bg-blue-500 rounded-full"
-                  :style="rangeStyle"
-                ></div>
-                <input
-                  type="range"
-                  :min="0"
-                  :max="dateRange"
-                  :value="startValue"
-                  @input="updateStartDate"
-                  class="absolute w-full h-2 bg-transparent appearance-none cursor-pointer slider-thumb"
-                />
-                <input
-                  type="range"
-                  :min="0"
-                  :max="dateRange"
-                  :value="endValue"
-                  @input="updateEndDate"
-                  class="absolute w-full h-2 bg-transparent appearance-none cursor-pointer slider-thumb"
-                />
-              </div>
-            </div>
-            <span class="text-xs text-gray-500 min-w-[80px] !ml-2">
-              {{ formatDate(maxDate) }}
-            </span>
-          </div>
-          <!-- Selected range display -->
-          <div class="flex justify-center !mt-2 space-x-4 text-sm">
-            <span class="text-blue-600 font-medium">
-              {{ formatDate(selectedStartDate) }}
-            </span>
-            <span class="text-gray-400 !ml-4 !mr-3">to</span>
-            <span class="text-blue-600 font-medium">
-              {{ formatDate(selectedEndDate) }}
-            </span>
-          </div>
-        </div>
+      <!-- Arrow indicator -->
+      <div
+        class="arrow-indicator bg-white rounded-t-lg shadow-lg px-3 py-1 transition-transform duration-200 hover:scale-110"
+      >
+        <svg
+          class="w-4 h-4 text-gray-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 15l7-7 7 7"
+          />
+        </svg>
       </div>
+    </div>
 
-      <!-- Controls Row -->
-      <div class="controls-grid grid grid-cols-3 gap-6 !px-6 !pb-6">
-        <!-- Selection Stats Column -->
-        <div class="space-y-3">
-          <h3 class="text-sm font-medium text-gray-700">Area Selection</h3>
-          <div class="space-y-2 text-sm">
-            <div class="flex justify-between">
-              <span class="text-gray-600">Status:</span>
-              <span class="font-medium text-gray-600">{{
-                selectedCount > 0 ? "Selected" : "None"
-              }}</span>
+    <!-- Main dashboard -->
+    <div
+      ref="dashboardRef"
+      @mouseleave="handleMouseLeave"
+      :class="[
+        'dashboard-container bg-white rounded-3xl shadow-2xl min-w-[1000px] max-w-[90vw] transition-all duration-500 ease-out',
+        {
+          'translate-y-[calc(100%+2rem)]': isHidden,
+          'translate-y-0': !isHidden,
+        },
+      ]"
+    >
+      <!-- Single Row with Date Range Slider and Controls -->
+      <div class="flex items-center !p-6 !space-x-6">
+        <!-- Date Range Slider Section (5/6 of the width) -->
+        <div class="flex-1 w-5/6">
+          <div class="relative">
+            <!-- Date range slider -->
+            <div class="flex items-center !space-x-4">
+              <span class="text-xs text-gray-500 min-w-[80px]">
+                {{ formatDate(minDate) }}
+              </span>
+              <div class="flex-1 relative">
+                <!-- Custom dual range slider -->
+                <div class="relative !h-2 bg-gray-200 rounded-full">
+                  <div
+                    class="absolute !h-2 bg-blue-500 rounded-full"
+                    :style="rangeStyle"
+                  ></div>
+                  <input
+                    type="range"
+                    :min="0"
+                    :max="dateRange"
+                    :value="startValue"
+                    @input="updateStartDate"
+                    @mousedown="handleInteractionStart"
+                    @mouseup="handleInteractionEnd"
+                    @touchstart="handleInteractionStart"
+                    @touchend="handleInteractionEnd"
+                    class="absolute w-full h-2 bg-transparent appearance-none cursor-pointer slider-thumb"
+                  />
+                  <input
+                    type="range"
+                    :min="0"
+                    :max="dateRange"
+                    :value="endValue"
+                    @input="updateEndDate"
+                    @mousedown="handleInteractionStart"
+                    @mouseup="handleInteractionEnd"
+                    @touchstart="handleInteractionStart"
+                    @touchend="handleInteractionEnd"
+                    class="absolute w-full h-2 bg-transparent appearance-none cursor-pointer slider-thumb"
+                  />
+                </div>
+              </div>
+              <span class="text-xs text-gray-500 min-w-[80px]">
+                {{ formatDate(maxDate) }}
+              </span>
             </div>
-            <div class="flex justify-between">
-              <span class="text-gray-600">Area:</span>
-              <span class="font-medium text-gray-600">{{
-                formatArea(totalArea)
-              }}</span>
-            </div>
-            <div v-if="selectedCount === 0" class="text-xs text-gray-500 mt-2">
-              <span v-if="drawingMode"
-                >Click and drag on the map to draw a bounding box</span
-              >
-              <span v-else>Enable drawing mode to select an area</span>
+            <!-- Selected range display -->
+            <div class="flex justify-center !mt-3 !space-x-4 !text-sm">
+              <span class="text-blue-600 font-large">
+                {{ formatDate(selectedStartDate) }}
+              </span>
+              <span class="text-gray-400 !px-2">to</span>
+              <span class="text-blue-600 font-medium">
+                {{ formatDate(selectedEndDate) }}
+              </span>
             </div>
           </div>
         </div>
 
-        <!-- Layer Controls Column -->
-        <div class="space-y-3">
-          <h3 class="text-sm font-medium text-gray-700">Map Layers</h3>
-          <div class="space-y-2">
-            <label class="flex items-center space-x-2 cursor-pointer">
-              <input
-                type="checkbox"
-                :checked="imageLayerVisible"
-                @change="$emit('toggle-image-layer', $event)"
-                class="rounded text-blue-600 focus:ring-blue-500"
-              />
-              <span class="text-sm text-gray-600">Satellite Images</span>
-            </label>
-          </div>
-
-          <h3 class="text-sm font-medium text-gray-700 pt-2">Selection Mode</h3>
-          <div>
+        <!-- Controls Section (1/6 of the width) -->
+        <div class="w-1/6 min-w-[200px]">
+          <!-- All buttons in one row -->
+          <div class="h-14 flex !space-x-1">
+            <!-- Selection Mode Button (takes 1/2 width) -->
             <button
               @click="$emit('toggle-drawing-mode')"
+              @mousedown="handleInteractionStart"
+              @mouseup="handleInteractionEnd"
               :class="[
-                'w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2',
+                'w-1/2 h-full px-2 text-xs font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2',
                 drawingMode
                   ? 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-500',
               ]"
             >
-              <div class="flex items-center justify-center space-x-2">
-                <svg
-                  class="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
-                  />
-                </svg>
-                <span>{{
-                  drawingMode ? "Drawing Mode" : "Navigate Mode"
-                }}</span>
+              <div class="flex items-center justify-center space-x-1">
+                <span class="text-base">{{ drawingMode ? "✏️" : "👆" }}</span>
+                <span>{{ drawingMode ? "Drawing" : "Navigate" }}</span>
               </div>
             </button>
-          </div>
-        </div>
 
-        <!-- Action Buttons Column -->
-        <div class="space-y-3">
-          <h3 class="text-sm font-medium text-gray-700">Actions</h3>
-          <div class="space-y-2">
-            <button
-              @click="$emit('execute-query')"
-              :disabled="!canExecuteQuery"
-              class="w-full px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
-            >
-              <div class="flex items-center justify-center space-x-2">
-                <svg
-                  v-if="isLoading"
-                  class="animate-spin h-4 w-4"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    stroke-width="4"
-                    fill="none"
-                    opacity="0.25"
-                  />
-                  <path
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    opacity="0.75"
-                  />
-                </svg>
-                <span>{{ isLoading ? "Loading..." : "Execute Query" }}</span>
-              </div>
-            </button>
-            <button
-              @click="$emit('clear-selection')"
-              :disabled="selectedCount === 0"
-              class="w-full px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
-            >
-              Clear Selection
-            </button>
+            <!-- Action Buttons Container (takes 1/2 width) -->
+            <div class="w-1/2 flex flex-col !space-y-1">
+              <button
+                @click="$emit('execute-query')"
+                @mousedown="handleInteractionStart"
+                @mouseup="handleInteractionEnd"
+                :disabled="!canExecuteQuery"
+                class="w-full h-9 px-2 py-1 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+              >
+                <div class="flex items-center justify-center space-x-1">
+                  <svg
+                    v-if="isLoading"
+                    class="animate-spin h-3 w-3"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                      fill="none"
+                      opacity="0.25"
+                    />
+                    <path
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      opacity="0.75"
+                    />
+                  </svg>
+                  <span>{{ isLoading ? "Loading..." : "Execute" }}</span>
+                </div>
+              </button>
+              <button
+                @click="$emit('clear-selection')"
+                @mousedown="handleInteractionStart"
+                @mouseup="handleInteractionEnd"
+                class="w-full h-9 px-2 bg-gray-100 text-gray-700 text-xs font-medium rounded hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+              >
+                Clear
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -179,22 +170,19 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, ref, watch, nextTick } from "vue";
 
 interface FloatingDashboardProps {
-  selectedCount?: number;
-  totalArea?: number;
   drawingMode?: boolean;
-  imageLayerVisible?: boolean;
   isLoading?: boolean;
   minDate?: string;
   maxDate?: string;
   selectedStartDate?: string;
   selectedEndDate?: string;
+  hasSelection?: boolean;
 }
 
 interface FloatingDashboardEmits {
-  (e: "toggle-image-layer", event: Event): void;
   (e: "toggle-drawing-mode"): void;
   (e: "execute-query"): void;
   (e: "clear-selection"): void;
@@ -203,18 +191,76 @@ interface FloatingDashboardEmits {
 }
 
 const props = withDefaults(defineProps<FloatingDashboardProps>(), {
-  selectedCount: 0,
-  totalArea: 0,
   drawingMode: false,
-  imageLayerVisible: true,
   isLoading: false,
   minDate: "",
   maxDate: "",
   selectedStartDate: "",
   selectedEndDate: "",
+  hasSelection: false,
 });
 
 const emit = defineEmits<FloatingDashboardEmits>();
+
+// Dashboard hiding state
+const isHidden = ref(false);
+const hasBeenHiddenOnce = ref(false);
+const dashboardRef = ref<HTMLElement>();
+const isInteracting = ref(false);
+
+// Auto-hide logic
+const shouldShowTrigger = computed(
+  () => isHidden.value && hasBeenHiddenOnce.value
+);
+
+// Watch for first selection to trigger auto-hide
+watch(
+  () => props.hasSelection,
+  (newHasSelection, oldHasSelection) => {
+    if (newHasSelection && !oldHasSelection && !hasBeenHiddenOnce.value) {
+      // First time selection is made - hide dashboard after a short delay
+      setTimeout(() => {
+        hideDashboard();
+      }, 1500); // Give user time to see the dashboard before hiding
+    }
+  }
+);
+
+function hideDashboard() {
+  isHidden.value = true;
+  hasBeenHiddenOnce.value = true;
+}
+
+function showDashboard() {
+  isHidden.value = false;
+}
+
+function handleMouseLeave() {
+  if (hasBeenHiddenOnce.value && !isInteracting.value && !props.drawingMode) {
+    // Small delay before hiding to prevent flickering
+    setTimeout(() => {
+      if (
+        dashboardRef.value &&
+        !dashboardRef.value.matches(":hover") &&
+        !isInteracting.value &&
+        !props.drawingMode
+      ) {
+        isHidden.value = true;
+      }
+    }, 300);
+  }
+}
+
+// Prevent hiding during interactions
+function handleInteractionStart() {
+  isInteracting.value = true;
+}
+
+function handleInteractionEnd() {
+  setTimeout(() => {
+    isInteracting.value = false;
+  }, 100);
+}
 
 // Date range calculations
 const dateRange = computed(() => {
@@ -249,9 +295,9 @@ const rangeStyle = computed(() => {
 
 const canExecuteQuery = computed(() => {
   return (
-    props.selectedCount > 0 &&
     props.selectedStartDate &&
     props.selectedEndDate &&
+    props.hasSelection &&
     !props.isLoading
   );
 });
@@ -264,14 +310,6 @@ function formatDate(dateString: string): string {
     month: "short",
     day: "numeric",
   });
-}
-
-function formatArea(area: number): string {
-  if (area === 0) return "0 km²";
-  if (area < 1) {
-    return `${(area * 1000000).toFixed(0)} m²`;
-  }
-  return `${area.toFixed(2)} km²`;
 }
 
 function updateStartDate(event: Event) {
@@ -293,12 +331,20 @@ function updateEndDate(event: Event) {
 
 <style scoped>
 .dashboard-container {
-  backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  background: rgba(255, 255, 255, 0.3);
 }
 
-.controls-grid {
-  border-top: 1px solid #e5e7eb;
+/* Trigger area styles */
+.trigger-area {
+  /* Invisible background for hover detection */
+  background: transparent;
+}
+
+.arrow-indicator {
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 /* Custom slider styles */
@@ -327,5 +373,16 @@ function updateEndDate(event: Event) {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   pointer-events: all;
+}
+
+/* Animation improvements */
+.dashboard-container {
+  transform-origin: center bottom;
+}
+
+/* Enhance the arrow indicator hover effect */
+.arrow-indicator:hover {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 </style>

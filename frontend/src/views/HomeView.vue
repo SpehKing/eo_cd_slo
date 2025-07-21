@@ -68,6 +68,14 @@ async function onExecuteQuery() {
   if (selectedBounds.length > 0 && timeRange) {
     // Execute a single grouped query for all selected grid squares
     await mapImages.loadImagesForMultipleBounds(selectedBounds, timeRange);
+
+    // Switch back to navigation mode if currently in drawing mode
+    if (boundingBoxSelection.drawingMode.value) {
+      boundingBoxSelection.toggleDrawingMode();
+    }
+
+    // Clear the bounding box overlay after successful execution
+    boundingBoxSelection.clearSelection();
   }
 }
 
@@ -114,6 +122,7 @@ function onDownloadImage(image: ImageMetadata) {
       :max-date="timeFilter.maxDate.value"
       :selected-start-date="timeFilter.selectedStartDate.value"
       :selected-end-date="timeFilter.selectedEndDate.value"
+      :has-selection="boundingBoxSelection.hasSelection.value"
       @toggle-image-layer="onToggleImageLayer"
       @toggle-drawing-mode="onToggleDrawingMode"
       @execute-query="onExecuteQuery"
