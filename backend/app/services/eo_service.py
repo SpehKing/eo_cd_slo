@@ -272,7 +272,7 @@ class EoService:
     async def get_change_mask_preview(
         self, img_a_id: int, img_b_id: int
     ) -> Optional[bytes]:
-        """Get JPEG preview of a change detection mask"""
+        """Get PNG preview of a change detection mask"""
 
         mask_info = await self.repository.get_change_mask_by_images(img_a_id, img_b_id)
         if not mask_info:
@@ -292,9 +292,9 @@ class EoService:
                 bbox=mask_info.get("bbox_wkt"),
             )
 
-            # Convert mask to JPEG with colormap visualization
+            # Convert mask to JPEG with red colormap for change detection
             jpeg_data = await ImageProcessingService.convert_mask_to_jpeg(
-                mask_data, mask_metadata, colormap="viridis"
+                mask_data, mask_metadata, colormap="Reds"
             )
             return jpeg_data
 

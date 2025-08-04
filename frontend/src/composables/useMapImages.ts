@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
 import L from "leaflet";
-import type { ImageMetadata, BoundingBox } from "@/types/api";
+import type { ImageMetadata, BoundingBox, ChangeMaskMetadata } from "@/types/api";
 import { useImageStore } from "@/stores/counter";
 import { apiService } from "@/services/api";
 import { parseWktPolygon, formatDate, formatFileSize } from "@/utils/helpers";
@@ -8,13 +8,17 @@ import { parseWktPolygon, formatDate, formatFileSize } from "@/utils/helpers";
 export function useMapImages() {
   const imageStore = useImageStore();
   const imageLayer = ref<L.LayerGroup | null>(null);
+  const maskLayer = ref<L.LayerGroup | null>(null);
   const selectedImage = ref<ImageMetadata | null>(null);
 
   // Initialize layers
   function initializeLayers(map: L.Map) {
     imageLayer.value = L.layerGroup();
+    maskLayer.value = L.layerGroup();
     
+    // Always add both layers to map, images first (bottom), then masks (top)
     imageLayer.value.addTo(map);
+    maskLayer.value.addTo(map);
   }
 
   // Load images for current bounds and time range
@@ -68,6 +72,36 @@ export function useMapImages() {
     }
   }
 
+  async function loadMasksForMultipleBounds(boundsList: L.LatLngBounds[], timeRange?: { start?: string; end?: string }) {
+    if (boundsList.length === 0) return;
+    // Combine all bounds into a single bounding box that encompasses all selected areas
+    let minLon = Infinity;
+    let minLat = Infinity;
+    let maxLon = -Infinity;
+    let maxLat = -Infinity;
+
+    boundsList.forEach(bounds => {
+      minLon = Math.min(minLon, bounds.getWest());
+      minLat = Math.min(minLat, bounds.getSouth());
+      maxLon = Math.max(maxLon, bounds.getEast());
+      maxLat = Math.max(maxLat, bounds.getNorth());
+    });
+
+    const combinedBounds: BoundingBox = {
+      minLon,
+      minLat,
+      maxLon,
+      maxLat,
+    };
+
+    try {
+      await imageStore.fetchMasksByBounds(combinedBounds, timeRange);
+      await displayMasksOnMap();
+    } catch (error) {
+      console.error("Failed to load masks for multiple bounds:", error);
+    }
+  }
+
   // Display images on map
   async function displayImagesOnMap() {
     if (!imageLayer.value) return;
@@ -104,6 +138,44 @@ export function useMapImages() {
     }
   }
 
+  // Display masks on map (always on top of images)
+  async function displayMasksOnMap() {
+    if (!maskLayer.value) return;
+
+    // Clear existing mask overlays
+    maskLayer.value.clearLayers();
+
+    // Add each mask as image overlay
+    for (const mask of imageStore.masks) {
+      const polygonData = parseWktPolygon(mask.bbox_wkt);
+      if (!polygonData) continue;
+
+      try {
+        // Get mask preview URL
+        const maskUrl = await apiService.getMaskPreviewUrl(mask.img_a_id, mask.img_b_id);
+
+        // Create mask overlay with higher opacity and ensure it's on top
+        const maskOverlay = L.imageOverlay(maskUrl, polygonData.bounds, {
+          opacity: 0.8, // Higher opacity for visibility
+          interactive: true,
+          crossOrigin: true,
+          zIndex: 1000, // Ensure masks are above images
+        });
+
+        // Add click handler to mask overlay
+        maskOverlay.on("click", () => {
+          console.log(`Clicked change mask for images ${mask.img_a_id} -> ${mask.img_b_id}`);
+          console.log(`Period: ${mask.period_start} to ${mask.period_end}`);
+        });
+
+        // Add mask overlay to mask layer
+        maskLayer.value?.addLayer(maskOverlay);
+      } catch (error) {
+        console.warn(`Failed to load mask overlay for images ${mask.img_a_id}-${mask.img_b_id}:`, error);
+      }
+    }
+  }
+
   // Create popup content for image
   function createPopupContent(image: ImageMetadata): string {
     return `
@@ -130,17 +202,6 @@ export function useMapImages() {
   // Get image by ID
   function getImageById(imageId: number): ImageMetadata | undefined {
     return imageStore.getImageById(imageId);
-  }
-
-  // Toggle layer visibility
-  function toggleImageLayer(map: L.Map, visible: boolean) {
-    if (imageLayer.value) {
-      if (visible) {
-        imageLayer.value.addTo(map);
-      } else {
-        map.removeLayer(imageLayer.value as unknown as L.Layer);
-      }
-    }
   }
 
   // Download original image
@@ -182,8 +243,11 @@ export function useMapImages() {
     
     // Store getters
     images: computed(() => imageStore.images),
+    masks: computed(() => imageStore.masks),
     imageCount: computed(() => imageStore.imageCount),
+    maskCount: computed(() => imageStore.maskCount),
     isLoading: computed(() => imageStore.isLoading),
+    isMasksLoading: computed(() => imageStore.isMasksLoading),
     hasError: computed(() => imageStore.hasError),
     error: computed(() => imageStore.error),
     
@@ -191,10 +255,11 @@ export function useMapImages() {
     initializeLayers,
     loadImagesForBounds,
     loadImagesForMultipleBounds,
+    loadMasksForMultipleBounds,
     displayImagesOnMap,
+    displayMasksOnMap,
     selectImage,
     getImageById,
-    toggleImageLayer,
     downloadOriginalImage,
     exposeGlobalSelectImage,
   };

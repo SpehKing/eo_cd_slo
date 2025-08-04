@@ -1,4 +1,4 @@
-import type { ImageListResponse, ImageQueryParams, ImageMetadata } from '@/types/api';
+import type { ImageListResponse, ImageQueryParams, ImageMetadata, ChangeMaskListResponse, MaskQueryParams } from '@/types/api';
 import { cacheService } from './cache';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
@@ -33,6 +33,32 @@ class ApiService {
     }
 
     return response.json();
+  }
+
+  async fetchMasks(params: MaskQueryParams = {}): Promise<ChangeMaskListResponse> {
+    const url = new URL(`${this.baseUrl}/change-masks`);
+    
+    // Add query parameters
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        url.searchParams.append(key, value.toString());
+      }
+    });
+
+    const response = await fetch(url.toString(), {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch masks: ${response.statusText}`);
+    }
+
+    const jsonData = await response.json();
+
+    return jsonData;
   }
 
   async fetchImageMetadata(imageId: number): Promise<ImageMetadata> {
@@ -96,6 +122,43 @@ class ApiService {
     
     // Return direct URL if not cached
     return `${this.baseUrl}/images/${imageId}?format=preview`;
+  }
+
+  async getMaskPreviewUrl(imgAId: number, imgBId: number): Promise<string> {
+    const cacheKey = `mask_${imgAId}_${imgBId}`;
+    const cachedUrl = cacheService.getCachedImagePreview(cacheKey);
+    if (cachedUrl) {
+      return cachedUrl;
+    }
+
+    try {
+      const url = `${this.baseUrl}/change-masks?format=preview&img_a_id=${imgAId}&img_b_id=${imgBId}`;
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch mask preview: ${response.statusText}`);
+      }
+      
+      const blob = await response.blob();
+      await cacheService.cacheImagePreview(cacheKey, blob);
+      
+      return URL.createObjectURL(blob);
+    } catch (error) {
+      console.error(`Failed to get mask preview for images ${imgAId}-${imgBId}:`, error);
+      // Return direct URL as fallback
+      return `${this.baseUrl}/change-masks?format=preview&img_a_id=${imgAId}&img_b_id=${imgBId}`;
+    }
+  }
+
+  getMaskPreviewUrlSync(imgAId: number, imgBId: number): string {
+    const cacheKey = `mask_${imgAId}_${imgBId}`;
+    const cachedUrl = cacheService.getCachedImagePreview(cacheKey);
+    if (cachedUrl) {
+      return cachedUrl;
+    }
+    
+    // Return direct URL if not cached
+    return `${this.baseUrl}/change-masks?format=preview&img_a_id=${imgAId}&img_b_id=${imgBId}`;
   }
 
   async healthCheck(): Promise<boolean> {

@@ -29,6 +29,7 @@ from pathlib import Path
 import psycopg2
 import rasterio
 import numpy as np
+import cv2
 from dotenv import load_dotenv
 
 
@@ -242,21 +243,37 @@ class OSCDDatabasePopulator:
         Returns:
             Tuple of (mask data as bytes, metadata dictionary)
         """
+        # Use TIF file instead of PNG - TIF contains actual change detection data
         mask_file = Path(self.masks_base_path) / city / "cm" / f"{city}-cm.tif"
 
-        if not mask_file.exists():
-            raise FileNotFoundError(f"Change mask not found: {mask_file}")
-
         with rasterio.open(mask_file) as src:
-            mask_data = src.read(1)  # Read first band
+            mask_data = src.read(1)  # Read first (and only) band
 
             metadata = {
                 "width": src.width,
                 "height": src.height,
                 "data_type": str(src.dtypes[0]),
             }
+            mask_visualization = np.where(mask_data == 2, 255, 0).astype(np.uint8)
 
-            return mask_data.tobytes(), metadata
+            # Save a proper PNG visualization for debugging (convert to 0-255 range)
+            if city == "saclay_e":
+                # print the min and max values of the mask data
+                print(f"Mask data min: {np.min(mask_data)}, max: {np.max(mask_data)}")
+                # Create proper visualization: map class 1->0 (no change), class 2->255 (change)
+
+                mask_image_path = (
+                    Path(self.masks_base_path) / city / "cm" / f"cm-database.png"
+                )
+
+                # Save as proper PNG using cv2
+                cv2.imwrite(str(mask_image_path), mask_visualization)
+                print(f"✓ Saved change mask visualization: {mask_image_path}")
+                print(
+                    f"✓ Original mask values: {np.unique(mask_data)} -> Visualization: {np.unique(mask_visualization)}"
+                )
+
+            return mask_visualization.tobytes(), metadata
 
     def insert_image_record(
         self, cursor, city: str, timestamp: str, bbox: str, img_dir: str

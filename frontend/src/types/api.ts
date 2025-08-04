@@ -28,9 +28,31 @@ export interface ImageQueryParams {
   offset?: number;
 }
 
+export interface MaskQueryParams extends ImageQueryParams {
+  img_a_id?: number;
+  img_b_id?: number;
+}
+
 export interface BoundingBox {
   minLon: number;
   minLat: number;
   maxLon: number;
   maxLat: number;
+}
+
+export interface ChangeMaskMetadata {
+  img_a_id: number;
+  img_b_id: number;
+  period_start: string;
+  period_end: string;
+  bbox_wkt: string;
+  mask_size_bytes: number;
+}
+
+export interface ChangeMaskListResponse {
+  masks: ChangeMaskMetadata[];
+  total: number;
+  limit: number;
+  offset: number;
+  has_more: boolean;
 }

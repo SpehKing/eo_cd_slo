@@ -15,7 +15,6 @@ import { useBoundingBoxSelection } from "@/composables/useBoundingBoxSelection";
 
 // State
 const showSidebar = ref(false);
-const imageLayerVisible = ref(true);
 
 let map: L.Map | null = null;
 
@@ -49,15 +48,6 @@ function closeSidebar() {
   mapImages.selectImage(null as any);
 }
 
-// Layer controls
-function onToggleImageLayer(event: Event) {
-  const target = event.target as HTMLInputElement;
-  imageLayerVisible.value = target.checked;
-  if (map) {
-    mapImages.toggleImageLayer(map, target.checked);
-  }
-}
-
 // Dashboard handlers
 async function onExecuteQuery() {
   if (!map) return;
@@ -68,6 +58,7 @@ async function onExecuteQuery() {
   if (selectedBounds.length > 0 && timeRange) {
     // Execute a single grouped query for all selected grid squares
     await mapImages.loadImagesForMultipleBounds(selectedBounds, timeRange);
+    await mapImages.loadMasksForMultipleBounds(selectedBounds, timeRange);
 
     // Switch back to navigation mode if currently in drawing mode
     if (boundingBoxSelection.drawingMode.value) {
@@ -116,14 +107,12 @@ function onDownloadImage(image: ImageMetadata) {
       :selected-count="boundingBoxSelection.hasSelection.value ? 1 : 0"
       :total-area="boundingBoxSelection.totalArea.value"
       :drawing-mode="boundingBoxSelection.drawingMode.value"
-      :image-layer-visible="imageLayerVisible"
       :is-loading="mapImages.isLoading.value"
       :min-date="timeFilter.minDate.value"
       :max-date="timeFilter.maxDate.value"
       :selected-start-date="timeFilter.selectedStartDate.value"
       :selected-end-date="timeFilter.selectedEndDate.value"
       :has-selection="boundingBoxSelection.hasSelection.value"
-      @toggle-image-layer="onToggleImageLayer"
       @toggle-drawing-mode="onToggleDrawingMode"
       @execute-query="onExecuteQuery"
       @clear-selection="onClearSelection"

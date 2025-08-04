@@ -17,12 +17,12 @@ class SessionCacheService {
   }
 
   // Cache image preview URL blob - no-op implementation
-  async cacheImagePreview(imageId: number, blob: Blob) {
+  async cacheImagePreview(imageId: number | string, blob: Blob) {
     // Cache disabled - no implementation
   }
 
   // Get cached image preview - always returns null
-  getCachedImagePreview(imageId: number): string | null {
+  getCachedImagePreview(imageId: number | string): string | null {
     return null;
   }
 
@@ -47,7 +47,7 @@ class SessionCacheService {
   }
 
   // Check if image preview exists in cache - always returns false
-  hasImagePreview(imageId: number): boolean {
+  hasImagePreview(imageId: number | string): boolean {
     return false;
   }
 }

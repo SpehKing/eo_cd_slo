@@ -2,22 +2,29 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { apiService } from '@/services/api'
 import { cacheService } from '@/services/cache'
-import type { ImageMetadata, ImageQueryParams, BoundingBox } from '@/types/api'
+import type { ImageMetadata, ImageQueryParams, BoundingBox, ChangeMaskMetadata } from '@/types/api'
 
 export const useImageStore = defineStore('images', () => {
   // State
   const images = ref<ImageMetadata[]>([])
+  const masks = ref<ChangeMaskMetadata[]>([])
   const loading = ref(false)
+  const masksLoading = ref(false)
   const error = ref<string | null>(null)
   const total = ref(0)
+  const totalMasks = ref(0)
   const hasMore = ref(false)
+  const hasMoreMasks = ref(false)
   const currentOffset = ref(0)
+  const currentMasksOffset = ref(0)
   const limit = ref(50)
 
   // Computed
   const isLoading = computed(() => loading.value)
+  const isMasksLoading = computed(() => masksLoading.value)
   const hasError = computed(() => error.value !== null)
   const imageCount = computed(() => images.value.length)
+  const maskCount = computed(() => masks.value.length)
 
   // Actions
   async function fetchImages(params: ImageQueryParams = {}, append = false) {
@@ -102,6 +109,40 @@ export const useImageStore = defineStore('images', () => {
     }
   }
 
+  async function fetchMasksByBounds(bounds: BoundingBox, timeRange?: { start?: string, end?: string }) {
+    const boundsKey = cacheService.generateBoundsKey(bounds);
+    //fetch from api
+    const params: ImageQueryParams = {
+      min_lon: bounds.minLon,
+      min_lat: bounds.minLat,
+      max_lon: bounds.maxLon,
+      max_lat: bounds.maxLat,
+      start_time: timeRange?.start,
+      end_time: timeRange?.end
+    }
+
+    try{
+      masksLoading.value = true;
+      error.value = null;
+
+      const response = await apiService.fetchMasks(params);
+      
+      masks.value = response.masks;
+      totalMasks.value = response.total;
+      hasMoreMasks.value = response.has_more;
+      currentMasksOffset.value = response.masks.length;
+
+      // Cache the results - for now we'll skip caching masks as they have different structure
+      console.log('Loaded masks for bounds:', boundsKey, response.masks.length, 'masks');
+
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'Failed to fetch masks'
+      console.error('Error fetching masks:', err)
+    } finally {
+      masksLoading.value = false
+    }
+  }
+
   async function loadMoreImages(params: ImageQueryParams = {}) {
     if (!hasMore.value || loading.value) return
     await fetchImages(params, true)
@@ -113,6 +154,13 @@ export const useImageStore = defineStore('images', () => {
     hasMore.value = false
     currentOffset.value = 0
     error.value = null
+  }
+
+  function clearMasks() {
+    masks.value = []
+    totalMasks.value = 0
+    hasMoreMasks.value = false
+    currentMasksOffset.value = 0
   }
 
   function getImageById(id: number): ImageMetadata | undefined {
@@ -154,20 +202,28 @@ export const useImageStore = defineStore('images', () => {
   return {
     // State
     images,
+    masks,
     loading,
+    masksLoading,
     error,
     total,
+    totalMasks,
     hasMore,
+    hasMoreMasks,
     limit,
     // Computed
     isLoading,
+    isMasksLoading,
     hasError,
     imageCount,
+    maskCount,
     // Actions
     fetchImages,
     fetchImagesByBounds,
+    fetchMasksByBounds,
     loadMoreImages,
     clearImages,
+    clearMasks,
     getImageById,
     preloadImagePreviews
   }

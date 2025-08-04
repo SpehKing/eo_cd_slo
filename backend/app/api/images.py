@@ -237,7 +237,7 @@ async def get_change_masks(
     Get change detection masks in various formats:
     - **list**: List of available change masks (default)
     - **data**: Binary mask data for specific image pair (requires img_a_id, img_b_id)
-    - **preview**: JPEG preview of specific mask (requires img_a_id, img_b_id)
+    - **preview**: PNG preview of specific mask (requires img_a_id, img_b_id)
 
     For specific mask operations, both img_a_id and img_b_id must be provided, with img_a_id < img_b_id.
     """
@@ -291,17 +291,17 @@ async def get_change_masks(
                 )
 
             else:  # format == "preview"
-                jpeg_data = await service.get_change_mask_preview(img_a_id, img_b_id)
-                if not jpeg_data:
+                png_data = await service.get_change_mask_preview(img_a_id, img_b_id)
+                if not png_data:
                     raise HTTPException(
                         status_code=404,
                         detail="Change mask not found or preview generation failed",
                     )
 
                 return Response(
-                    content=jpeg_data,
-                    media_type="image/jpeg",
-                    headers={"Content-Length": str(len(jpeg_data))},
+                    content=png_data,
+                    media_type="image/png",
+                    headers={"Content-Length": str(len(png_data))},
                 )
 
     except HTTPException:

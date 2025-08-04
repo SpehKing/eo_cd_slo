@@ -8,6 +8,7 @@ from rasterio.transform import from_bounds
 from rasterio.crs import CRS
 import numpy as np
 import logging
+from fastapi import HTTPException
 from ..core.config import settings
 
 logger = logging.getLogger(__name__)
@@ -157,12 +158,12 @@ class ImageProcessingService:
         mask_data: bytes, metadata: ImageMetadata, colormap: str = "viridis"
     ) -> bytes:
         """
-        Convert change detection mask to JPEG format
+        Convert change detection mask to PNG format with custom red/transparent colormap
 
         Args:
             mask_data: Raw mask data as bytes
             metadata: ImageMetadata object with dimensions and data type
-            colormap: Colormap to apply to mask visualization
+            colormap: Colormap to apply to mask visualization (ignored for binary masks, uses red/transparent)
         """
 
         def _process_mask():
@@ -191,27 +192,39 @@ class ImageProcessingService:
                 # Reshape to image dimensions
                 mask_array = mask_array.reshape(metadata.height, metadata.width)
 
-                # Apply colormap for visualization
-                colored_mask = ImageProcessingService._apply_colormap(
-                    mask_array, colormap
+                # Create RGBA image for red/transparent binary mask
+                rgba_mask = ImageProcessingService._create_red_transparent_mask(
+                    mask_array
                 )
 
-                # Create PIL Image
-                pil_image = Image.fromarray(colored_mask, "RGB")
+                # Create PIL Image with alpha channel
+                pil_image = Image.fromarray(rgba_mask, "RGBA")
 
-                # Resize if needed
-                pil_image = ImageProcessingService._resize_if_needed(pil_image)
-
-                # Convert to JPEG
-                return ImageProcessingService._convert_to_jpeg(pil_image)
+                # Save as PNG to support transparency
+                img_io = io.BytesIO()
+                pil_image.save(img_io, format="PNG", optimize=True)
+                return img_io.getvalue()
 
             except Exception as e:
-                logger.error(f"Error converting mask to JPEG: {str(e)}")
-                return ImageProcessingService._create_placeholder_jpeg(
-                    f"Error processing mask: {str(e)}"
+                logger.error(f"Error processing mask: {str(e)}")
+                raise HTTPException(
+                    status_code=500, detail=f"Error processing mask: {str(e)}"
                 )
 
         return await asyncio.to_thread(_process_mask)
+
+    @staticmethod
+    def _create_red_transparent_mask(mask_array: np.ndarray) -> np.ndarray:
+        """Create red/transparent RGBA mask from binary mask array"""
+        height, width = mask_array.shape
+        rgba = np.zeros((height, width, 4), dtype=np.uint8)
+
+        # Set red channel for changed pixels (value 1)
+        changed_pixels = mask_array > 0
+        rgba[changed_pixels] = [255, 0, 0, 255]  # Red with full opacity
+        rgba[~changed_pixels] = [0, 0, 0, 0]  # Transparent for unchanged pixels
+
+        return rgba
 
     @staticmethod
     async def create_geotiff_from_bands(
