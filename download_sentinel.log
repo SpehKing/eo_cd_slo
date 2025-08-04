@@ -1,0 +1,1311 @@
+2025-08-04 14:55:12,269 - INFO - Starting Sentinel-2 download script
+2025-08-04 14:55:12,269 - INFO - Target grid IDs: [339, 340, 341, 360, 361, 362, 380, 381, 382]
+2025-08-04 14:55:12,269 - INFO - Years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+2025-08-04 14:55:12,269 - INFO - Loading grid data from ../data/slovenia_grid.gpkg
+2025-08-04 14:55:12,387 - INFO - GDAL signalled an error: err_no=4, msg='../data/slovenia_grid.gpkg: No such file or directory'
+2025-08-04 14:55:12,387 - ERROR - Failed to initialize: Failed to open dataset (flags=68): ../data/slovenia_grid.gpkg
+2025-08-04 14:55:12,387 - ERROR - Failed to initialize downloader
+2025-08-04 14:55:12,388 - ERROR - Download process failed
+2025-08-04 14:56:23,427 - INFO - Starting Sentinel-2 download script
+2025-08-04 14:56:23,427 - INFO - Target grid IDs: [339, 340, 341, 360, 361, 362, 380, 381, 382]
+2025-08-04 14:56:23,427 - INFO - Years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+2025-08-04 14:56:23,427 - INFO - Loading grid data from data/slovenia_grid.gpkg
+2025-08-04 14:56:23,630 - INFO - Loaded 940 grid cells
+2025-08-04 14:56:23,633 - INFO - Filtered to 9 target grid cells
+2025-08-04 14:56:23,633 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-04 14:56:23,637 - INFO - Connecting to OpenEO Copernicus Data Space Ecosystem...
+2025-08-04 14:56:23,637 - INFO - Loaded openEO client config from sources: []
+2025-08-04 14:56:24,285 - INFO - Please authenticate in your browser...
+2025-08-04 14:56:24,339 - INFO - Found OIDC providers: ['CDSE']
+2025-08-04 14:56:24,341 - INFO - No OIDC provider given, but only one available: 'CDSE'. Using that one.
+2025-08-04 14:56:24,596 - INFO - Using default client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e' from OIDC provider 'CDSE' info.
+2025-08-04 14:56:24,597 - INFO - Found refresh token: trying refresh token based authentication.
+2025-08-04 14:56:24,597 - INFO - Doing 'refresh_token' token request 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token' with post data fields ['grant_type', 'client_id', 'refresh_token'] (client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-04 14:56:24,922 - INFO - Obtained tokens: ['access_token', 'id_token', 'refresh_token']
+2025-08-04 14:56:24,923 - INFO - Storing refresh token for issuer 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE' (client 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-04 14:56:24,925 - INFO - Successfully connected and authenticated
+2025-08-04 14:56:24,961 - INFO - Generated 63 download tasks
+2025-08-04 14:56:24,961 - INFO - Grid IDs: [339, 340, 341, 360, 361, 362, 380, 381, 382]
+2025-08-04 14:56:24,961 - INFO - Years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+2025-08-04 14:56:24,961 - INFO - Max cloud coverage: 20%
+2025-08-04 14:56:24,961 - INFO - Download directory: /Users/gasper/Documents/ViCos/eo_cd_slo/data/images/sentinel_downloads
+2025-08-04 14:56:24,970 - INFO - Processing grid 339 for 2018-08
+2025-08-04 14:56:25,078 - ERROR - Failed to download sentinel2_grid_339_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,078 - ERROR - Failed to download sentinel2_grid_339_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,078 - INFO - Processing grid 339 for 2019-08
+2025-08-04 14:56:25,129 - ERROR - Failed to download sentinel2_grid_339_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,129 - ERROR - Failed to download sentinel2_grid_339_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,129 - INFO - Processing grid 339 for 2020-08
+2025-08-04 14:56:25,178 - ERROR - Failed to download sentinel2_grid_339_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,179 - ERROR - Failed to download sentinel2_grid_339_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,179 - INFO - Processing grid 339 for 2021-08
+2025-08-04 14:56:25,228 - ERROR - Failed to download sentinel2_grid_339_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,229 - ERROR - Failed to download sentinel2_grid_339_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,229 - INFO - Processing grid 339 for 2022-08
+2025-08-04 14:56:25,280 - ERROR - Failed to download sentinel2_grid_339_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,280 - ERROR - Failed to download sentinel2_grid_339_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,280 - INFO - Processing grid 339 for 2023-08
+2025-08-04 14:56:25,330 - ERROR - Failed to download sentinel2_grid_339_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,330 - ERROR - Failed to download sentinel2_grid_339_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,330 - INFO - Processing grid 339 for 2024-08
+2025-08-04 14:56:25,380 - ERROR - Failed to download sentinel2_grid_339_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,380 - ERROR - Failed to download sentinel2_grid_339_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,380 - INFO - Processing grid 340 for 2018-08
+2025-08-04 14:56:25,429 - ERROR - Failed to download sentinel2_grid_340_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,429 - ERROR - Failed to download sentinel2_grid_340_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,430 - INFO - Processing grid 340 for 2019-08
+2025-08-04 14:56:25,479 - ERROR - Failed to download sentinel2_grid_340_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,479 - ERROR - Failed to download sentinel2_grid_340_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,479 - INFO - Processing grid 340 for 2020-08
+2025-08-04 14:56:25,530 - ERROR - Failed to download sentinel2_grid_340_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,530 - ERROR - Failed to download sentinel2_grid_340_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,530 - INFO - Processing grid 340 for 2021-08
+2025-08-04 14:56:25,583 - ERROR - Failed to download sentinel2_grid_340_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,583 - ERROR - Failed to download sentinel2_grid_340_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,583 - INFO - Processing grid 340 for 2022-08
+2025-08-04 14:56:25,635 - ERROR - Failed to download sentinel2_grid_340_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,635 - ERROR - Failed to download sentinel2_grid_340_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,635 - INFO - Processing grid 340 for 2023-08
+2025-08-04 14:56:25,685 - ERROR - Failed to download sentinel2_grid_340_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,685 - ERROR - Failed to download sentinel2_grid_340_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,685 - INFO - Processing grid 340 for 2024-08
+2025-08-04 14:56:25,735 - ERROR - Failed to download sentinel2_grid_340_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,735 - ERROR - Failed to download sentinel2_grid_340_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,735 - INFO - Processing grid 341 for 2018-08
+2025-08-04 14:56:25,787 - ERROR - Failed to download sentinel2_grid_341_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,787 - ERROR - Failed to download sentinel2_grid_341_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,787 - INFO - Processing grid 341 for 2019-08
+2025-08-04 14:56:25,838 - ERROR - Failed to download sentinel2_grid_341_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,838 - ERROR - Failed to download sentinel2_grid_341_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,838 - INFO - Processing grid 341 for 2020-08
+2025-08-04 14:56:25,895 - ERROR - Failed to download sentinel2_grid_341_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,895 - ERROR - Failed to download sentinel2_grid_341_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,895 - INFO - Processing grid 341 for 2021-08
+2025-08-04 14:56:25,947 - ERROR - Failed to download sentinel2_grid_341_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,947 - ERROR - Failed to download sentinel2_grid_341_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,947 - INFO - Processing grid 341 for 2022-08
+2025-08-04 14:56:25,999 - ERROR - Failed to download sentinel2_grid_341_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,999 - ERROR - Failed to download sentinel2_grid_341_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:25,999 - INFO - Processing grid 341 for 2023-08
+2025-08-04 14:56:26,055 - ERROR - Failed to download sentinel2_grid_341_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,055 - ERROR - Failed to download sentinel2_grid_341_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,055 - INFO - Processing grid 341 for 2024-08
+2025-08-04 14:56:26,104 - ERROR - Failed to download sentinel2_grid_341_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,105 - ERROR - Failed to download sentinel2_grid_341_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,105 - INFO - Processing grid 360 for 2018-08
+2025-08-04 14:56:26,154 - ERROR - Failed to download sentinel2_grid_360_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,155 - ERROR - Failed to download sentinel2_grid_360_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,155 - INFO - Processing grid 360 for 2019-08
+2025-08-04 14:56:26,206 - ERROR - Failed to download sentinel2_grid_360_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,206 - ERROR - Failed to download sentinel2_grid_360_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,206 - INFO - Processing grid 360 for 2020-08
+2025-08-04 14:56:26,259 - ERROR - Failed to download sentinel2_grid_360_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,259 - ERROR - Failed to download sentinel2_grid_360_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,259 - INFO - Processing grid 360 for 2021-08
+2025-08-04 14:56:26,309 - ERROR - Failed to download sentinel2_grid_360_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,309 - ERROR - Failed to download sentinel2_grid_360_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,309 - INFO - Processing grid 360 for 2022-08
+2025-08-04 14:56:26,362 - ERROR - Failed to download sentinel2_grid_360_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,362 - ERROR - Failed to download sentinel2_grid_360_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,362 - INFO - Processing grid 360 for 2023-08
+2025-08-04 14:56:26,414 - ERROR - Failed to download sentinel2_grid_360_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,414 - ERROR - Failed to download sentinel2_grid_360_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,415 - INFO - Processing grid 360 for 2024-08
+2025-08-04 14:56:26,465 - ERROR - Failed to download sentinel2_grid_360_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,465 - ERROR - Failed to download sentinel2_grid_360_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,465 - INFO - Processing grid 361 for 2018-08
+2025-08-04 14:56:26,515 - ERROR - Failed to download sentinel2_grid_361_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,516 - ERROR - Failed to download sentinel2_grid_361_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,516 - INFO - Processing grid 361 for 2019-08
+2025-08-04 14:56:26,565 - ERROR - Failed to download sentinel2_grid_361_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,566 - ERROR - Failed to download sentinel2_grid_361_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,566 - INFO - Processing grid 361 for 2020-08
+2025-08-04 14:56:26,616 - ERROR - Failed to download sentinel2_grid_361_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,616 - ERROR - Failed to download sentinel2_grid_361_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,616 - INFO - Processing grid 361 for 2021-08
+2025-08-04 14:56:26,666 - ERROR - Failed to download sentinel2_grid_361_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,666 - ERROR - Failed to download sentinel2_grid_361_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,666 - INFO - Processing grid 361 for 2022-08
+2025-08-04 14:56:26,717 - ERROR - Failed to download sentinel2_grid_361_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,717 - ERROR - Failed to download sentinel2_grid_361_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,717 - INFO - Processing grid 361 for 2023-08
+2025-08-04 14:56:26,767 - ERROR - Failed to download sentinel2_grid_361_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,767 - ERROR - Failed to download sentinel2_grid_361_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,767 - INFO - Processing grid 361 for 2024-08
+2025-08-04 14:56:26,818 - ERROR - Failed to download sentinel2_grid_361_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,818 - ERROR - Failed to download sentinel2_grid_361_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,818 - INFO - Processing grid 362 for 2018-08
+2025-08-04 14:56:26,872 - ERROR - Failed to download sentinel2_grid_362_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,872 - ERROR - Failed to download sentinel2_grid_362_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,873 - INFO - Processing grid 362 for 2019-08
+2025-08-04 14:56:26,922 - ERROR - Failed to download sentinel2_grid_362_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,922 - ERROR - Failed to download sentinel2_grid_362_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,922 - INFO - Processing grid 362 for 2020-08
+2025-08-04 14:56:26,972 - ERROR - Failed to download sentinel2_grid_362_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,972 - ERROR - Failed to download sentinel2_grid_362_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:26,972 - INFO - Processing grid 362 for 2021-08
+2025-08-04 14:56:27,023 - ERROR - Failed to download sentinel2_grid_362_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:27,024 - ERROR - Failed to download sentinel2_grid_362_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:27,024 - INFO - Processing grid 362 for 2022-08
+2025-08-04 14:56:27,075 - ERROR - Failed to download sentinel2_grid_362_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:27,075 - ERROR - Failed to download sentinel2_grid_362_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:27,076 - INFO - Processing grid 362 for 2023-08
+2025-08-04 14:56:27,126 - ERROR - Failed to download sentinel2_grid_362_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:27,126 - ERROR - Failed to download sentinel2_grid_362_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:27,126 - INFO - Processing grid 362 for 2024-08
+2025-08-04 14:56:27,177 - ERROR - Failed to download sentinel2_grid_362_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:27,177 - ERROR - Failed to download sentinel2_grid_362_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:27,177 - INFO - Processing grid 380 for 2018-08
+2025-08-04 14:56:27,616 - ERROR - Failed to download sentinel2_grid_380_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:27,617 - ERROR - Failed to download sentinel2_grid_380_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:27,618 - INFO - Processing grid 380 for 2019-08
+2025-08-04 14:56:27,695 - ERROR - Failed to download sentinel2_grid_380_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:27,695 - ERROR - Failed to download sentinel2_grid_380_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:27,695 - INFO - Processing grid 380 for 2020-08
+2025-08-04 14:56:27,764 - ERROR - Failed to download sentinel2_grid_380_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:27,765 - ERROR - Failed to download sentinel2_grid_380_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:27,765 - INFO - Processing grid 380 for 2021-08
+2025-08-04 14:56:27,840 - ERROR - Failed to download sentinel2_grid_380_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:27,840 - ERROR - Failed to download sentinel2_grid_380_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:27,841 - INFO - Processing grid 380 for 2022-08
+2025-08-04 14:56:27,913 - ERROR - Failed to download sentinel2_grid_380_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:27,913 - ERROR - Failed to download sentinel2_grid_380_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:27,913 - INFO - Processing grid 380 for 2023-08
+2025-08-04 14:56:27,976 - ERROR - Failed to download sentinel2_grid_380_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:27,977 - ERROR - Failed to download sentinel2_grid_380_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:27,977 - INFO - Processing grid 380 for 2024-08
+2025-08-04 14:56:28,032 - ERROR - Failed to download sentinel2_grid_380_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,032 - ERROR - Failed to download sentinel2_grid_380_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,032 - INFO - Processing grid 381 for 2018-08
+2025-08-04 14:56:28,088 - ERROR - Failed to download sentinel2_grid_381_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,088 - ERROR - Failed to download sentinel2_grid_381_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,088 - INFO - Processing grid 381 for 2019-08
+2025-08-04 14:56:28,144 - ERROR - Failed to download sentinel2_grid_381_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,144 - ERROR - Failed to download sentinel2_grid_381_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,144 - INFO - Processing grid 381 for 2020-08
+2025-08-04 14:56:28,200 - ERROR - Failed to download sentinel2_grid_381_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,200 - ERROR - Failed to download sentinel2_grid_381_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,200 - INFO - Processing grid 381 for 2021-08
+2025-08-04 14:56:28,256 - ERROR - Failed to download sentinel2_grid_381_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,257 - ERROR - Failed to download sentinel2_grid_381_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,257 - INFO - Processing grid 381 for 2022-08
+2025-08-04 14:56:28,306 - ERROR - Failed to download sentinel2_grid_381_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,306 - ERROR - Failed to download sentinel2_grid_381_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,306 - INFO - Processing grid 381 for 2023-08
+2025-08-04 14:56:28,376 - ERROR - Failed to download sentinel2_grid_381_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,376 - ERROR - Failed to download sentinel2_grid_381_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,376 - INFO - Processing grid 381 for 2024-08
+2025-08-04 14:56:28,429 - ERROR - Failed to download sentinel2_grid_381_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,429 - ERROR - Failed to download sentinel2_grid_381_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,429 - INFO - Processing grid 382 for 2018-08
+2025-08-04 14:56:28,478 - ERROR - Failed to download sentinel2_grid_382_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,479 - ERROR - Failed to download sentinel2_grid_382_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,479 - INFO - Processing grid 382 for 2019-08
+2025-08-04 14:56:28,529 - ERROR - Failed to download sentinel2_grid_382_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,529 - ERROR - Failed to download sentinel2_grid_382_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,529 - INFO - Processing grid 382 for 2020-08
+2025-08-04 14:56:28,585 - ERROR - Failed to download sentinel2_grid_382_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,585 - ERROR - Failed to download sentinel2_grid_382_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,585 - INFO - Processing grid 382 for 2021-08
+2025-08-04 14:56:28,639 - ERROR - Failed to download sentinel2_grid_382_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,640 - ERROR - Failed to download sentinel2_grid_382_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,640 - INFO - Processing grid 382 for 2022-08
+2025-08-04 14:56:28,690 - ERROR - Failed to download sentinel2_grid_382_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,690 - ERROR - Failed to download sentinel2_grid_382_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,690 - INFO - Processing grid 382 for 2023-08
+2025-08-04 14:56:28,743 - ERROR - Failed to download sentinel2_grid_382_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,744 - ERROR - Failed to download sentinel2_grid_382_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,744 - INFO - Processing grid 382 for 2024-08
+2025-08-04 14:56:28,797 - ERROR - Failed to download sentinel2_grid_382_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,798 - ERROR - Failed to download sentinel2_grid_382_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:56:28,798 - INFO - ============================================================
+2025-08-04 14:56:28,798 - INFO - DOWNLOAD SUMMARY
+2025-08-04 14:56:28,798 - INFO - ============================================================
+2025-08-04 14:56:28,798 - INFO - Total requested: 63
+2025-08-04 14:56:28,798 - INFO - Successfully downloaded: 0
+2025-08-04 14:56:28,798 - INFO - Failed: 63
+2025-08-04 14:56:28,798 - INFO - Skipped (already exist): 0
+2025-08-04 14:56:28,798 - INFO - Success rate: 0.0%
+2025-08-04 14:56:28,798 - INFO - ============================================================
+2025-08-04 14:56:28,798 - INFO - Download process completed
+2025-08-04 14:56:49,984 - INFO - Starting Sentinel-2 download script
+2025-08-04 14:56:49,985 - INFO - Target grid IDs: [339, 340, 341, 360, 361, 362, 380, 381, 382]
+2025-08-04 14:56:49,985 - INFO - Years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+2025-08-04 14:56:49,985 - INFO - Loading grid data from data/slovenia_grid.gpkg
+2025-08-04 14:56:50,174 - INFO - Loaded 940 grid cells
+2025-08-04 14:56:50,177 - INFO - Filtered to 9 target grid cells
+2025-08-04 14:56:50,177 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-04 14:56:50,180 - INFO - Connecting to OpenEO Copernicus Data Space Ecosystem...
+2025-08-04 14:56:50,180 - INFO - Loaded openEO client config from sources: []
+2025-08-04 14:56:50,533 - INFO - Please authenticate in your browser...
+2025-08-04 14:56:50,591 - INFO - Found OIDC providers: ['CDSE']
+2025-08-04 14:56:50,591 - INFO - No OIDC provider given, but only one available: 'CDSE'. Using that one.
+2025-08-04 14:56:50,741 - INFO - Using default client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e' from OIDC provider 'CDSE' info.
+2025-08-04 14:56:50,742 - INFO - Found refresh token: trying refresh token based authentication.
+2025-08-04 14:56:50,742 - INFO - Doing 'refresh_token' token request 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token' with post data fields ['grant_type', 'client_id', 'refresh_token'] (client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-04 14:56:50,967 - INFO - Download interrupted by user
+2025-08-04 14:56:59,236 - INFO - Starting Sentinel-2 download script
+2025-08-04 14:56:59,236 - INFO - Target grid IDs: [339, 340, 341, 360, 361, 362, 380, 381, 382]
+2025-08-04 14:56:59,236 - INFO - Years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+2025-08-04 14:56:59,236 - INFO - Loading grid data from data/slovenia_grid.gpkg
+2025-08-04 14:56:59,348 - INFO - Loaded 940 grid cells
+2025-08-04 14:56:59,349 - INFO - Filtered to 9 target grid cells
+2025-08-04 14:56:59,349 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-04 14:56:59,350 - INFO - Connecting to OpenEO Copernicus Data Space Ecosystem...
+2025-08-04 14:56:59,350 - INFO - Loaded openEO client config from sources: []
+2025-08-04 14:56:59,723 - INFO - Please authenticate in your browser...
+2025-08-04 14:56:59,798 - INFO - Found OIDC providers: ['CDSE']
+2025-08-04 14:56:59,798 - INFO - No OIDC provider given, but only one available: 'CDSE'. Using that one.
+2025-08-04 14:56:59,946 - INFO - Using default client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e' from OIDC provider 'CDSE' info.
+2025-08-04 14:56:59,947 - INFO - Found refresh token: trying refresh token based authentication.
+2025-08-04 14:56:59,947 - INFO - Doing 'refresh_token' token request 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token' with post data fields ['grant_type', 'client_id', 'refresh_token'] (client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-04 14:57:00,374 - INFO - Obtained tokens: ['access_token', 'id_token', 'refresh_token']
+2025-08-04 14:57:00,375 - INFO - Storing refresh token for issuer 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE' (client 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-04 14:57:00,377 - INFO - Successfully connected and authenticated
+2025-08-04 14:57:00,412 - INFO - Generated 63 download tasks
+2025-08-04 14:57:00,412 - INFO - Grid IDs: [339, 340, 341, 360, 361, 362, 380, 381, 382]
+2025-08-04 14:57:00,412 - INFO - Years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+2025-08-04 14:57:00,412 - INFO - Max cloud coverage: 20%
+2025-08-04 14:57:00,412 - INFO - Download directory: /Users/gasper/Documents/ViCos/eo_cd_slo/data/images/sentinel_downloads
+2025-08-04 14:57:00,422 - INFO - Processing grid 339 for 2018-08
+2025-08-04 14:57:00,527 - ERROR - Failed to download sentinel2_grid_339_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:00,527 - ERROR - Failed to download sentinel2_grid_339_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:00,527 - INFO - Processing grid 339 for 2019-08
+2025-08-04 14:57:00,579 - ERROR - Failed to download sentinel2_grid_339_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:00,580 - ERROR - Failed to download sentinel2_grid_339_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:00,580 - INFO - Processing grid 339 for 2020-08
+2025-08-04 14:57:00,629 - ERROR - Failed to download sentinel2_grid_339_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:00,629 - ERROR - Failed to download sentinel2_grid_339_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:00,629 - INFO - Processing grid 339 for 2021-08
+2025-08-04 14:57:00,682 - ERROR - Failed to download sentinel2_grid_339_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:00,683 - ERROR - Failed to download sentinel2_grid_339_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:00,683 - INFO - Processing grid 339 for 2022-08
+2025-08-04 14:57:00,733 - ERROR - Failed to download sentinel2_grid_339_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:00,733 - ERROR - Failed to download sentinel2_grid_339_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:00,733 - INFO - Processing grid 339 for 2023-08
+2025-08-04 14:57:00,783 - ERROR - Failed to download sentinel2_grid_339_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:00,783 - ERROR - Failed to download sentinel2_grid_339_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:00,784 - INFO - Processing grid 339 for 2024-08
+2025-08-04 14:57:00,833 - ERROR - Failed to download sentinel2_grid_339_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:00,833 - ERROR - Failed to download sentinel2_grid_339_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:00,834 - INFO - Processing grid 340 for 2018-08
+2025-08-04 14:57:00,883 - ERROR - Failed to download sentinel2_grid_340_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:00,884 - ERROR - Failed to download sentinel2_grid_340_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:00,884 - INFO - Processing grid 340 for 2019-08
+2025-08-04 14:57:00,933 - ERROR - Failed to download sentinel2_grid_340_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:00,933 - ERROR - Failed to download sentinel2_grid_340_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:00,933 - INFO - Processing grid 340 for 2020-08
+2025-08-04 14:57:00,989 - ERROR - Failed to download sentinel2_grid_340_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:00,989 - ERROR - Failed to download sentinel2_grid_340_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:00,989 - INFO - Processing grid 340 for 2021-08
+2025-08-04 14:57:01,038 - ERROR - Failed to download sentinel2_grid_340_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,038 - ERROR - Failed to download sentinel2_grid_340_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,038 - INFO - Processing grid 340 for 2022-08
+2025-08-04 14:57:01,089 - ERROR - Failed to download sentinel2_grid_340_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,089 - ERROR - Failed to download sentinel2_grid_340_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,089 - INFO - Processing grid 340 for 2023-08
+2025-08-04 14:57:01,139 - ERROR - Failed to download sentinel2_grid_340_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,139 - ERROR - Failed to download sentinel2_grid_340_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,139 - INFO - Processing grid 340 for 2024-08
+2025-08-04 14:57:01,192 - ERROR - Failed to download sentinel2_grid_340_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,192 - ERROR - Failed to download sentinel2_grid_340_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,193 - INFO - Processing grid 341 for 2018-08
+2025-08-04 14:57:01,242 - ERROR - Failed to download sentinel2_grid_341_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,243 - ERROR - Failed to download sentinel2_grid_341_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,243 - INFO - Processing grid 341 for 2019-08
+2025-08-04 14:57:01,297 - ERROR - Failed to download sentinel2_grid_341_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,297 - ERROR - Failed to download sentinel2_grid_341_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,297 - INFO - Processing grid 341 for 2020-08
+2025-08-04 14:57:01,348 - ERROR - Failed to download sentinel2_grid_341_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,348 - ERROR - Failed to download sentinel2_grid_341_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,348 - INFO - Processing grid 341 for 2021-08
+2025-08-04 14:57:01,398 - ERROR - Failed to download sentinel2_grid_341_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,398 - ERROR - Failed to download sentinel2_grid_341_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,399 - INFO - Processing grid 341 for 2022-08
+2025-08-04 14:57:01,449 - ERROR - Failed to download sentinel2_grid_341_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,449 - ERROR - Failed to download sentinel2_grid_341_2022_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,449 - INFO - Processing grid 341 for 2023-08
+2025-08-04 14:57:01,498 - ERROR - Failed to download sentinel2_grid_341_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,498 - ERROR - Failed to download sentinel2_grid_341_2023_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,498 - INFO - Processing grid 341 for 2024-08
+2025-08-04 14:57:01,548 - ERROR - Failed to download sentinel2_grid_341_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,548 - ERROR - Failed to download sentinel2_grid_341_2024_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,548 - INFO - Processing grid 360 for 2018-08
+2025-08-04 14:57:01,603 - ERROR - Failed to download sentinel2_grid_360_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,603 - ERROR - Failed to download sentinel2_grid_360_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,603 - INFO - Processing grid 360 for 2019-08
+2025-08-04 14:57:01,653 - ERROR - Failed to download sentinel2_grid_360_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,653 - ERROR - Failed to download sentinel2_grid_360_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,653 - INFO - Processing grid 360 for 2020-08
+2025-08-04 14:57:01,703 - ERROR - Failed to download sentinel2_grid_360_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,703 - ERROR - Failed to download sentinel2_grid_360_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,703 - INFO - Processing grid 360 for 2021-08
+2025-08-04 14:57:01,754 - ERROR - Failed to download sentinel2_grid_360_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,754 - ERROR - Failed to download sentinel2_grid_360_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:01,754 - INFO - Processing grid 360 for 2022-08
+2025-08-04 14:57:01,763 - INFO - Download interrupted by user
+2025-08-04 14:57:08,353 - INFO - Starting Sentinel-2 download script
+2025-08-04 14:57:08,353 - INFO - Target grid IDs: [339, 340, 341, 360, 361, 362, 380, 381, 382]
+2025-08-04 14:57:08,353 - INFO - Years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+2025-08-04 14:57:08,353 - INFO - Loading grid data from data/slovenia_grid.gpkg
+2025-08-04 14:57:08,468 - INFO - Loaded 940 grid cells
+2025-08-04 14:57:08,469 - INFO - Filtered to 9 target grid cells
+2025-08-04 14:57:08,469 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-04 14:57:08,470 - INFO - Connecting to OpenEO Copernicus Data Space Ecosystem...
+2025-08-04 14:57:08,470 - INFO - Loaded openEO client config from sources: []
+2025-08-04 14:57:08,815 - INFO - Please authenticate in your browser...
+2025-08-04 14:57:08,866 - INFO - Found OIDC providers: ['CDSE']
+2025-08-04 14:57:08,867 - INFO - No OIDC provider given, but only one available: 'CDSE'. Using that one.
+2025-08-04 14:57:09,033 - INFO - Using default client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e' from OIDC provider 'CDSE' info.
+2025-08-04 14:57:09,035 - INFO - Found refresh token: trying refresh token based authentication.
+2025-08-04 14:57:09,036 - INFO - Doing 'refresh_token' token request 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token' with post data fields ['grant_type', 'client_id', 'refresh_token'] (client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-04 14:57:09,315 - INFO - Obtained tokens: ['access_token', 'id_token', 'refresh_token']
+2025-08-04 14:57:09,316 - INFO - Storing refresh token for issuer 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE' (client 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-04 14:57:09,317 - INFO - Successfully connected and authenticated
+2025-08-04 14:57:09,351 - INFO - Generated 63 download tasks
+2025-08-04 14:57:09,351 - INFO - Grid IDs: [339, 340, 341, 360, 361, 362, 380, 381, 382]
+2025-08-04 14:57:09,351 - INFO - Years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+2025-08-04 14:57:09,351 - INFO - Max cloud coverage: 20%
+2025-08-04 14:57:09,351 - INFO - Download directory: /Users/gasper/Documents/ViCos/eo_cd_slo/data/images/sentinel_downloads
+2025-08-04 14:57:09,359 - INFO - Processing grid 339 for 2018-08
+2025-08-04 14:57:09,459 - ERROR - Failed to download sentinel2_grid_339_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:09,460 - ERROR - Failed to download sentinel2_grid_339_2018_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:09,460 - INFO - Processing grid 339 for 2019-08
+2025-08-04 14:57:09,512 - ERROR - Failed to download sentinel2_grid_339_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:09,512 - ERROR - Failed to download sentinel2_grid_339_2019_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:09,512 - INFO - Processing grid 339 for 2020-08
+2025-08-04 14:57:09,562 - ERROR - Failed to download sentinel2_grid_339_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:09,563 - ERROR - Failed to download sentinel2_grid_339_2020_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:09,563 - INFO - Processing grid 339 for 2021-08
+2025-08-04 14:57:09,612 - ERROR - Failed to download sentinel2_grid_339_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:09,612 - ERROR - Failed to download sentinel2_grid_339_2021_08.tiff: {'process_graph': {'lte': {'process_id': 'lte', 'arguments': {'x': {'from_parameter': 'value'}, 'y': 20}}}}
+2025-08-04 14:57:09,613 - INFO - Processing grid 339 for 2022-08
+2025-08-04 14:57:09,649 - INFO - Download interrupted by user
+2025-08-04 14:58:18,499 - INFO - Starting Sentinel-2 download script
+2025-08-04 14:58:18,499 - INFO - Target grid IDs: [339, 340, 341, 360, 361, 362, 380, 381, 382]
+2025-08-04 14:58:18,499 - INFO - Years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+2025-08-04 14:58:18,499 - INFO - Loading grid data from data/slovenia_grid.gpkg
+2025-08-04 14:58:18,701 - INFO - Loaded 940 grid cells
+2025-08-04 14:58:18,703 - INFO - Filtered to 9 target grid cells
+2025-08-04 14:58:18,704 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-04 14:58:18,707 - INFO - Connecting to OpenEO Copernicus Data Space Ecosystem...
+2025-08-04 14:58:18,707 - INFO - Loaded openEO client config from sources: []
+2025-08-04 14:58:19,095 - INFO - Please authenticate in your browser...
+2025-08-04 14:58:19,155 - INFO - Found OIDC providers: ['CDSE']
+2025-08-04 14:58:19,155 - INFO - No OIDC provider given, but only one available: 'CDSE'. Using that one.
+2025-08-04 14:58:19,391 - INFO - Using default client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e' from OIDC provider 'CDSE' info.
+2025-08-04 14:58:19,393 - INFO - Found refresh token: trying refresh token based authentication.
+2025-08-04 14:58:19,394 - INFO - Doing 'refresh_token' token request 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token' with post data fields ['grant_type', 'client_id', 'refresh_token'] (client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-04 14:58:19,640 - INFO - Obtained tokens: ['access_token', 'id_token', 'refresh_token']
+2025-08-04 14:58:19,641 - INFO - Storing refresh token for issuer 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE' (client 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-04 14:58:19,644 - INFO - Successfully connected and authenticated
+2025-08-04 14:58:19,672 - INFO - Generated 63 download tasks
+2025-08-04 14:58:19,672 - INFO - Grid IDs: [339, 340, 341, 360, 361, 362, 380, 381, 382]
+2025-08-04 14:58:19,672 - INFO - Years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+2025-08-04 14:58:19,672 - INFO - Max cloud coverage: 20%
+2025-08-04 14:58:19,672 - INFO - Download directory: /Users/gasper/Documents/ViCos/eo_cd_slo/data/images/sentinel_downloads
+2025-08-04 14:58:19,682 - INFO - Processing grid 339 for 2018-08
+2025-08-04 14:58:19,787 - ERROR - Failed to download sentinel2_grid_339_2018_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:19,788 - ERROR - Failed to download sentinel2_grid_339_2018_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:19,788 - INFO - Processing grid 339 for 2019-08
+2025-08-04 14:58:19,842 - ERROR - Failed to download sentinel2_grid_339_2019_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:19,842 - ERROR - Failed to download sentinel2_grid_339_2019_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:19,842 - INFO - Processing grid 339 for 2020-08
+2025-08-04 14:58:19,893 - ERROR - Failed to download sentinel2_grid_339_2020_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:19,893 - ERROR - Failed to download sentinel2_grid_339_2020_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:19,894 - INFO - Processing grid 339 for 2021-08
+2025-08-04 14:58:19,945 - ERROR - Failed to download sentinel2_grid_339_2021_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:19,945 - ERROR - Failed to download sentinel2_grid_339_2021_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:19,945 - INFO - Processing grid 339 for 2022-08
+2025-08-04 14:58:19,999 - ERROR - Failed to download sentinel2_grid_339_2022_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:19,999 - ERROR - Failed to download sentinel2_grid_339_2022_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:19,999 - INFO - Processing grid 339 for 2023-08
+2025-08-04 14:58:20,051 - ERROR - Failed to download sentinel2_grid_339_2023_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,052 - ERROR - Failed to download sentinel2_grid_339_2023_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,052 - INFO - Processing grid 339 for 2024-08
+2025-08-04 14:58:20,104 - ERROR - Failed to download sentinel2_grid_339_2024_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,104 - ERROR - Failed to download sentinel2_grid_339_2024_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,104 - INFO - Processing grid 340 for 2018-08
+2025-08-04 14:58:20,156 - ERROR - Failed to download sentinel2_grid_340_2018_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,156 - ERROR - Failed to download sentinel2_grid_340_2018_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,157 - INFO - Processing grid 340 for 2019-08
+2025-08-04 14:58:20,209 - ERROR - Failed to download sentinel2_grid_340_2019_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,209 - ERROR - Failed to download sentinel2_grid_340_2019_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,209 - INFO - Processing grid 340 for 2020-08
+2025-08-04 14:58:20,259 - ERROR - Failed to download sentinel2_grid_340_2020_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,259 - ERROR - Failed to download sentinel2_grid_340_2020_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,259 - INFO - Processing grid 340 for 2021-08
+2025-08-04 14:58:20,309 - ERROR - Failed to download sentinel2_grid_340_2021_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,309 - ERROR - Failed to download sentinel2_grid_340_2021_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,309 - INFO - Processing grid 340 for 2022-08
+2025-08-04 14:58:20,359 - ERROR - Failed to download sentinel2_grid_340_2022_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,359 - ERROR - Failed to download sentinel2_grid_340_2022_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,359 - INFO - Processing grid 340 for 2023-08
+2025-08-04 14:58:20,409 - ERROR - Failed to download sentinel2_grid_340_2023_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,409 - ERROR - Failed to download sentinel2_grid_340_2023_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,409 - INFO - Processing grid 340 for 2024-08
+2025-08-04 14:58:20,460 - ERROR - Failed to download sentinel2_grid_340_2024_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,461 - ERROR - Failed to download sentinel2_grid_340_2024_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,461 - INFO - Processing grid 341 for 2018-08
+2025-08-04 14:58:20,511 - ERROR - Failed to download sentinel2_grid_341_2018_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,511 - ERROR - Failed to download sentinel2_grid_341_2018_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,512 - INFO - Processing grid 341 for 2019-08
+2025-08-04 14:58:20,561 - ERROR - Failed to download sentinel2_grid_341_2019_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,562 - ERROR - Failed to download sentinel2_grid_341_2019_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,562 - INFO - Processing grid 341 for 2020-08
+2025-08-04 14:58:20,611 - ERROR - Failed to download sentinel2_grid_341_2020_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,611 - ERROR - Failed to download sentinel2_grid_341_2020_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,611 - INFO - Processing grid 341 for 2021-08
+2025-08-04 14:58:20,662 - ERROR - Failed to download sentinel2_grid_341_2021_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,662 - ERROR - Failed to download sentinel2_grid_341_2021_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,662 - INFO - Processing grid 341 for 2022-08
+2025-08-04 14:58:20,713 - ERROR - Failed to download sentinel2_grid_341_2022_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,713 - ERROR - Failed to download sentinel2_grid_341_2022_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,713 - INFO - Processing grid 341 for 2023-08
+2025-08-04 14:58:20,762 - ERROR - Failed to download sentinel2_grid_341_2023_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,762 - ERROR - Failed to download sentinel2_grid_341_2023_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,763 - INFO - Processing grid 341 for 2024-08
+2025-08-04 14:58:20,813 - ERROR - Failed to download sentinel2_grid_341_2024_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,814 - ERROR - Failed to download sentinel2_grid_341_2024_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,814 - INFO - Processing grid 360 for 2018-08
+2025-08-04 14:58:20,864 - ERROR - Failed to download sentinel2_grid_360_2018_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,864 - ERROR - Failed to download sentinel2_grid_360_2018_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,864 - INFO - Processing grid 360 for 2019-08
+2025-08-04 14:58:20,914 - ERROR - Failed to download sentinel2_grid_360_2019_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,914 - ERROR - Failed to download sentinel2_grid_360_2019_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,914 - INFO - Processing grid 360 for 2020-08
+2025-08-04 14:58:20,977 - ERROR - Failed to download sentinel2_grid_360_2020_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,978 - ERROR - Failed to download sentinel2_grid_360_2020_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:20,978 - INFO - Processing grid 360 for 2021-08
+2025-08-04 14:58:21,028 - ERROR - Failed to download sentinel2_grid_360_2021_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,028 - ERROR - Failed to download sentinel2_grid_360_2021_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,028 - INFO - Processing grid 360 for 2022-08
+2025-08-04 14:58:21,081 - ERROR - Failed to download sentinel2_grid_360_2022_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,082 - ERROR - Failed to download sentinel2_grid_360_2022_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,082 - INFO - Processing grid 360 for 2023-08
+2025-08-04 14:58:21,131 - ERROR - Failed to download sentinel2_grid_360_2023_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,132 - ERROR - Failed to download sentinel2_grid_360_2023_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,132 - INFO - Processing grid 360 for 2024-08
+2025-08-04 14:58:21,182 - ERROR - Failed to download sentinel2_grid_360_2024_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,182 - ERROR - Failed to download sentinel2_grid_360_2024_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,183 - INFO - Processing grid 361 for 2018-08
+2025-08-04 14:58:21,233 - ERROR - Failed to download sentinel2_grid_361_2018_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,234 - ERROR - Failed to download sentinel2_grid_361_2018_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,234 - INFO - Processing grid 361 for 2019-08
+2025-08-04 14:58:21,284 - ERROR - Failed to download sentinel2_grid_361_2019_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,284 - ERROR - Failed to download sentinel2_grid_361_2019_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,284 - INFO - Processing grid 361 for 2020-08
+2025-08-04 14:58:21,336 - ERROR - Failed to download sentinel2_grid_361_2020_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,337 - ERROR - Failed to download sentinel2_grid_361_2020_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,337 - INFO - Processing grid 361 for 2021-08
+2025-08-04 14:58:21,388 - ERROR - Failed to download sentinel2_grid_361_2021_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,388 - ERROR - Failed to download sentinel2_grid_361_2021_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,388 - INFO - Processing grid 361 for 2022-08
+2025-08-04 14:58:21,439 - ERROR - Failed to download sentinel2_grid_361_2022_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,439 - ERROR - Failed to download sentinel2_grid_361_2022_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,439 - INFO - Processing grid 361 for 2023-08
+2025-08-04 14:58:21,489 - ERROR - Failed to download sentinel2_grid_361_2023_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,490 - ERROR - Failed to download sentinel2_grid_361_2023_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,490 - INFO - Processing grid 361 for 2024-08
+2025-08-04 14:58:21,540 - ERROR - Failed to download sentinel2_grid_361_2024_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,540 - ERROR - Failed to download sentinel2_grid_361_2024_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,540 - INFO - Processing grid 362 for 2018-08
+2025-08-04 14:58:21,591 - ERROR - Failed to download sentinel2_grid_362_2018_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,591 - ERROR - Failed to download sentinel2_grid_362_2018_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,591 - INFO - Processing grid 362 for 2019-08
+2025-08-04 14:58:21,641 - ERROR - Failed to download sentinel2_grid_362_2019_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,641 - ERROR - Failed to download sentinel2_grid_362_2019_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,642 - INFO - Processing grid 362 for 2020-08
+2025-08-04 14:58:21,691 - ERROR - Failed to download sentinel2_grid_362_2020_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,692 - ERROR - Failed to download sentinel2_grid_362_2020_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,692 - INFO - Processing grid 362 for 2021-08
+2025-08-04 14:58:21,742 - ERROR - Failed to download sentinel2_grid_362_2021_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,742 - ERROR - Failed to download sentinel2_grid_362_2021_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,742 - INFO - Processing grid 362 for 2022-08
+2025-08-04 14:58:21,793 - ERROR - Failed to download sentinel2_grid_362_2022_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,793 - ERROR - Failed to download sentinel2_grid_362_2022_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,793 - INFO - Processing grid 362 for 2023-08
+2025-08-04 14:58:21,845 - ERROR - Failed to download sentinel2_grid_362_2023_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,845 - ERROR - Failed to download sentinel2_grid_362_2023_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,845 - INFO - Processing grid 362 for 2024-08
+2025-08-04 14:58:21,895 - ERROR - Failed to download sentinel2_grid_362_2024_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,895 - ERROR - Failed to download sentinel2_grid_362_2024_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,895 - INFO - Processing grid 380 for 2018-08
+2025-08-04 14:58:21,944 - ERROR - Failed to download sentinel2_grid_380_2018_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,945 - ERROR - Failed to download sentinel2_grid_380_2018_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,945 - INFO - Processing grid 380 for 2019-08
+2025-08-04 14:58:21,995 - ERROR - Failed to download sentinel2_grid_380_2019_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,996 - ERROR - Failed to download sentinel2_grid_380_2019_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:21,996 - INFO - Processing grid 380 for 2020-08
+2025-08-04 14:58:22,048 - ERROR - Failed to download sentinel2_grid_380_2020_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,048 - ERROR - Failed to download sentinel2_grid_380_2020_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,048 - INFO - Processing grid 380 for 2021-08
+2025-08-04 14:58:22,101 - ERROR - Failed to download sentinel2_grid_380_2021_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,102 - ERROR - Failed to download sentinel2_grid_380_2021_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,102 - INFO - Processing grid 380 for 2022-08
+2025-08-04 14:58:22,152 - ERROR - Failed to download sentinel2_grid_380_2022_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,153 - ERROR - Failed to download sentinel2_grid_380_2022_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,153 - INFO - Processing grid 380 for 2023-08
+2025-08-04 14:58:22,203 - ERROR - Failed to download sentinel2_grid_380_2023_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,204 - ERROR - Failed to download sentinel2_grid_380_2023_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,204 - INFO - Processing grid 380 for 2024-08
+2025-08-04 14:58:22,256 - ERROR - Failed to download sentinel2_grid_380_2024_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,256 - ERROR - Failed to download sentinel2_grid_380_2024_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,256 - INFO - Processing grid 381 for 2018-08
+2025-08-04 14:58:22,307 - ERROR - Failed to download sentinel2_grid_381_2018_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,307 - ERROR - Failed to download sentinel2_grid_381_2018_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,307 - INFO - Processing grid 381 for 2019-08
+2025-08-04 14:58:22,363 - ERROR - Failed to download sentinel2_grid_381_2019_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,363 - ERROR - Failed to download sentinel2_grid_381_2019_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,364 - INFO - Processing grid 381 for 2020-08
+2025-08-04 14:58:22,418 - ERROR - Failed to download sentinel2_grid_381_2020_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,418 - ERROR - Failed to download sentinel2_grid_381_2020_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,418 - INFO - Processing grid 381 for 2021-08
+2025-08-04 14:58:22,469 - ERROR - Failed to download sentinel2_grid_381_2021_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,469 - ERROR - Failed to download sentinel2_grid_381_2021_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,469 - INFO - Processing grid 381 for 2022-08
+2025-08-04 14:58:22,520 - ERROR - Failed to download sentinel2_grid_381_2022_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,521 - ERROR - Failed to download sentinel2_grid_381_2022_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,521 - INFO - Processing grid 381 for 2023-08
+2025-08-04 14:58:22,572 - ERROR - Failed to download sentinel2_grid_381_2023_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,572 - ERROR - Failed to download sentinel2_grid_381_2023_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,572 - INFO - Processing grid 381 for 2024-08
+2025-08-04 14:58:22,632 - ERROR - Failed to download sentinel2_grid_381_2024_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,632 - ERROR - Failed to download sentinel2_grid_381_2024_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,632 - INFO - Processing grid 382 for 2018-08
+2025-08-04 14:58:22,682 - ERROR - Failed to download sentinel2_grid_382_2018_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,683 - ERROR - Failed to download sentinel2_grid_382_2018_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,683 - INFO - Processing grid 382 for 2019-08
+2025-08-04 14:58:22,733 - ERROR - Failed to download sentinel2_grid_382_2019_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,733 - ERROR - Failed to download sentinel2_grid_382_2019_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,733 - INFO - Processing grid 382 for 2020-08
+2025-08-04 14:58:22,783 - ERROR - Failed to download sentinel2_grid_382_2020_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,784 - ERROR - Failed to download sentinel2_grid_382_2020_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,784 - INFO - Processing grid 382 for 2021-08
+2025-08-04 14:58:22,834 - ERROR - Failed to download sentinel2_grid_382_2021_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,834 - ERROR - Failed to download sentinel2_grid_382_2021_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,834 - INFO - Processing grid 382 for 2022-08
+2025-08-04 14:58:22,883 - ERROR - Failed to download sentinel2_grid_382_2022_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,883 - ERROR - Failed to download sentinel2_grid_382_2022_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,883 - INFO - Processing grid 382 for 2023-08
+2025-08-04 14:58:22,934 - ERROR - Failed to download sentinel2_grid_382_2023_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,934 - ERROR - Failed to download sentinel2_grid_382_2023_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,934 - INFO - Processing grid 382 for 2024-08
+2025-08-04 14:58:22,985 - ERROR - Failed to download sentinel2_grid_382_2024_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,986 - ERROR - Failed to download sentinel2_grid_382_2024_08.tiff: 'DataCube' object has no attribute 'filter_metadata'
+2025-08-04 14:58:22,986 - INFO - ============================================================
+2025-08-04 14:58:22,986 - INFO - DOWNLOAD SUMMARY
+2025-08-04 14:58:22,986 - INFO - ============================================================
+2025-08-04 14:58:22,986 - INFO - Total requested: 63
+2025-08-04 14:58:22,986 - INFO - Successfully downloaded: 0
+2025-08-04 14:58:22,986 - INFO - Failed: 63
+2025-08-04 14:58:22,986 - INFO - Skipped (already exist): 0
+2025-08-04 14:58:22,986 - INFO - Success rate: 0.0%
+2025-08-04 14:58:22,986 - INFO - ============================================================
+2025-08-04 14:58:22,986 - INFO - Download process completed
+2025-08-04 14:59:16,050 - INFO - Starting Sentinel-2 download script
+2025-08-04 14:59:16,050 - INFO - Target grid IDs: [339, 340, 341, 360, 361, 362, 380, 381, 382]
+2025-08-04 14:59:16,050 - INFO - Years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+2025-08-04 14:59:16,050 - INFO - Loading grid data from data/slovenia_grid.gpkg
+2025-08-04 14:59:16,261 - INFO - Loaded 940 grid cells
+2025-08-04 14:59:16,264 - INFO - Filtered to 9 target grid cells
+2025-08-04 14:59:16,264 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-04 14:59:16,267 - INFO - Connecting to OpenEO Copernicus Data Space Ecosystem...
+2025-08-04 14:59:16,267 - INFO - Loaded openEO client config from sources: []
+2025-08-04 14:59:16,609 - INFO - Please authenticate in your browser...
+2025-08-04 14:59:16,673 - INFO - Found OIDC providers: ['CDSE']
+2025-08-04 14:59:16,674 - INFO - No OIDC provider given, but only one available: 'CDSE'. Using that one.
+2025-08-04 14:59:16,831 - INFO - Using default client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e' from OIDC provider 'CDSE' info.
+2025-08-04 14:59:16,834 - INFO - Found refresh token: trying refresh token based authentication.
+2025-08-04 14:59:16,834 - INFO - Doing 'refresh_token' token request 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token' with post data fields ['grant_type', 'client_id', 'refresh_token'] (client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-04 14:59:17,081 - INFO - Obtained tokens: ['access_token', 'id_token', 'refresh_token']
+2025-08-04 14:59:17,083 - INFO - Storing refresh token for issuer 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE' (client 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-04 14:59:17,085 - INFO - Successfully connected and authenticated
+2025-08-04 14:59:17,114 - INFO - Generated 63 download tasks
+2025-08-04 14:59:17,114 - INFO - Grid IDs: [339, 340, 341, 360, 361, 362, 380, 381, 382]
+2025-08-04 14:59:17,114 - INFO - Years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+2025-08-04 14:59:17,114 - INFO - Max cloud coverage: 20%
+2025-08-04 14:59:17,114 - INFO - Download directory: /Users/gasper/Documents/ViCos/eo_cd_slo/data/images/sentinel_downloads
+2025-08-04 14:59:17,128 - INFO - Processing grid 339 for 2018-08
+2025-08-04 14:59:17,292 - WARNING - Could not apply cloud mask: 'DataCube' object has no attribute 'neq'
+2025-08-04 14:59:19,298 - INFO - Downloading sentinel2_grid_339_2018_08.tiff...
+2025-08-04 14:59:38,519 - INFO - Successfully downloaded: sentinel2_grid_339_2018_08.tiff
+2025-08-04 14:59:38,521 - INFO - Processing grid 339 for 2019-08
+2025-08-04 14:59:38,644 - WARNING - Could not apply cloud mask: 'DataCube' object has no attribute 'neq'
+2025-08-04 14:59:40,645 - INFO - Downloading sentinel2_grid_339_2019_08.tiff...
+2025-08-04 14:59:54,371 - INFO - Download interrupted by user
+2025-08-04 15:00:53,665 - INFO - Starting Sentinel-2 download script
+2025-08-04 15:00:53,665 - INFO - Target grid IDs: [339, 340, 341, 360, 361, 362, 380, 381, 382]
+2025-08-04 15:00:53,665 - INFO - Years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+2025-08-04 15:00:53,665 - INFO - Loading grid data from data/slovenia_grid.gpkg
+2025-08-04 15:00:53,860 - INFO - Loaded 940 grid cells
+2025-08-04 15:00:53,863 - INFO - Filtered to 9 target grid cells
+2025-08-04 15:00:53,863 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-04 15:00:53,867 - INFO - Connecting to OpenEO Copernicus Data Space Ecosystem...
+2025-08-04 15:00:53,867 - INFO - Loaded openEO client config from sources: []
+2025-08-04 15:00:54,301 - INFO - Please authenticate in your browser...
+2025-08-04 15:00:54,352 - INFO - Found OIDC providers: ['CDSE']
+2025-08-04 15:00:54,352 - INFO - No OIDC provider given, but only one available: 'CDSE'. Using that one.
+2025-08-04 15:00:54,608 - INFO - Using default client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e' from OIDC provider 'CDSE' info.
+2025-08-04 15:00:54,609 - INFO - Found refresh token: trying refresh token based authentication.
+2025-08-04 15:00:54,609 - INFO - Doing 'refresh_token' token request 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token' with post data fields ['grant_type', 'client_id', 'refresh_token'] (client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-04 15:00:54,871 - INFO - Obtained tokens: ['access_token', 'id_token', 'refresh_token']
+2025-08-04 15:00:54,872 - INFO - Storing refresh token for issuer 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE' (client 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-04 15:00:54,875 - INFO - Successfully connected and authenticated
+2025-08-04 15:00:54,897 - INFO - Generated 63 download tasks
+2025-08-04 15:00:54,897 - INFO - Grid IDs: [339, 340, 341, 360, 361, 362, 380, 381, 382]
+2025-08-04 15:00:54,897 - INFO - Years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+2025-08-04 15:00:54,897 - INFO - Max cloud coverage: 20%
+2025-08-04 15:00:54,897 - INFO - Download directory: /Users/gasper/Documents/ViCos/eo_cd_slo/data/images/sentinel_downloads
+2025-08-04 15:00:54,908 - INFO - Processing grid 339 for 2018-08
+2025-08-04 15:00:55,065 - WARNING - Could not apply cloud mask: 'DataCube' object has no attribute 'eq'
+2025-08-04 15:00:57,071 - INFO - Downloading sentinel2_grid_339_2018_08.tiff...
+2025-08-04 15:01:36,183 - INFO - Download interrupted by user
+2025-08-04 15:03:56,499 - INFO - Starting Sentinel-2 download script
+2025-08-04 15:03:56,499 - INFO - Target grid IDs: [339, 340, 341, 360, 361, 362, 380, 381, 382]
+2025-08-04 15:03:56,499 - INFO - Years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+2025-08-04 15:03:56,499 - INFO - Loading grid data from data/slovenia_grid.gpkg
+2025-08-04 15:03:56,691 - INFO - Loaded 940 grid cells
+2025-08-04 15:03:56,694 - INFO - Filtered to 9 target grid cells
+2025-08-04 15:03:56,694 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-04 15:03:56,697 - INFO - Connecting to OpenEO Copernicus Data Space Ecosystem...
+2025-08-04 15:03:56,697 - INFO - Loaded openEO client config from sources: []
+2025-08-04 15:03:57,184 - INFO - Please authenticate in your browser...
+2025-08-04 15:03:57,241 - INFO - Found OIDC providers: ['CDSE']
+2025-08-04 15:03:57,241 - INFO - No OIDC provider given, but only one available: 'CDSE'. Using that one.
+2025-08-04 15:03:57,471 - INFO - Using default client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e' from OIDC provider 'CDSE' info.
+2025-08-04 15:03:57,473 - INFO - Found refresh token: trying refresh token based authentication.
+2025-08-04 15:03:57,474 - INFO - Doing 'refresh_token' token request 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token' with post data fields ['grant_type', 'client_id', 'refresh_token'] (client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-04 15:03:57,806 - INFO - Obtained tokens: ['access_token', 'id_token', 'refresh_token']
+2025-08-04 15:03:57,808 - INFO - Storing refresh token for issuer 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE' (client 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-04 15:03:57,809 - INFO - Successfully connected and authenticated
+2025-08-04 15:03:57,838 - INFO - Generated 63 download tasks
+2025-08-04 15:03:57,839 - INFO - Grid IDs: [339, 340, 341, 360, 361, 362, 380, 381, 382]
+2025-08-04 15:03:57,839 - INFO - Years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+2025-08-04 15:03:57,839 - INFO - Max cloud coverage: 20%
+2025-08-04 15:03:57,839 - INFO - Download directory: /Users/gasper/Documents/ViCos/eo_cd_slo/data/images/sentinel_downloads
+2025-08-04 15:03:57,848 - INFO - Processing grid 339 for 2018-08
+2025-08-04 15:03:57,961 - INFO - Downloading sentinel2_grid_339_2018_08.tiff...
+2025-08-04 15:04:20,976 - INFO - Successfully downloaded: sentinel2_grid_339_2018_08.tiff
+2025-08-04 15:04:20,978 - INFO - Processing grid 339 for 2019-08
+2025-08-04 15:04:21,034 - INFO - Downloading sentinel2_grid_339_2019_08.tiff...
+2025-08-04 15:05:14,156 - INFO - Successfully downloaded: sentinel2_grid_339_2019_08.tiff
+2025-08-04 15:05:14,157 - INFO - Processing grid 339 for 2020-08
+2025-08-04 15:05:14,217 - INFO - Downloading sentinel2_grid_339_2020_08.tiff...
+2025-08-04 15:06:03,414 - INFO - Successfully downloaded: sentinel2_grid_339_2020_08.tiff
+2025-08-04 15:06:03,415 - INFO - Processing grid 339 for 2021-08
+2025-08-04 15:06:03,469 - INFO - Downloading sentinel2_grid_339_2021_08.tiff...
+2025-08-04 15:06:22,883 - INFO - Successfully downloaded: sentinel2_grid_339_2021_08.tiff
+2025-08-04 15:06:22,884 - INFO - Processing grid 339 for 2022-08
+2025-08-04 15:06:22,938 - INFO - Downloading sentinel2_grid_339_2022_08.tiff...
+2025-08-04 15:07:05,318 - INFO - Successfully downloaded: sentinel2_grid_339_2022_08.tiff
+2025-08-04 15:07:05,320 - INFO - Processing grid 339 for 2023-08
+2025-08-04 15:07:05,375 - INFO - Downloading sentinel2_grid_339_2023_08.tiff...
+2025-08-04 15:07:41,323 - WARNING - Failed to parse API error response: [502] 'Bad Gateway' (headers: {'Date': 'Mon, 04 Aug 2025 13:07:41 GMT', 'Content-Length': '11'})
+2025-08-04 15:07:41,324 - ERROR - Failed to download sentinel2_grid_339_2023_08.tiff: [502] Bad Gateway
+2025-08-04 15:07:41,324 - ERROR - Failed to download sentinel2_grid_339_2023_08.tiff: [502] Bad Gateway
+2025-08-04 15:07:41,324 - INFO - Processing grid 339 for 2024-08
+2025-08-04 15:07:41,378 - INFO - Downloading sentinel2_grid_339_2024_08.tiff...
+2025-08-04 15:07:41,496 - WARNING - Failed to parse API error response: [502] 'Bad Gateway' (headers: {'Date': 'Mon, 04 Aug 2025 13:07:41 GMT', 'Content-Length': '11'})
+2025-08-04 15:07:41,496 - ERROR - Preflight process graph validation failed: [502] Bad Gateway
+2025-08-04 15:08:02,345 - INFO - Successfully downloaded: sentinel2_grid_339_2024_08.tiff
+2025-08-04 15:08:02,347 - INFO - Processing grid 340 for 2018-08
+2025-08-04 15:08:02,406 - INFO - Downloading sentinel2_grid_340_2018_08.tiff...
+2025-08-04 15:08:23,837 - INFO - Successfully downloaded: sentinel2_grid_340_2018_08.tiff
+2025-08-04 15:08:23,839 - INFO - Processing grid 340 for 2019-08
+2025-08-04 15:08:23,898 - INFO - Downloading sentinel2_grid_340_2019_08.tiff...
+2025-08-04 15:08:48,519 - INFO - Successfully downloaded: sentinel2_grid_340_2019_08.tiff
+2025-08-04 15:08:48,522 - INFO - Processing grid 340 for 2020-08
+2025-08-04 15:08:48,574 - INFO - Downloading sentinel2_grid_340_2020_08.tiff...
+2025-08-04 15:09:05,956 - INFO - Successfully downloaded: sentinel2_grid_340_2020_08.tiff
+2025-08-04 15:09:05,958 - INFO - Processing grid 340 for 2021-08
+2025-08-04 15:09:06,027 - INFO - Downloading sentinel2_grid_340_2021_08.tiff...
+2025-08-04 15:09:28,815 - INFO - Successfully downloaded: sentinel2_grid_340_2021_08.tiff
+2025-08-04 15:09:28,817 - INFO - Processing grid 340 for 2022-08
+2025-08-04 15:09:28,876 - INFO - Downloading sentinel2_grid_340_2022_08.tiff...
+2025-08-04 15:09:49,059 - INFO - Successfully downloaded: sentinel2_grid_340_2022_08.tiff
+2025-08-04 15:09:49,062 - INFO - Processing grid 340 for 2023-08
+2025-08-04 15:09:49,119 - INFO - Downloading sentinel2_grid_340_2023_08.tiff...
+2025-08-04 15:10:06,892 - INFO - Successfully downloaded: sentinel2_grid_340_2023_08.tiff
+2025-08-04 15:10:06,894 - INFO - Processing grid 340 for 2024-08
+2025-08-04 15:10:06,958 - INFO - Downloading sentinel2_grid_340_2024_08.tiff...
+2025-08-04 15:10:24,091 - INFO - Successfully downloaded: sentinel2_grid_340_2024_08.tiff
+2025-08-04 15:10:24,093 - INFO - Processing grid 341 for 2018-08
+2025-08-04 15:10:24,171 - INFO - Downloading sentinel2_grid_341_2018_08.tiff...
+2025-08-04 15:11:04,596 - INFO - Successfully downloaded: sentinel2_grid_341_2018_08.tiff
+2025-08-04 15:11:04,598 - INFO - Processing grid 341 for 2019-08
+2025-08-04 15:11:04,680 - INFO - Downloading sentinel2_grid_341_2019_08.tiff...
+2025-08-04 15:11:27,459 - INFO - Successfully downloaded: sentinel2_grid_341_2019_08.tiff
+2025-08-04 15:11:27,460 - INFO - Processing grid 341 for 2020-08
+2025-08-04 15:11:27,512 - INFO - Downloading sentinel2_grid_341_2020_08.tiff...
+2025-08-04 15:11:56,227 - INFO - Successfully downloaded: sentinel2_grid_341_2020_08.tiff
+2025-08-04 15:11:56,229 - INFO - Processing grid 341 for 2021-08
+2025-08-04 15:11:56,292 - INFO - Downloading sentinel2_grid_341_2021_08.tiff...
+2025-08-04 15:12:29,291 - INFO - Successfully downloaded: sentinel2_grid_341_2021_08.tiff
+2025-08-04 15:12:29,292 - INFO - Processing grid 341 for 2022-08
+2025-08-04 15:12:29,355 - INFO - Downloading sentinel2_grid_341_2022_08.tiff...
+2025-08-04 15:12:48,421 - INFO - Successfully downloaded: sentinel2_grid_341_2022_08.tiff
+2025-08-04 15:12:48,422 - INFO - Processing grid 341 for 2023-08
+2025-08-04 15:12:48,475 - INFO - Downloading sentinel2_grid_341_2023_08.tiff...
+2025-08-04 15:13:25,860 - INFO - Successfully downloaded: sentinel2_grid_341_2023_08.tiff
+2025-08-04 15:13:25,862 - INFO - Processing grid 341 for 2024-08
+2025-08-04 15:13:25,920 - INFO - Downloading sentinel2_grid_341_2024_08.tiff...
+2025-08-04 15:13:51,024 - INFO - Successfully downloaded: sentinel2_grid_341_2024_08.tiff
+2025-08-04 15:13:51,026 - INFO - Processing grid 360 for 2018-08
+2025-08-04 15:13:51,098 - INFO - Downloading sentinel2_grid_360_2018_08.tiff...
+2025-08-04 15:14:31,340 - INFO - Successfully downloaded: sentinel2_grid_360_2018_08.tiff
+2025-08-04 15:14:31,341 - INFO - Processing grid 360 for 2019-08
+2025-08-04 15:14:31,403 - INFO - Downloading sentinel2_grid_360_2019_08.tiff...
+2025-08-04 15:14:58,551 - INFO - Successfully downloaded: sentinel2_grid_360_2019_08.tiff
+2025-08-04 15:14:58,553 - INFO - Processing grid 360 for 2020-08
+2025-08-04 15:14:58,608 - INFO - Downloading sentinel2_grid_360_2020_08.tiff...
+2025-08-04 15:15:33,951 - INFO - Successfully downloaded: sentinel2_grid_360_2020_08.tiff
+2025-08-04 15:15:33,954 - INFO - Processing grid 360 for 2021-08
+2025-08-04 15:15:34,010 - INFO - Downloading sentinel2_grid_360_2021_08.tiff...
+2025-08-04 15:16:10,359 - INFO - Successfully downloaded: sentinel2_grid_360_2021_08.tiff
+2025-08-04 15:16:10,360 - INFO - Processing grid 360 for 2022-08
+2025-08-04 15:16:10,412 - INFO - Downloading sentinel2_grid_360_2022_08.tiff...
+2025-08-04 15:16:38,787 - INFO - Successfully downloaded: sentinel2_grid_360_2022_08.tiff
+2025-08-04 15:16:38,788 - INFO - Processing grid 360 for 2023-08
+2025-08-04 15:16:38,843 - INFO - Downloading sentinel2_grid_360_2023_08.tiff...
+2025-08-04 15:17:14,478 - INFO - Successfully downloaded: sentinel2_grid_360_2023_08.tiff
+2025-08-04 15:17:14,480 - INFO - Processing grid 360 for 2024-08
+2025-08-04 15:17:14,535 - INFO - Downloading sentinel2_grid_360_2024_08.tiff...
+2025-08-04 15:17:39,691 - INFO - Successfully downloaded: sentinel2_grid_360_2024_08.tiff
+2025-08-04 15:17:39,693 - INFO - Processing grid 361 for 2018-08
+2025-08-04 15:17:39,751 - INFO - Downloading sentinel2_grid_361_2018_08.tiff...
+2025-08-04 15:18:04,593 - INFO - Successfully downloaded: sentinel2_grid_361_2018_08.tiff
+2025-08-04 15:18:04,595 - INFO - Processing grid 361 for 2019-08
+2025-08-04 15:18:04,658 - INFO - Downloading sentinel2_grid_361_2019_08.tiff...
+2025-08-04 15:18:32,235 - INFO - Successfully downloaded: sentinel2_grid_361_2019_08.tiff
+2025-08-04 15:18:32,237 - INFO - Processing grid 361 for 2020-08
+2025-08-04 15:18:32,299 - INFO - Downloading sentinel2_grid_361_2020_08.tiff...
+2025-08-04 15:18:54,018 - INFO - Successfully downloaded: sentinel2_grid_361_2020_08.tiff
+2025-08-04 15:18:54,020 - INFO - Processing grid 361 for 2021-08
+2025-08-04 15:18:54,082 - INFO - Downloading sentinel2_grid_361_2021_08.tiff...
+2025-08-04 15:19:13,905 - INFO - Successfully downloaded: sentinel2_grid_361_2021_08.tiff
+2025-08-04 15:19:13,907 - INFO - Processing grid 361 for 2022-08
+2025-08-04 15:19:13,966 - INFO - Downloading sentinel2_grid_361_2022_08.tiff...
+2025-08-04 15:19:40,407 - INFO - Successfully downloaded: sentinel2_grid_361_2022_08.tiff
+2025-08-04 15:19:40,409 - INFO - Processing grid 361 for 2023-08
+2025-08-04 15:19:40,466 - INFO - Downloading sentinel2_grid_361_2023_08.tiff...
+2025-08-04 15:20:01,295 - INFO - Successfully downloaded: sentinel2_grid_361_2023_08.tiff
+2025-08-04 15:20:01,297 - INFO - Processing grid 361 for 2024-08
+2025-08-04 15:20:01,353 - INFO - Downloading sentinel2_grid_361_2024_08.tiff...
+2025-08-04 15:20:16,749 - INFO - Successfully downloaded: sentinel2_grid_361_2024_08.tiff
+2025-08-04 15:20:16,751 - INFO - Processing grid 362 for 2018-08
+2025-08-04 15:20:16,808 - INFO - Downloading sentinel2_grid_362_2018_08.tiff...
+2025-08-04 15:20:38,301 - INFO - Successfully downloaded: sentinel2_grid_362_2018_08.tiff
+2025-08-04 15:20:38,303 - INFO - Processing grid 362 for 2019-08
+2025-08-04 15:20:38,357 - INFO - Downloading sentinel2_grid_362_2019_08.tiff...
+2025-08-04 15:20:58,007 - INFO - Successfully downloaded: sentinel2_grid_362_2019_08.tiff
+2025-08-04 15:20:58,008 - INFO - Processing grid 362 for 2020-08
+2025-08-04 15:20:58,068 - INFO - Downloading sentinel2_grid_362_2020_08.tiff...
+2025-08-04 15:21:20,949 - INFO - Successfully downloaded: sentinel2_grid_362_2020_08.tiff
+2025-08-04 15:21:20,950 - INFO - Processing grid 362 for 2021-08
+2025-08-04 15:21:21,005 - INFO - Downloading sentinel2_grid_362_2021_08.tiff...
+2025-08-04 15:21:37,230 - INFO - Successfully downloaded: sentinel2_grid_362_2021_08.tiff
+2025-08-04 15:21:37,232 - INFO - Processing grid 362 for 2022-08
+2025-08-04 15:21:37,295 - INFO - Downloading sentinel2_grid_362_2022_08.tiff...
+2025-08-04 15:21:56,794 - INFO - Successfully downloaded: sentinel2_grid_362_2022_08.tiff
+2025-08-04 15:21:56,800 - INFO - Processing grid 362 for 2023-08
+2025-08-04 15:21:56,862 - INFO - Downloading sentinel2_grid_362_2023_08.tiff...
+2025-08-04 15:22:33,340 - INFO - Successfully downloaded: sentinel2_grid_362_2023_08.tiff
+2025-08-04 15:22:33,342 - INFO - Processing grid 362 for 2024-08
+2025-08-04 15:22:33,395 - INFO - Downloading sentinel2_grid_362_2024_08.tiff...
+2025-08-04 15:22:55,016 - INFO - Successfully downloaded: sentinel2_grid_362_2024_08.tiff
+2025-08-04 15:22:55,018 - INFO - Processing grid 380 for 2018-08
+2025-08-04 15:22:55,073 - INFO - Downloading sentinel2_grid_380_2018_08.tiff...
+2025-08-04 15:23:15,577 - INFO - Successfully downloaded: sentinel2_grid_380_2018_08.tiff
+2025-08-04 15:23:15,577 - INFO - Processing grid 380 for 2019-08
+2025-08-04 15:23:15,638 - INFO - Downloading sentinel2_grid_380_2019_08.tiff...
+2025-08-04 15:23:38,400 - INFO - Successfully downloaded: sentinel2_grid_380_2019_08.tiff
+2025-08-04 15:23:38,404 - INFO - Processing grid 380 for 2020-08
+2025-08-04 15:23:38,542 - INFO - Downloading sentinel2_grid_380_2020_08.tiff...
+2025-08-04 15:24:03,515 - INFO - Successfully downloaded: sentinel2_grid_380_2020_08.tiff
+2025-08-04 15:24:03,517 - INFO - Processing grid 380 for 2021-08
+2025-08-04 15:24:03,579 - INFO - Downloading sentinel2_grid_380_2021_08.tiff...
+2025-08-04 15:24:24,929 - INFO - Successfully downloaded: sentinel2_grid_380_2021_08.tiff
+2025-08-04 15:24:24,931 - INFO - Processing grid 380 for 2022-08
+2025-08-04 15:24:24,997 - INFO - Downloading sentinel2_grid_380_2022_08.tiff...
+2025-08-04 15:24:47,386 - INFO - Successfully downloaded: sentinel2_grid_380_2022_08.tiff
+2025-08-04 15:24:47,387 - INFO - Processing grid 380 for 2023-08
+2025-08-04 15:24:47,453 - INFO - Downloading sentinel2_grid_380_2023_08.tiff...
+2025-08-04 15:25:11,561 - INFO - Successfully downloaded: sentinel2_grid_380_2023_08.tiff
+2025-08-04 15:25:11,561 - INFO - Processing grid 380 for 2024-08
+2025-08-04 15:25:11,626 - INFO - Downloading sentinel2_grid_380_2024_08.tiff...
+2025-08-04 15:25:30,664 - INFO - Successfully downloaded: sentinel2_grid_380_2024_08.tiff
+2025-08-04 15:25:30,665 - INFO - Processing grid 381 for 2018-08
+2025-08-04 15:25:30,720 - INFO - Downloading sentinel2_grid_381_2018_08.tiff...
+2025-08-04 15:25:46,493 - INFO - Successfully downloaded: sentinel2_grid_381_2018_08.tiff
+2025-08-04 15:25:46,495 - INFO - Processing grid 381 for 2019-08
+2025-08-04 15:25:46,567 - INFO - Downloading sentinel2_grid_381_2019_08.tiff...
+2025-08-04 15:26:04,745 - INFO - Successfully downloaded: sentinel2_grid_381_2019_08.tiff
+2025-08-04 15:26:04,746 - INFO - Processing grid 381 for 2020-08
+2025-08-04 15:26:04,856 - INFO - Downloading sentinel2_grid_381_2020_08.tiff...
+2025-08-04 15:26:25,884 - INFO - Successfully downloaded: sentinel2_grid_381_2020_08.tiff
+2025-08-04 15:26:25,885 - INFO - Processing grid 381 for 2021-08
+2025-08-04 15:26:25,947 - INFO - Downloading sentinel2_grid_381_2021_08.tiff...
+2025-08-04 15:26:43,812 - INFO - Successfully downloaded: sentinel2_grid_381_2021_08.tiff
+2025-08-04 15:26:43,813 - INFO - Processing grid 381 for 2022-08
+2025-08-04 15:26:43,878 - INFO - Downloading sentinel2_grid_381_2022_08.tiff...
+2025-08-04 15:26:59,508 - INFO - Successfully downloaded: sentinel2_grid_381_2022_08.tiff
+2025-08-04 15:26:59,509 - INFO - Processing grid 381 for 2023-08
+2025-08-04 15:26:59,564 - INFO - Downloading sentinel2_grid_381_2023_08.tiff...
+2025-08-04 15:27:20,334 - INFO - Successfully downloaded: sentinel2_grid_381_2023_08.tiff
+2025-08-04 15:27:20,335 - INFO - Processing grid 381 for 2024-08
+2025-08-04 15:27:20,388 - INFO - Downloading sentinel2_grid_381_2024_08.tiff...
+2025-08-04 15:27:35,311 - INFO - Successfully downloaded: sentinel2_grid_381_2024_08.tiff
+2025-08-04 15:27:35,313 - INFO - Processing grid 382 for 2018-08
+2025-08-04 15:27:35,372 - INFO - Downloading sentinel2_grid_382_2018_08.tiff...
+2025-08-04 15:27:52,581 - INFO - Successfully downloaded: sentinel2_grid_382_2018_08.tiff
+2025-08-04 15:27:52,583 - INFO - Processing grid 382 for 2019-08
+2025-08-04 15:27:52,649 - INFO - Downloading sentinel2_grid_382_2019_08.tiff...
+2025-08-04 15:28:08,497 - INFO - Successfully downloaded: sentinel2_grid_382_2019_08.tiff
+2025-08-04 15:28:08,500 - INFO - Processing grid 382 for 2020-08
+2025-08-04 15:28:08,557 - INFO - Downloading sentinel2_grid_382_2020_08.tiff...
+2025-08-04 15:28:27,947 - INFO - Successfully downloaded: sentinel2_grid_382_2020_08.tiff
+2025-08-04 15:28:27,948 - INFO - Processing grid 382 for 2021-08
+2025-08-04 15:28:27,999 - INFO - Downloading sentinel2_grid_382_2021_08.tiff...
+2025-08-04 15:28:51,810 - INFO - Successfully downloaded: sentinel2_grid_382_2021_08.tiff
+2025-08-04 15:28:51,811 - INFO - Processing grid 382 for 2022-08
+2025-08-04 15:28:51,869 - INFO - Downloading sentinel2_grid_382_2022_08.tiff...
+2025-08-04 15:29:11,827 - INFO - Successfully downloaded: sentinel2_grid_382_2022_08.tiff
+2025-08-04 15:29:11,828 - INFO - Processing grid 382 for 2023-08
+2025-08-04 15:29:11,885 - INFO - Downloading sentinel2_grid_382_2023_08.tiff...
+2025-08-04 15:29:35,334 - INFO - Successfully downloaded: sentinel2_grid_382_2023_08.tiff
+2025-08-04 15:29:35,336 - INFO - Processing grid 382 for 2024-08
+2025-08-04 15:29:35,388 - INFO - Downloading sentinel2_grid_382_2024_08.tiff...
+2025-08-04 15:30:15,587 - INFO - Successfully downloaded: sentinel2_grid_382_2024_08.tiff
+2025-08-04 15:30:15,591 - INFO - ============================================================
+2025-08-04 15:30:15,591 - INFO - DOWNLOAD SUMMARY
+2025-08-04 15:30:15,591 - INFO - ============================================================
+2025-08-04 15:30:15,591 - INFO - Total requested: 63
+2025-08-04 15:30:15,591 - INFO - Successfully downloaded: 62
+2025-08-04 15:30:15,591 - INFO - Failed: 1
+2025-08-04 15:30:15,591 - INFO - Skipped (already exist): 0
+2025-08-04 15:30:15,591 - INFO - Success rate: 98.4%
+2025-08-04 15:30:15,591 - INFO - ============================================================
+2025-08-04 15:30:15,591 - INFO - Download process completed
+2025-08-04 15:33:18,081 - INFO - Starting Sentinel-2 download script
+2025-08-04 15:33:18,081 - INFO - Target grid IDs: [339, 340, 341, 360, 361, 362, 380, 381, 382]
+2025-08-04 15:33:18,081 - INFO - Years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+2025-08-04 15:33:18,082 - INFO - Loading grid data from data/slovenia_grid.gpkg
+2025-08-04 15:33:18,344 - INFO - Loaded 940 grid cells
+2025-08-04 15:33:18,347 - INFO - Filtered to 9 target grid cells
+2025-08-04 15:33:18,347 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-04 15:33:18,350 - INFO - Connecting to OpenEO Copernicus Data Space Ecosystem...
+2025-08-04 15:33:18,350 - INFO - Loaded openEO client config from sources: []
+2025-08-04 15:33:18,946 - INFO - Please authenticate in your browser...
+2025-08-04 15:33:19,006 - INFO - Found OIDC providers: ['CDSE']
+2025-08-04 15:33:19,006 - INFO - No OIDC provider given, but only one available: 'CDSE'. Using that one.
+2025-08-04 15:33:19,240 - INFO - Using default client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e' from OIDC provider 'CDSE' info.
+2025-08-04 15:33:19,243 - INFO - Found refresh token: trying refresh token based authentication.
+2025-08-04 15:33:19,243 - INFO - Doing 'refresh_token' token request 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token' with post data fields ['grant_type', 'client_id', 'refresh_token'] (client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-04 15:33:19,538 - INFO - Obtained tokens: ['access_token', 'id_token', 'refresh_token']
+2025-08-04 15:33:19,539 - INFO - Storing refresh token for issuer 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE' (client 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-04 15:33:19,542 - INFO - Successfully connected and authenticated
+2025-08-04 15:33:19,565 - INFO - Generated 63 download tasks
+2025-08-04 15:33:19,565 - INFO - Grid IDs: [339, 340, 341, 360, 361, 362, 380, 381, 382]
+2025-08-04 15:33:19,565 - INFO - Years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+2025-08-04 15:33:19,565 - INFO - Max cloud coverage: 20%
+2025-08-04 15:33:19,565 - INFO - Download directory: /Users/gasper/Documents/ViCos/eo_cd_slo/data/images/sentinel_downloads
+2025-08-04 15:33:19,576 - INFO - Processing grid 339 for 2018-08
+2025-08-04 15:33:19,576 - INFO - File sentinel2_grid_339_2018_08.tiff already exists, skipping
+2025-08-04 15:33:19,576 - INFO - Processing grid 339 for 2019-08
+2025-08-04 15:33:19,576 - INFO - File sentinel2_grid_339_2019_08.tiff already exists, skipping
+2025-08-04 15:33:19,577 - INFO - Processing grid 339 for 2020-08
+2025-08-04 15:33:19,577 - INFO - File sentinel2_grid_339_2020_08.tiff already exists, skipping
+2025-08-04 15:33:19,577 - INFO - Processing grid 339 for 2021-08
+2025-08-04 15:33:19,577 - INFO - File sentinel2_grid_339_2021_08.tiff already exists, skipping
+2025-08-04 15:33:19,577 - INFO - Processing grid 339 for 2022-08
+2025-08-04 15:33:19,577 - INFO - File sentinel2_grid_339_2022_08.tiff already exists, skipping
+2025-08-04 15:33:19,578 - INFO - Processing grid 339 for 2023-08
+2025-08-04 15:33:19,681 - INFO - Downloading sentinel2_grid_339_2023_08.tiff...
+2025-08-04 15:34:12,213 - INFO - Successfully downloaded: sentinel2_grid_339_2023_08.tiff
+2025-08-04 15:34:12,216 - INFO - Processing grid 339 for 2024-08
+2025-08-04 15:34:12,216 - INFO - File sentinel2_grid_339_2024_08.tiff already exists, skipping
+2025-08-04 15:34:12,217 - INFO - Processing grid 340 for 2018-08
+2025-08-04 15:34:12,217 - INFO - File sentinel2_grid_340_2018_08.tiff already exists, skipping
+2025-08-04 15:34:12,217 - INFO - Processing grid 340 for 2019-08
+2025-08-04 15:34:12,217 - INFO - File sentinel2_grid_340_2019_08.tiff already exists, skipping
+2025-08-04 15:34:12,217 - INFO - Processing grid 340 for 2020-08
+2025-08-04 15:34:12,217 - INFO - File sentinel2_grid_340_2020_08.tiff already exists, skipping
+2025-08-04 15:34:12,217 - INFO - Processing grid 340 for 2021-08
+2025-08-04 15:34:12,217 - INFO - File sentinel2_grid_340_2021_08.tiff already exists, skipping
+2025-08-04 15:34:12,218 - INFO - Processing grid 340 for 2022-08
+2025-08-04 15:34:12,218 - INFO - File sentinel2_grid_340_2022_08.tiff already exists, skipping
+2025-08-04 15:34:12,218 - INFO - Processing grid 340 for 2023-08
+2025-08-04 15:34:12,218 - INFO - File sentinel2_grid_340_2023_08.tiff already exists, skipping
+2025-08-04 15:34:12,218 - INFO - Processing grid 340 for 2024-08
+2025-08-04 15:34:12,218 - INFO - File sentinel2_grid_340_2024_08.tiff already exists, skipping
+2025-08-04 15:34:12,218 - INFO - Processing grid 341 for 2018-08
+2025-08-04 15:34:12,218 - INFO - File sentinel2_grid_341_2018_08.tiff already exists, skipping
+2025-08-04 15:34:12,219 - INFO - Processing grid 341 for 2019-08
+2025-08-04 15:34:12,219 - INFO - File sentinel2_grid_341_2019_08.tiff already exists, skipping
+2025-08-04 15:34:12,219 - INFO - Processing grid 341 for 2020-08
+2025-08-04 15:34:12,219 - INFO - File sentinel2_grid_341_2020_08.tiff already exists, skipping
+2025-08-04 15:34:12,219 - INFO - Processing grid 341 for 2021-08
+2025-08-04 15:34:12,219 - INFO - File sentinel2_grid_341_2021_08.tiff already exists, skipping
+2025-08-04 15:34:12,219 - INFO - Processing grid 341 for 2022-08
+2025-08-04 15:34:12,219 - INFO - File sentinel2_grid_341_2022_08.tiff already exists, skipping
+2025-08-04 15:34:12,219 - INFO - Processing grid 341 for 2023-08
+2025-08-04 15:34:12,219 - INFO - File sentinel2_grid_341_2023_08.tiff already exists, skipping
+2025-08-04 15:34:12,219 - INFO - Processing grid 341 for 2024-08
+2025-08-04 15:34:12,219 - INFO - File sentinel2_grid_341_2024_08.tiff already exists, skipping
+2025-08-04 15:34:12,220 - INFO - Processing grid 360 for 2018-08
+2025-08-04 15:34:12,220 - INFO - File sentinel2_grid_360_2018_08.tiff already exists, skipping
+2025-08-04 15:34:12,220 - INFO - Processing grid 360 for 2019-08
+2025-08-04 15:34:12,220 - INFO - File sentinel2_grid_360_2019_08.tiff already exists, skipping
+2025-08-04 15:34:12,220 - INFO - Processing grid 360 for 2020-08
+2025-08-04 15:34:12,220 - INFO - File sentinel2_grid_360_2020_08.tiff already exists, skipping
+2025-08-04 15:34:12,220 - INFO - Processing grid 360 for 2021-08
+2025-08-04 15:34:12,220 - INFO - File sentinel2_grid_360_2021_08.tiff already exists, skipping
+2025-08-04 15:34:12,220 - INFO - Processing grid 360 for 2022-08
+2025-08-04 15:34:12,220 - INFO - File sentinel2_grid_360_2022_08.tiff already exists, skipping
+2025-08-04 15:34:12,220 - INFO - Processing grid 360 for 2023-08
+2025-08-04 15:34:12,220 - INFO - File sentinel2_grid_360_2023_08.tiff already exists, skipping
+2025-08-04 15:34:12,220 - INFO - Processing grid 360 for 2024-08
+2025-08-04 15:34:12,220 - INFO - File sentinel2_grid_360_2024_08.tiff already exists, skipping
+2025-08-04 15:34:12,221 - INFO - Processing grid 361 for 2018-08
+2025-08-04 15:34:12,221 - INFO - File sentinel2_grid_361_2018_08.tiff already exists, skipping
+2025-08-04 15:34:12,221 - INFO - Processing grid 361 for 2019-08
+2025-08-04 15:34:12,221 - INFO - File sentinel2_grid_361_2019_08.tiff already exists, skipping
+2025-08-04 15:34:12,221 - INFO - Processing grid 361 for 2020-08
+2025-08-04 15:34:12,221 - INFO - File sentinel2_grid_361_2020_08.tiff already exists, skipping
+2025-08-04 15:34:12,221 - INFO - Processing grid 361 for 2021-08
+2025-08-04 15:34:12,221 - INFO - File sentinel2_grid_361_2021_08.tiff already exists, skipping
+2025-08-04 15:34:12,221 - INFO - Processing grid 361 for 2022-08
+2025-08-04 15:34:12,221 - INFO - File sentinel2_grid_361_2022_08.tiff already exists, skipping
+2025-08-04 15:34:12,221 - INFO - Processing grid 361 for 2023-08
+2025-08-04 15:34:12,221 - INFO - File sentinel2_grid_361_2023_08.tiff already exists, skipping
+2025-08-04 15:34:12,221 - INFO - Processing grid 361 for 2024-08
+2025-08-04 15:34:12,221 - INFO - File sentinel2_grid_361_2024_08.tiff already exists, skipping
+2025-08-04 15:34:12,222 - INFO - Processing grid 362 for 2018-08
+2025-08-04 15:34:12,222 - INFO - File sentinel2_grid_362_2018_08.tiff already exists, skipping
+2025-08-04 15:34:12,222 - INFO - Processing grid 362 for 2019-08
+2025-08-04 15:34:12,222 - INFO - File sentinel2_grid_362_2019_08.tiff already exists, skipping
+2025-08-04 15:34:12,222 - INFO - Processing grid 362 for 2020-08
+2025-08-04 15:34:12,222 - INFO - File sentinel2_grid_362_2020_08.tiff already exists, skipping
+2025-08-04 15:34:12,222 - INFO - Processing grid 362 for 2021-08
+2025-08-04 15:34:12,222 - INFO - File sentinel2_grid_362_2021_08.tiff already exists, skipping
+2025-08-04 15:34:12,222 - INFO - Processing grid 362 for 2022-08
+2025-08-04 15:34:12,222 - INFO - File sentinel2_grid_362_2022_08.tiff already exists, skipping
+2025-08-04 15:34:12,222 - INFO - Processing grid 362 for 2023-08
+2025-08-04 15:34:12,222 - INFO - File sentinel2_grid_362_2023_08.tiff already exists, skipping
+2025-08-04 15:34:12,222 - INFO - Processing grid 362 for 2024-08
+2025-08-04 15:34:12,223 - INFO - File sentinel2_grid_362_2024_08.tiff already exists, skipping
+2025-08-04 15:34:12,223 - INFO - Processing grid 380 for 2018-08
+2025-08-04 15:34:12,223 - INFO - File sentinel2_grid_380_2018_08.tiff already exists, skipping
+2025-08-04 15:34:12,223 - INFO - Processing grid 380 for 2019-08
+2025-08-04 15:34:12,223 - INFO - File sentinel2_grid_380_2019_08.tiff already exists, skipping
+2025-08-04 15:34:12,223 - INFO - Processing grid 380 for 2020-08
+2025-08-04 15:34:12,223 - INFO - File sentinel2_grid_380_2020_08.tiff already exists, skipping
+2025-08-04 15:34:12,223 - INFO - Processing grid 380 for 2021-08
+2025-08-04 15:34:12,223 - INFO - File sentinel2_grid_380_2021_08.tiff already exists, skipping
+2025-08-04 15:34:12,223 - INFO - Processing grid 380 for 2022-08
+2025-08-04 15:34:12,223 - INFO - File sentinel2_grid_380_2022_08.tiff already exists, skipping
+2025-08-04 15:34:12,223 - INFO - Processing grid 380 for 2023-08
+2025-08-04 15:34:12,223 - INFO - File sentinel2_grid_380_2023_08.tiff already exists, skipping
+2025-08-04 15:34:12,224 - INFO - Processing grid 380 for 2024-08
+2025-08-04 15:34:12,224 - INFO - File sentinel2_grid_380_2024_08.tiff already exists, skipping
+2025-08-04 15:34:12,224 - INFO - Processing grid 381 for 2018-08
+2025-08-04 15:34:12,224 - INFO - File sentinel2_grid_381_2018_08.tiff already exists, skipping
+2025-08-04 15:34:12,224 - INFO - Processing grid 381 for 2019-08
+2025-08-04 15:34:12,224 - INFO - File sentinel2_grid_381_2019_08.tiff already exists, skipping
+2025-08-04 15:34:12,224 - INFO - Processing grid 381 for 2020-08
+2025-08-04 15:34:12,224 - INFO - File sentinel2_grid_381_2020_08.tiff already exists, skipping
+2025-08-04 15:34:12,224 - INFO - Processing grid 381 for 2021-08
+2025-08-04 15:34:12,224 - INFO - File sentinel2_grid_381_2021_08.tiff already exists, skipping
+2025-08-04 15:34:12,224 - INFO - Processing grid 381 for 2022-08
+2025-08-04 15:34:12,224 - INFO - File sentinel2_grid_381_2022_08.tiff already exists, skipping
+2025-08-04 15:34:12,224 - INFO - Processing grid 381 for 2023-08
+2025-08-04 15:34:12,224 - INFO - File sentinel2_grid_381_2023_08.tiff already exists, skipping
+2025-08-04 15:34:12,225 - INFO - Processing grid 381 for 2024-08
+2025-08-04 15:34:12,225 - INFO - File sentinel2_grid_381_2024_08.tiff already exists, skipping
+2025-08-04 15:34:12,225 - INFO - Processing grid 382 for 2018-08
+2025-08-04 15:34:12,225 - INFO - File sentinel2_grid_382_2018_08.tiff already exists, skipping
+2025-08-04 15:34:12,225 - INFO - Processing grid 382 for 2019-08
+2025-08-04 15:34:12,225 - INFO - File sentinel2_grid_382_2019_08.tiff already exists, skipping
+2025-08-04 15:34:12,225 - INFO - Processing grid 382 for 2020-08
+2025-08-04 15:34:12,225 - INFO - File sentinel2_grid_382_2020_08.tiff already exists, skipping
+2025-08-04 15:34:12,225 - INFO - Processing grid 382 for 2021-08
+2025-08-04 15:34:12,225 - INFO - File sentinel2_grid_382_2021_08.tiff already exists, skipping
+2025-08-04 15:34:12,225 - INFO - Processing grid 382 for 2022-08
+2025-08-04 15:34:12,225 - INFO - File sentinel2_grid_382_2022_08.tiff already exists, skipping
+2025-08-04 15:34:12,225 - INFO - Processing grid 382 for 2023-08
+2025-08-04 15:34:12,225 - INFO - File sentinel2_grid_382_2023_08.tiff already exists, skipping
+2025-08-04 15:34:12,226 - INFO - Processing grid 382 for 2024-08
+2025-08-04 15:34:12,226 - INFO - File sentinel2_grid_382_2024_08.tiff already exists, skipping
+2025-08-04 15:34:12,226 - INFO - ============================================================
+2025-08-04 15:34:12,226 - INFO - DOWNLOAD SUMMARY
+2025-08-04 15:34:12,226 - INFO - ============================================================
+2025-08-04 15:34:12,226 - INFO - Total requested: 63
+2025-08-04 15:34:12,226 - INFO - Successfully downloaded: 1
+2025-08-04 15:34:12,226 - INFO - Failed: 0
+2025-08-04 15:34:12,226 - INFO - Skipped (already exist): 62
+2025-08-04 15:34:12,226 - INFO - Success rate: 1.6%
+2025-08-04 15:34:12,226 - INFO - ============================================================
+2025-08-04 15:34:12,226 - INFO - Download process completed
+2025-08-04 15:37:55,534 - INFO - Starting Sentinel-2 download script
+2025-08-04 15:37:55,534 - INFO - Target grid IDs: [339, 340, 341, 360, 361, 362, 380, 381, 382, 297, 296, 295, 294, 293, 292, 291, 313, 335, 356, 376, 397, 420, 421, 422, 423, 424, 425, 426, 403, 382, 362, 341, 319, 75, 52, 51, 74]
+2025-08-04 15:37:55,534 - INFO - Years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+2025-08-04 15:37:55,534 - INFO - Loading grid data from data/slovenia_grid.gpkg
+2025-08-04 15:37:55,735 - INFO - Loaded 940 grid cells
+2025-08-04 15:37:55,737 - INFO - Filtered to 34 target grid cells
+2025-08-04 15:37:55,737 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-04 15:37:55,741 - INFO - Connecting to OpenEO Copernicus Data Space Ecosystem...
+2025-08-04 15:37:55,741 - INFO - Loaded openEO client config from sources: []
+2025-08-04 15:37:56,204 - INFO - Please authenticate in your browser...
+2025-08-04 15:37:56,255 - INFO - Found OIDC providers: ['CDSE']
+2025-08-04 15:37:56,255 - INFO - No OIDC provider given, but only one available: 'CDSE'. Using that one.
+2025-08-04 15:37:56,448 - INFO - Using default client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e' from OIDC provider 'CDSE' info.
+2025-08-04 15:37:56,449 - INFO - Found refresh token: trying refresh token based authentication.
+2025-08-04 15:37:56,450 - INFO - Doing 'refresh_token' token request 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token' with post data fields ['grant_type', 'client_id', 'refresh_token'] (client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-04 15:37:56,659 - INFO - Obtained tokens: ['access_token', 'id_token', 'refresh_token']
+2025-08-04 15:37:56,660 - INFO - Storing refresh token for issuer 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE' (client 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-04 15:37:56,663 - INFO - Successfully connected and authenticated
+2025-08-04 15:37:56,739 - INFO - Generated 259 download tasks
+2025-08-04 15:37:56,740 - INFO - Grid IDs: [339, 340, 341, 360, 361, 362, 380, 381, 382, 297, 296, 295, 294, 293, 292, 291, 313, 335, 356, 376, 397, 420, 421, 422, 423, 424, 425, 426, 403, 382, 362, 341, 319, 75, 52, 51, 74]
+2025-08-04 15:37:56,740 - INFO - Years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+2025-08-04 15:37:56,740 - INFO - Max cloud coverage: 20%
+2025-08-04 15:37:56,740 - INFO - Download directory: /Users/gasper/Documents/ViCos/eo_cd_slo/data/images/sentinel_downloads
+2025-08-04 15:37:56,748 - INFO - Processing grid 339 for 2018-08
+2025-08-04 15:37:56,749 - INFO - File sentinel2_grid_339_2018_08.tiff already exists, skipping
+2025-08-04 15:37:56,749 - INFO - Processing grid 339 for 2019-08
+2025-08-04 15:37:56,749 - INFO - File sentinel2_grid_339_2019_08.tiff already exists, skipping
+2025-08-04 15:37:56,749 - INFO - Processing grid 339 for 2020-08
+2025-08-04 15:37:56,749 - INFO - File sentinel2_grid_339_2020_08.tiff already exists, skipping
+2025-08-04 15:37:56,749 - INFO - Processing grid 339 for 2021-08
+2025-08-04 15:37:56,749 - INFO - File sentinel2_grid_339_2021_08.tiff already exists, skipping
+2025-08-04 15:37:56,749 - INFO - Processing grid 339 for 2022-08
+2025-08-04 15:37:56,749 - INFO - File sentinel2_grid_339_2022_08.tiff already exists, skipping
+2025-08-04 15:37:56,749 - INFO - Processing grid 339 for 2023-08
+2025-08-04 15:37:56,749 - INFO - File sentinel2_grid_339_2023_08.tiff already exists, skipping
+2025-08-04 15:37:56,750 - INFO - Processing grid 339 for 2024-08
+2025-08-04 15:37:56,750 - INFO - File sentinel2_grid_339_2024_08.tiff already exists, skipping
+2025-08-04 15:37:56,750 - INFO - Processing grid 340 for 2018-08
+2025-08-04 15:37:56,750 - INFO - File sentinel2_grid_340_2018_08.tiff already exists, skipping
+2025-08-04 15:37:56,750 - INFO - Processing grid 340 for 2019-08
+2025-08-04 15:37:56,750 - INFO - File sentinel2_grid_340_2019_08.tiff already exists, skipping
+2025-08-04 15:37:56,750 - INFO - Processing grid 340 for 2020-08
+2025-08-04 15:37:56,750 - INFO - File sentinel2_grid_340_2020_08.tiff already exists, skipping
+2025-08-04 15:37:56,750 - INFO - Processing grid 340 for 2021-08
+2025-08-04 15:37:56,750 - INFO - File sentinel2_grid_340_2021_08.tiff already exists, skipping
+2025-08-04 15:37:56,750 - INFO - Processing grid 340 for 2022-08
+2025-08-04 15:37:56,751 - INFO - File sentinel2_grid_340_2022_08.tiff already exists, skipping
+2025-08-04 15:37:56,751 - INFO - Processing grid 340 for 2023-08
+2025-08-04 15:37:56,751 - INFO - File sentinel2_grid_340_2023_08.tiff already exists, skipping
+2025-08-04 15:37:56,751 - INFO - Processing grid 340 for 2024-08
+2025-08-04 15:37:56,751 - INFO - File sentinel2_grid_340_2024_08.tiff already exists, skipping
+2025-08-04 15:37:56,751 - INFO - Processing grid 341 for 2018-08
+2025-08-04 15:37:56,751 - INFO - File sentinel2_grid_341_2018_08.tiff already exists, skipping
+2025-08-04 15:37:56,751 - INFO - Processing grid 341 for 2019-08
+2025-08-04 15:37:56,751 - INFO - File sentinel2_grid_341_2019_08.tiff already exists, skipping
+2025-08-04 15:37:56,751 - INFO - Processing grid 341 for 2020-08
+2025-08-04 15:37:56,751 - INFO - File sentinel2_grid_341_2020_08.tiff already exists, skipping
+2025-08-04 15:37:56,752 - INFO - Processing grid 341 for 2021-08
+2025-08-04 15:37:56,752 - INFO - File sentinel2_grid_341_2021_08.tiff already exists, skipping
+2025-08-04 15:37:56,752 - INFO - Processing grid 341 for 2022-08
+2025-08-04 15:37:56,752 - INFO - File sentinel2_grid_341_2022_08.tiff already exists, skipping
+2025-08-04 15:37:56,752 - INFO - Processing grid 341 for 2023-08
+2025-08-04 15:37:56,752 - INFO - File sentinel2_grid_341_2023_08.tiff already exists, skipping
+2025-08-04 15:37:56,752 - INFO - Processing grid 341 for 2024-08
+2025-08-04 15:37:56,752 - INFO - File sentinel2_grid_341_2024_08.tiff already exists, skipping
+2025-08-04 15:37:56,752 - INFO - Processing grid 360 for 2018-08
+2025-08-04 15:37:56,752 - INFO - File sentinel2_grid_360_2018_08.tiff already exists, skipping
+2025-08-04 15:37:56,752 - INFO - Processing grid 360 for 2019-08
+2025-08-04 15:37:56,752 - INFO - File sentinel2_grid_360_2019_08.tiff already exists, skipping
+2025-08-04 15:37:56,752 - INFO - Processing grid 360 for 2020-08
+2025-08-04 15:37:56,752 - INFO - File sentinel2_grid_360_2020_08.tiff already exists, skipping
+2025-08-04 15:37:56,753 - INFO - Processing grid 360 for 2021-08
+2025-08-04 15:37:56,753 - INFO - File sentinel2_grid_360_2021_08.tiff already exists, skipping
+2025-08-04 15:37:56,753 - INFO - Processing grid 360 for 2022-08
+2025-08-04 15:37:56,753 - INFO - File sentinel2_grid_360_2022_08.tiff already exists, skipping
+2025-08-04 15:37:56,753 - INFO - Processing grid 360 for 2023-08
+2025-08-04 15:37:56,753 - INFO - File sentinel2_grid_360_2023_08.tiff already exists, skipping
+2025-08-04 15:37:56,753 - INFO - Processing grid 360 for 2024-08
+2025-08-04 15:37:56,753 - INFO - File sentinel2_grid_360_2024_08.tiff already exists, skipping
+2025-08-04 15:37:56,753 - INFO - Processing grid 361 for 2018-08
+2025-08-04 15:37:56,753 - INFO - File sentinel2_grid_361_2018_08.tiff already exists, skipping
+2025-08-04 15:37:56,753 - INFO - Processing grid 361 for 2019-08
+2025-08-04 15:37:56,753 - INFO - File sentinel2_grid_361_2019_08.tiff already exists, skipping
+2025-08-04 15:37:56,753 - INFO - Processing grid 361 for 2020-08
+2025-08-04 15:37:56,754 - INFO - File sentinel2_grid_361_2020_08.tiff already exists, skipping
+2025-08-04 15:37:56,754 - INFO - Processing grid 361 for 2021-08
+2025-08-04 15:37:56,754 - INFO - File sentinel2_grid_361_2021_08.tiff already exists, skipping
+2025-08-04 15:37:56,754 - INFO - Processing grid 361 for 2022-08
+2025-08-04 15:37:56,754 - INFO - File sentinel2_grid_361_2022_08.tiff already exists, skipping
+2025-08-04 15:37:56,754 - INFO - Processing grid 361 for 2023-08
+2025-08-04 15:37:56,754 - INFO - File sentinel2_grid_361_2023_08.tiff already exists, skipping
+2025-08-04 15:37:56,754 - INFO - Processing grid 361 for 2024-08
+2025-08-04 15:37:56,754 - INFO - File sentinel2_grid_361_2024_08.tiff already exists, skipping
+2025-08-04 15:37:56,754 - INFO - Processing grid 362 for 2018-08
+2025-08-04 15:37:56,754 - INFO - File sentinel2_grid_362_2018_08.tiff already exists, skipping
+2025-08-04 15:37:56,754 - INFO - Processing grid 362 for 2019-08
+2025-08-04 15:37:56,754 - INFO - File sentinel2_grid_362_2019_08.tiff already exists, skipping
+2025-08-04 15:37:56,755 - INFO - Processing grid 362 for 2020-08
+2025-08-04 15:37:56,755 - INFO - File sentinel2_grid_362_2020_08.tiff already exists, skipping
+2025-08-04 15:37:56,755 - INFO - Processing grid 362 for 2021-08
+2025-08-04 15:37:56,755 - INFO - File sentinel2_grid_362_2021_08.tiff already exists, skipping
+2025-08-04 15:37:56,755 - INFO - Processing grid 362 for 2022-08
+2025-08-04 15:37:56,755 - INFO - File sentinel2_grid_362_2022_08.tiff already exists, skipping
+2025-08-04 15:37:56,755 - INFO - Processing grid 362 for 2023-08
+2025-08-04 15:37:56,755 - INFO - File sentinel2_grid_362_2023_08.tiff already exists, skipping
+2025-08-04 15:37:56,755 - INFO - Processing grid 362 for 2024-08
+2025-08-04 15:37:56,755 - INFO - File sentinel2_grid_362_2024_08.tiff already exists, skipping
+2025-08-04 15:37:56,755 - INFO - Processing grid 380 for 2018-08
+2025-08-04 15:37:56,755 - INFO - File sentinel2_grid_380_2018_08.tiff already exists, skipping
+2025-08-04 15:37:56,755 - INFO - Processing grid 380 for 2019-08
+2025-08-04 15:37:56,755 - INFO - File sentinel2_grid_380_2019_08.tiff already exists, skipping
+2025-08-04 15:37:56,756 - INFO - Processing grid 380 for 2020-08
+2025-08-04 15:37:56,756 - INFO - File sentinel2_grid_380_2020_08.tiff already exists, skipping
+2025-08-04 15:37:56,756 - INFO - Processing grid 380 for 2021-08
+2025-08-04 15:37:56,756 - INFO - File sentinel2_grid_380_2021_08.tiff already exists, skipping
+2025-08-04 15:37:56,756 - INFO - Processing grid 380 for 2022-08
+2025-08-04 15:37:56,756 - INFO - File sentinel2_grid_380_2022_08.tiff already exists, skipping
+2025-08-04 15:37:56,756 - INFO - Processing grid 380 for 2023-08
+2025-08-04 15:37:56,756 - INFO - File sentinel2_grid_380_2023_08.tiff already exists, skipping
+2025-08-04 15:37:56,756 - INFO - Processing grid 380 for 2024-08
+2025-08-04 15:37:56,756 - INFO - File sentinel2_grid_380_2024_08.tiff already exists, skipping
+2025-08-04 15:37:56,756 - INFO - Processing grid 381 for 2018-08
+2025-08-04 15:37:56,756 - INFO - File sentinel2_grid_381_2018_08.tiff already exists, skipping
+2025-08-04 15:37:56,756 - INFO - Processing grid 381 for 2019-08
+2025-08-04 15:37:56,756 - INFO - File sentinel2_grid_381_2019_08.tiff already exists, skipping
+2025-08-04 15:37:56,757 - INFO - Processing grid 381 for 2020-08
+2025-08-04 15:37:56,757 - INFO - File sentinel2_grid_381_2020_08.tiff already exists, skipping
+2025-08-04 15:37:56,757 - INFO - Processing grid 381 for 2021-08
+2025-08-04 15:37:56,757 - INFO - File sentinel2_grid_381_2021_08.tiff already exists, skipping
+2025-08-04 15:37:56,757 - INFO - Processing grid 381 for 2022-08
+2025-08-04 15:37:56,757 - INFO - File sentinel2_grid_381_2022_08.tiff already exists, skipping
+2025-08-04 15:37:56,757 - INFO - Processing grid 381 for 2023-08
+2025-08-04 15:37:56,757 - INFO - File sentinel2_grid_381_2023_08.tiff already exists, skipping
+2025-08-04 15:37:56,757 - INFO - Processing grid 381 for 2024-08
+2025-08-04 15:37:56,757 - INFO - File sentinel2_grid_381_2024_08.tiff already exists, skipping
+2025-08-04 15:37:56,757 - INFO - Processing grid 382 for 2018-08
+2025-08-04 15:37:56,757 - INFO - File sentinel2_grid_382_2018_08.tiff already exists, skipping
+2025-08-04 15:37:56,758 - INFO - Processing grid 382 for 2019-08
+2025-08-04 15:37:56,758 - INFO - File sentinel2_grid_382_2019_08.tiff already exists, skipping
+2025-08-04 15:37:56,758 - INFO - Processing grid 382 for 2020-08
+2025-08-04 15:37:56,758 - INFO - File sentinel2_grid_382_2020_08.tiff already exists, skipping
+2025-08-04 15:37:56,758 - INFO - Processing grid 382 for 2021-08
+2025-08-04 15:37:56,758 - INFO - File sentinel2_grid_382_2021_08.tiff already exists, skipping
+2025-08-04 15:37:56,758 - INFO - Processing grid 382 for 2022-08
+2025-08-04 15:37:56,758 - INFO - File sentinel2_grid_382_2022_08.tiff already exists, skipping
+2025-08-04 15:37:56,758 - INFO - Processing grid 382 for 2023-08
+2025-08-04 15:37:56,758 - INFO - File sentinel2_grid_382_2023_08.tiff already exists, skipping
+2025-08-04 15:37:56,758 - INFO - Processing grid 382 for 2024-08
+2025-08-04 15:37:56,758 - INFO - File sentinel2_grid_382_2024_08.tiff already exists, skipping
+2025-08-04 15:37:56,759 - INFO - Processing grid 297 for 2018-08
+2025-08-04 15:37:56,865 - INFO - Downloading sentinel2_grid_297_2018_08.tiff...
+2025-08-04 15:38:30,947 - INFO - Successfully downloaded: sentinel2_grid_297_2018_08.tiff
+2025-08-04 15:38:30,952 - INFO - Processing grid 297 for 2019-08
+2025-08-04 15:38:31,020 - INFO - Downloading sentinel2_grid_297_2019_08.tiff...
+2025-08-04 15:38:54,948 - INFO - Successfully downloaded: sentinel2_grid_297_2019_08.tiff
+2025-08-04 15:38:54,951 - INFO - Processing grid 297 for 2020-08
+2025-08-04 15:38:55,015 - INFO - Downloading sentinel2_grid_297_2020_08.tiff...
+2025-08-04 15:39:23,688 - INFO - Successfully downloaded: sentinel2_grid_297_2020_08.tiff
+2025-08-04 15:39:23,690 - INFO - Processing grid 297 for 2021-08
+2025-08-04 15:39:23,745 - INFO - Downloading sentinel2_grid_297_2021_08.tiff...
+2025-08-04 15:39:43,476 - INFO - Successfully downloaded: sentinel2_grid_297_2021_08.tiff
+2025-08-04 15:39:43,477 - INFO - Processing grid 297 for 2022-08
+2025-08-04 15:39:43,537 - INFO - Downloading sentinel2_grid_297_2022_08.tiff...
+2025-08-04 15:40:06,412 - INFO - Successfully downloaded: sentinel2_grid_297_2022_08.tiff
+2025-08-04 15:40:06,413 - INFO - Processing grid 297 for 2023-08
+2025-08-04 15:40:06,466 - INFO - Downloading sentinel2_grid_297_2023_08.tiff...
+2025-08-04 15:40:32,695 - INFO - Successfully downloaded: sentinel2_grid_297_2023_08.tiff
+2025-08-04 15:40:32,698 - INFO - Processing grid 297 for 2024-08
+2025-08-04 15:40:32,803 - INFO - Downloading sentinel2_grid_297_2024_08.tiff...
+2025-08-04 15:40:49,731 - INFO - Successfully downloaded: sentinel2_grid_297_2024_08.tiff
+2025-08-04 15:40:49,732 - INFO - Processing grid 296 for 2018-08
+2025-08-04 15:40:49,785 - INFO - Downloading sentinel2_grid_296_2018_08.tiff...
+2025-08-04 15:41:06,565 - INFO - Successfully downloaded: sentinel2_grid_296_2018_08.tiff
+2025-08-04 15:41:06,567 - INFO - Processing grid 296 for 2019-08
+2025-08-04 15:41:06,622 - INFO - Downloading sentinel2_grid_296_2019_08.tiff...
+2025-08-04 15:41:30,345 - INFO - Successfully downloaded: sentinel2_grid_296_2019_08.tiff
+2025-08-04 15:41:30,347 - INFO - Processing grid 296 for 2020-08
+2025-08-04 15:41:30,399 - INFO - Downloading sentinel2_grid_296_2020_08.tiff...
+2025-08-04 15:41:49,818 - INFO - Successfully downloaded: sentinel2_grid_296_2020_08.tiff
+2025-08-04 15:41:49,820 - INFO - Processing grid 296 for 2021-08
+2025-08-04 15:41:49,878 - INFO - Downloading sentinel2_grid_296_2021_08.tiff...
+2025-08-04 15:42:06,601 - INFO - Successfully downloaded: sentinel2_grid_296_2021_08.tiff
+2025-08-04 15:42:06,604 - INFO - Processing grid 296 for 2022-08
+2025-08-04 15:42:06,656 - INFO - Downloading sentinel2_grid_296_2022_08.tiff...
+2025-08-04 15:42:25,214 - INFO - Successfully downloaded: sentinel2_grid_296_2022_08.tiff
+2025-08-04 15:42:25,217 - INFO - Processing grid 296 for 2023-08
+2025-08-04 15:42:25,275 - INFO - Downloading sentinel2_grid_296_2023_08.tiff...
+2025-08-04 15:42:43,364 - INFO - Successfully downloaded: sentinel2_grid_296_2023_08.tiff
+2025-08-04 15:42:43,366 - INFO - Processing grid 296 for 2024-08
+2025-08-04 15:42:43,417 - INFO - Downloading sentinel2_grid_296_2024_08.tiff...
+2025-08-04 15:43:00,227 - INFO - Successfully downloaded: sentinel2_grid_296_2024_08.tiff
+2025-08-04 15:43:00,228 - INFO - Processing grid 295 for 2018-08
+2025-08-04 15:43:00,286 - INFO - Downloading sentinel2_grid_295_2018_08.tiff...
+2025-08-04 15:43:22,511 - INFO - Successfully downloaded: sentinel2_grid_295_2018_08.tiff
+2025-08-04 15:43:22,513 - INFO - Processing grid 295 for 2019-08
+2025-08-04 15:43:22,569 - INFO - Downloading sentinel2_grid_295_2019_08.tiff...
+2025-08-04 15:43:46,390 - INFO - Successfully downloaded: sentinel2_grid_295_2019_08.tiff
+2025-08-04 15:43:46,391 - INFO - Processing grid 295 for 2020-08
+2025-08-04 15:43:46,442 - INFO - Downloading sentinel2_grid_295_2020_08.tiff...
+2025-08-04 15:44:07,717 - INFO - Successfully downloaded: sentinel2_grid_295_2020_08.tiff
+2025-08-04 15:44:07,718 - INFO - Processing grid 295 for 2021-08
+2025-08-04 15:44:07,775 - INFO - Downloading sentinel2_grid_295_2021_08.tiff...
+2025-08-04 15:44:26,926 - INFO - Successfully downloaded: sentinel2_grid_295_2021_08.tiff
+2025-08-04 15:44:26,928 - INFO - Processing grid 295 for 2022-08
+2025-08-04 15:44:26,980 - INFO - Downloading sentinel2_grid_295_2022_08.tiff...
+2025-08-04 15:44:49,454 - INFO - Successfully downloaded: sentinel2_grid_295_2022_08.tiff
+2025-08-04 15:44:49,457 - INFO - Processing grid 295 for 2023-08
+2025-08-04 15:44:49,515 - INFO - Downloading sentinel2_grid_295_2023_08.tiff...
+2025-08-04 15:45:12,956 - INFO - Successfully downloaded: sentinel2_grid_295_2023_08.tiff
+2025-08-04 15:45:12,958 - INFO - Processing grid 295 for 2024-08
+2025-08-04 15:45:13,030 - INFO - Downloading sentinel2_grid_295_2024_08.tiff...
+2025-08-04 15:45:36,234 - INFO - Successfully downloaded: sentinel2_grid_295_2024_08.tiff
+2025-08-04 15:45:36,235 - INFO - Processing grid 294 for 2018-08
+2025-08-04 15:45:36,288 - INFO - Downloading sentinel2_grid_294_2018_08.tiff...
+2025-08-04 15:45:58,333 - INFO - Successfully downloaded: sentinel2_grid_294_2018_08.tiff
+2025-08-04 15:45:58,334 - INFO - Processing grid 294 for 2019-08
+2025-08-04 15:45:58,383 - INFO - Downloading sentinel2_grid_294_2019_08.tiff...
+2025-08-04 15:46:20,714 - INFO - Successfully downloaded: sentinel2_grid_294_2019_08.tiff
+2025-08-04 15:46:20,715 - INFO - Processing grid 294 for 2020-08
+2025-08-04 15:46:20,768 - INFO - Downloading sentinel2_grid_294_2020_08.tiff...
+2025-08-04 15:46:45,021 - INFO - Successfully downloaded: sentinel2_grid_294_2020_08.tiff
+2025-08-04 15:46:45,023 - INFO - Processing grid 294 for 2021-08
+2025-08-04 15:46:45,076 - INFO - Downloading sentinel2_grid_294_2021_08.tiff...
+2025-08-04 15:47:07,378 - INFO - Successfully downloaded: sentinel2_grid_294_2021_08.tiff
+2025-08-04 15:47:07,379 - INFO - Processing grid 294 for 2022-08
+2025-08-04 15:47:07,428 - INFO - Downloading sentinel2_grid_294_2022_08.tiff...
+2025-08-04 15:47:27,721 - INFO - Successfully downloaded: sentinel2_grid_294_2022_08.tiff
+2025-08-04 15:47:27,724 - INFO - Processing grid 294 for 2023-08
+2025-08-04 15:47:27,781 - INFO - Downloading sentinel2_grid_294_2023_08.tiff...
+2025-08-04 15:47:53,654 - INFO - Successfully downloaded: sentinel2_grid_294_2023_08.tiff
+2025-08-04 15:47:53,656 - INFO - Processing grid 294 for 2024-08
+2025-08-04 15:47:53,708 - INFO - Downloading sentinel2_grid_294_2024_08.tiff...
+2025-08-04 15:48:12,186 - INFO - Successfully downloaded: sentinel2_grid_294_2024_08.tiff
+2025-08-04 15:48:12,187 - INFO - Processing grid 293 for 2018-08
+2025-08-04 15:48:12,241 - INFO - Downloading sentinel2_grid_293_2018_08.tiff...
+2025-08-04 15:48:28,173 - INFO - Successfully downloaded: sentinel2_grid_293_2018_08.tiff
+2025-08-04 15:48:28,174 - INFO - Processing grid 293 for 2019-08
+2025-08-04 15:48:28,227 - INFO - Downloading sentinel2_grid_293_2019_08.tiff...
+2025-08-04 15:48:46,008 - INFO - Successfully downloaded: sentinel2_grid_293_2019_08.tiff
+2025-08-04 15:48:46,010 - INFO - Processing grid 293 for 2020-08
+2025-08-04 15:48:46,075 - INFO - Downloading sentinel2_grid_293_2020_08.tiff...
+2025-08-04 15:49:02,827 - INFO - Successfully downloaded: sentinel2_grid_293_2020_08.tiff
+2025-08-04 15:49:02,829 - INFO - Processing grid 293 for 2021-08
+2025-08-04 15:49:02,907 - INFO - Downloading sentinel2_grid_293_2021_08.tiff...
+2025-08-04 15:49:17,545 - INFO - Successfully downloaded: sentinel2_grid_293_2021_08.tiff
+2025-08-04 15:49:17,546 - INFO - Processing grid 293 for 2022-08
+2025-08-04 15:49:17,600 - INFO - Downloading sentinel2_grid_293_2022_08.tiff...
+2025-08-04 15:49:36,654 - INFO - Successfully downloaded: sentinel2_grid_293_2022_08.tiff
+2025-08-04 15:49:36,655 - INFO - Processing grid 293 for 2023-08
+2025-08-04 15:49:36,707 - INFO - Downloading sentinel2_grid_293_2023_08.tiff...
+2025-08-04 15:50:04,361 - INFO - Successfully downloaded: sentinel2_grid_293_2023_08.tiff
+2025-08-04 15:50:04,363 - INFO - Processing grid 293 for 2024-08
+2025-08-04 15:50:04,414 - INFO - Downloading sentinel2_grid_293_2024_08.tiff...
+2025-08-04 15:50:25,848 - INFO - Successfully downloaded: sentinel2_grid_293_2024_08.tiff
+2025-08-04 15:50:25,848 - INFO - Processing grid 292 for 2018-08
+2025-08-04 15:50:25,909 - INFO - Downloading sentinel2_grid_292_2018_08.tiff...
+2025-08-04 15:50:41,195 - INFO - Successfully downloaded: sentinel2_grid_292_2018_08.tiff
+2025-08-04 15:50:41,197 - INFO - Processing grid 292 for 2019-08
+2025-08-04 15:50:41,255 - INFO - Downloading sentinel2_grid_292_2019_08.tiff...
+2025-08-04 15:51:01,058 - INFO - Successfully downloaded: sentinel2_grid_292_2019_08.tiff
+2025-08-04 15:51:01,060 - INFO - Processing grid 292 for 2020-08
+2025-08-04 15:51:01,112 - INFO - Downloading sentinel2_grid_292_2020_08.tiff...

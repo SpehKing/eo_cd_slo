@@ -89,7 +89,7 @@ class EoService:
 
     async def get_image_preview(self, image_id: int) -> Optional[bytes]:
         """Get JPEG preview of an image"""
-
+        print(f"Generating preview for image {image_id}")
         image_data = await self.repository.get_image_by_id(image_id)
         if not image_data:
             return None

@@ -1,5 +1,6 @@
 # Ignore geotiffs folder
 geotiffs/
 oscd/
+sentinel_downloads/
 .DS_Store
 __pycache__/
