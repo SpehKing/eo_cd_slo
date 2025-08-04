@@ -44,20 +44,43 @@ onBeforeUnmount(() => {
 function initializeMap() {
   if (!mapContainer.value) return;
 
-  // Initialize the map
+  // Define tile layers
+  const streetLayer = L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19,
+    }
+  );
+
+  const satelliteLayer = L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    {
+      attribution:
+        "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
+      maxZoom: 20,
+      tileSize: 256,
+    }
+  );
+
+  // Initialize the map with the street layer as default
   map = L.map(mapContainer.value, {
     center: props.center,
     zoom: props.zoom,
     zoomControl: true,
     attributionControl: true,
+    layers: [streetLayer], // Default layer
   });
 
-  // Add OpenStreetMap tile layer
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    maxZoom: 19,
-  }).addTo(map);
+  // Define base layers for the layer control
+  const baseLayers = {
+    Streets: streetLayer,
+    Satellite: satelliteLayer,
+  };
+
+  // Add layer control
+  L.control.layers(baseLayers).addTo(map);
 
   // Fix for default markers not showing up
   delete (L.Icon.Default.prototype as any)._getIconUrl;
