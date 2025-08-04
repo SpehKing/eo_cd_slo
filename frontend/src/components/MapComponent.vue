@@ -70,7 +70,7 @@ function initializeMap() {
     zoom: props.zoom,
     zoomControl: true,
     attributionControl: true,
-    layers: [streetLayer], // Default layer
+    layers: [satelliteLayer], // Default layer
   });
 
   // Define base layers for the layer control

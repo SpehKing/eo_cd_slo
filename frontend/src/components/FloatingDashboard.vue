@@ -4,11 +4,11 @@
     <div
       v-if="shouldShowTrigger"
       @mouseenter="showDashboard"
-      class="trigger-area fixed bottom-0 left-1/2 transform -translate-x-1/2 w-[1000px] h-8 z-[999] flex items-end justify-center cursor-pointer"
+      class="trigger-area fixed bottom-[-1.5rem] left-1/2 transform -translate-x-1/2 w-[1000px] h-8 z-[999] flex items-end justify-center cursor-pointer"
     >
       <!-- Arrow indicator -->
       <div
-        class="arrow-indicator bg-white rounded-t-lg shadow-lg px-3 py-1 transition-transform duration-200 hover:scale-110"
+        class="arrow-indicator !bg-white !rounded-t-lg !shadow-lg !px-3 !py-1 transition-transform duration-200 hover:scale-110"
       >
         <svg
           class="w-4 h-4 text-gray-600"
