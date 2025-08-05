@@ -60,7 +60,7 @@ class ImageProcessingService:
         band_mapping: Optional[Dict[str, str]] = None,
     ) -> bytes:
         """
-        Convert separate band data to JPEG format using metadata
+        Convert separate band data to PNG format with transparency support
 
         Args:
             bands_data: Dictionary of band data (e.g., {'b02': bytes, 'b03': bytes, 'b04': bytes})
@@ -70,20 +70,34 @@ class ImageProcessingService:
 
         def _process_bands():
             try:
-                # Default band mapping for Sentinel-2 RGB
+                # Default RGB mapping for Sentinel-2: R=B04, G=B03, B=B02
                 current_band_mapping = (
                     band_mapping
                     if band_mapping is not None
                     else {"red": "b04", "green": "b03", "blue": "b02"}
                 )
 
-                # Extract required bands
-                required_bands = ["red", "green", "blue"]
+                # Load bands and normalize to (bands, H, W)
                 band_arrays = {}
+                nodata_value = -32768
 
                 for color, band_name in current_band_mapping.items():
                     if band_name not in bands_data:
-                        raise ValueError(f"Required band {band_name} not found in data")
+                        # Fallback: infer from order if specific bands not found
+                        available_bands = list(bands_data.keys())
+                        if len(available_bands) >= 3:
+                            # Assume order B02, B03, B04 → map to blue, green, red
+                            band_indices = {"blue": 0, "green": 1, "red": 2}
+                            if color in band_indices:
+                                band_name = available_bands[band_indices[color]]
+                            else:
+                                raise ValueError(
+                                    f"Required band {band_name} not found and cannot infer from order"
+                                )
+                        else:
+                            raise ValueError(
+                                f"Required band {band_name} not found in data"
+                            )
 
                     # Convert bytes to numpy array using metadata
                     band_bytes = bands_data[band_name]
@@ -104,8 +118,10 @@ class ImageProcessingService:
                     if len(band_array) > expected_pixels:
                         band_array = band_array[:expected_pixels]
                     elif len(band_array) < expected_pixels:
-                        # Pad with zeros
-                        padded = np.zeros(expected_pixels, dtype=metadata.numpy_dtype)
+                        # Pad with nodata value
+                        padded = np.full(
+                            expected_pixels, nodata_value, dtype=metadata.numpy_dtype
+                        )
                         padded[: len(band_array)] = band_array
                         band_array = padded
 
@@ -114,40 +130,69 @@ class ImageProcessingService:
                         metadata.height, metadata.width
                     )
 
-                # Normalize bands to 0-255 range
-                normalized_bands = {}
-                for color in required_bands:
-                    normalized_bands[color] = (
-                        ImageProcessingService._normalize_to_uint8(
-                            band_arrays[color], metadata.numpy_dtype
+                # Build NoData mask where any band equals -32768
+                nodata_mask = np.zeros((metadata.height, metadata.width), dtype=bool)
+                for band_array in band_arrays.values():
+                    nodata_mask |= band_array == nodata_value
+
+                # Apply percentile stretch (2-98%) and gamma correction (γ=2.2)
+                processed_bands = {}
+                gamma = 2.2
+
+                for color in ["red", "green", "blue"]:
+                    band = band_arrays[color].astype(np.float32)
+
+                    # Mask nodata values for percentile calculation
+                    valid_data = band[~nodata_mask]
+
+                    if len(valid_data) > 0:
+                        # Apply percentile stretch
+                        p2, p98 = np.percentile(valid_data, (2, 98))
+                        if p98 > p2:
+                            # Clip and normalize to 0-1 range
+                            band = np.clip(band, p2, p98)
+                            band = (band - p2) / (p98 - p2)
+                        else:
+                            # Handle constant data
+                            band = np.clip(band, 0, 1)
+
+                        # Apply gamma correction
+                        band = np.power(np.clip(band, 0, 1), 1.0 / gamma)
+
+                        # Scale to 8-bit
+                        processed_bands[color] = (band * 255).astype(np.uint8)
+                    else:
+                        # All nodata - create zero array
+                        processed_bands[color] = np.zeros(
+                            (metadata.height, metadata.width), dtype=np.uint8
                         )
-                    )
 
-                # Stack into RGB image
-                rgb_image = np.stack(
-                    [
-                        normalized_bands["red"],
-                        normalized_bands["green"],
-                        normalized_bands["blue"],
-                    ],
-                    axis=2,
+                # Stack to RGBA (RGB + alpha from NoData mask)
+                rgba_image = np.zeros(
+                    (metadata.height, metadata.width, 4), dtype=np.uint8
                 )
+                rgba_image[:, :, 0] = processed_bands["red"]
+                rgba_image[:, :, 1] = processed_bands["green"]
+                rgba_image[:, :, 2] = processed_bands["blue"]
 
-                # Create PIL Image
-                pil_image = Image.fromarray(rgb_image, "RGB")
+                # Set alpha channel (255 for valid data, 0 for nodata)
+                rgba_image[:, :, 3] = np.where(nodata_mask, 0, 255)
 
-                # Apply image enhancements
-                pil_image = ImageProcessingService._enhance_image(pil_image)
+                # Create PIL Image with alpha channel
+                pil_image = Image.fromarray(rgba_image, "RGBA")
+
+                # Optional unsharp mask enhancement
+                pil_image = ImageProcessingService._apply_unsharp_mask(pil_image)
 
                 # Resize if too large
                 pil_image = ImageProcessingService._resize_if_needed(pil_image)
 
-                # Convert to JPEG
-                return ImageProcessingService._convert_to_jpeg(pil_image)
+                # Convert to PNG (supports transparency)
+                return ImageProcessingService._convert_to_png(pil_image)
 
             except Exception as e:
-                logger.error(f"Error converting bands to JPEG: {str(e)}")
-                return ImageProcessingService._create_placeholder_jpeg(
+                logger.error(f"Error converting bands to PNG: {str(e)}")
+                return ImageProcessingService._create_placeholder_png(
                     f"Error processing image: {str(e)}"
                 )
 
@@ -427,6 +472,51 @@ class ImageProcessingService:
         return jpeg_io.getvalue()
 
     @staticmethod
+    def _convert_to_png(image: Image.Image) -> bytes:
+        """Convert PIL Image to PNG bytes with transparency support"""
+        png_io = io.BytesIO()
+        image.save(
+            png_io,
+            format="PNG",
+            optimize=True,
+        )
+        return png_io.getvalue()
+
+    @staticmethod
+    def _apply_unsharp_mask(
+        image: Image.Image, radius: float = 1.0, amount: float = 1.0
+    ) -> Image.Image:
+        """Apply unsharp mask for image enhancement"""
+        try:
+            from PIL import ImageFilter
+
+            # Create a slightly blurred version
+            blurred = image.filter(ImageFilter.GaussianBlur(radius=radius))
+
+            # Convert to numpy for arithmetic operations
+            if image.mode == "RGBA":
+                img_array = np.array(image, dtype=np.float32)
+                blur_array = np.array(blurred, dtype=np.float32)
+
+                # Apply unsharp mask only to RGB channels, preserve alpha
+                enhanced = img_array.copy()
+                for c in range(3):  # RGB channels only
+                    enhanced[:, :, c] = img_array[:, :, c] + amount * (
+                        img_array[:, :, c] - blur_array[:, :, c]
+                    )
+
+                # Clip values and convert back
+                enhanced = np.clip(enhanced, 0, 255).astype(np.uint8)
+                return Image.fromarray(enhanced, "RGBA")
+            else:
+                # Fallback for non-RGBA images
+                return image
+
+        except Exception as e:
+            logger.warning(f"Unsharp mask failed: {e}, returning original image")
+            return image
+
+    @staticmethod
     def _create_placeholder_jpeg(message: str = "No image data") -> bytes:
         """Create a placeholder JPEG image with error message"""
         # Create placeholder image
@@ -468,6 +558,49 @@ class ImageProcessingService:
             pass  # If text drawing fails, just return the gray rectangle
 
         return ImageProcessingService._convert_to_jpeg(placeholder)
+
+    @staticmethod
+    def _create_placeholder_png(message: str = "No image data") -> bytes:
+        """Create a placeholder PNG image with error message"""
+        # Create placeholder image with transparency
+        width, height = 512, 512
+        placeholder = Image.new("RGBA", (width, height), color=(64, 64, 64, 255))
+
+        try:
+            from PIL import ImageDraw, ImageFont
+
+            draw = ImageDraw.Draw(placeholder)
+
+            # Try to use a default font
+            try:
+                font = ImageFont.load_default()
+            except:
+                font = None
+
+            # Add text
+            text_lines = [
+                "Image Processing Error",
+                "",
+                message[:50] + "..." if len(message) > 50 else message,
+            ]
+
+            y_offset = height // 2 - 30
+            for line in text_lines:
+                if line:
+                    bbox = (
+                        draw.textbbox((0, 0), line, font=font)
+                        if font
+                        else (0, 0, len(line) * 6, 12)
+                    )
+                    text_width = bbox[2] - bbox[0]
+                    x = (width - text_width) // 2
+                    draw.text((x, y_offset), line, fill=(255, 255, 255, 255), font=font)
+                y_offset += 20
+
+        except Exception:
+            pass  # If text drawing fails, just return the gray rectangle
+
+        return ImageProcessingService._convert_to_png(placeholder)
 
     @staticmethod
     def generate_filename(
