@@ -90,6 +90,10 @@ RETURNS TRIGGER
 LANGUAGE plpgsql AS $$
 DECLARE
     grid_geom GEOGRAPHY(POLYGON, 4326);
+    image_area NUMERIC;
+    grid_area NUMERIC;
+    overlap_area NUMERIC;
+    overlap_percent NUMERIC;
 BEGIN
     -- Auto-populate month from time
     NEW.month := date_trunc('month', NEW.time)::date;
@@ -103,10 +107,15 @@ BEGIN
         RAISE EXCEPTION 'Invalid grid_id: %', NEW.grid_id;
     END IF;
     
-    -- Check if bbox is fully contained within grid cell
-    -- Using ST_Covers for geography types (equivalent to ST_Contains for this use case)
-    IF NOT ST_Covers(grid_geom, NEW.bbox) THEN
-        RAISE EXCEPTION 'Image bbox must be fully contained within grid cell %', NEW.grid_id;
+    -- Check significant overlap instead of strict containment
+    grid_area := ST_Area(grid_geom);
+    overlap_area := ST_Area(ST_Intersection(grid_geom, NEW.bbox));
+    overlap_percent := (overlap_area / grid_area) * 100;
+
+    -- Require at least 99% overlap with the grid cell
+    IF overlap_percent < 99 THEN
+        RAISE EXCEPTION 'Image bbox must have at least 99%% overlap with grid cell % (current: %.1f%%)', 
+            NEW.grid_id, overlap_percent;
     END IF;
     
     RETURN NEW;

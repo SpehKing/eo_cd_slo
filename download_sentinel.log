@@ -1385,3 +1385,489 @@
 2025-08-04 15:58:12,061 - INFO - Processing grid 335 for 2024-08
 2025-08-04 15:58:12,115 - INFO - Downloading sentinel2_grid_335_2024_08.tiff...
 2025-08-04 15:58:13,728 - INFO - Download interrupted by user
+2025-08-05 10:39:49,703 - INFO - Starting Sentinel-2 download script
+2025-08-05 10:39:49,703 - INFO - Target grid IDs: [357, 358, 359, 360, 361, 362, 363, 364]
+2025-08-05 10:39:49,703 - INFO - Years: [2024]
+2025-08-05 10:39:49,703 - INFO - Loading grid data from data/slovenia_grid.gpkg
+2025-08-05 10:39:49,840 - INFO - Loaded 940 grid cells
+2025-08-05 10:39:49,842 - INFO - Filtered to 8 target grid cells
+2025-08-05 10:39:49,842 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 10:39:49,843 - INFO - Connecting to OpenEO Copernicus Data Space Ecosystem...
+2025-08-05 10:39:49,843 - INFO - Loaded openEO client config from sources: []
+2025-08-05 10:39:50,356 - INFO - Please authenticate in your browser...
+2025-08-05 10:39:50,405 - INFO - Found OIDC providers: ['CDSE']
+2025-08-05 10:39:50,405 - INFO - No OIDC provider given, but only one available: 'CDSE'. Using that one.
+2025-08-05 10:39:50,639 - INFO - Using default client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e' from OIDC provider 'CDSE' info.
+2025-08-05 10:39:50,640 - INFO - Found refresh token: trying refresh token based authentication.
+2025-08-05 10:39:50,640 - INFO - Doing 'refresh_token' token request 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token' with post data fields ['grant_type', 'client_id', 'refresh_token'] (client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-05 10:39:50,841 - INFO - Obtained tokens: ['access_token', 'id_token', 'refresh_token']
+2025-08-05 10:39:50,842 - INFO - Storing refresh token for issuer 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE' (client 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-05 10:39:50,845 - INFO - Successfully connected and authenticated
+2025-08-05 10:39:50,848 - INFO - Generated 8 download tasks
+2025-08-05 10:39:50,848 - INFO - Grid IDs: [357, 358, 359, 360, 361, 362, 363, 364]
+2025-08-05 10:39:50,848 - INFO - Years: [2024]
+2025-08-05 10:39:50,848 - INFO - Max cloud coverage: 5%
+2025-08-05 10:39:50,848 - INFO - Download directory: /Users/gasper/Documents/ViCos/eo_cd_slo/data/images/sentinel_downloads_v2
+2025-08-05 10:39:50,860 - INFO - Processing grid 357 for 2024-08
+2025-08-05 10:39:50,861 - ERROR - Failed to download sentinel2_grid_357_2024_08.tiff: Assigning CRS to a GeoDataFrame without a geometry column is not supported. Supply geometry using the 'geometry=' keyword argument, or by providing a DataFrame with column name 'geometry'
+2025-08-05 10:39:50,862 - ERROR - Failed to download sentinel2_grid_357_2024_08.tiff: Assigning CRS to a GeoDataFrame without a geometry column is not supported. Supply geometry using the 'geometry=' keyword argument, or by providing a DataFrame with column name 'geometry'
+2025-08-05 10:39:50,862 - INFO - Processing grid 358 for 2024-08
+2025-08-05 10:39:50,862 - ERROR - Failed to download sentinel2_grid_358_2024_08.tiff: Assigning CRS to a GeoDataFrame without a geometry column is not supported. Supply geometry using the 'geometry=' keyword argument, or by providing a DataFrame with column name 'geometry'
+2025-08-05 10:39:50,862 - ERROR - Failed to download sentinel2_grid_358_2024_08.tiff: Assigning CRS to a GeoDataFrame without a geometry column is not supported. Supply geometry using the 'geometry=' keyword argument, or by providing a DataFrame with column name 'geometry'
+2025-08-05 10:39:50,862 - INFO - Processing grid 359 for 2024-08
+2025-08-05 10:39:50,863 - ERROR - Failed to download sentinel2_grid_359_2024_08.tiff: Assigning CRS to a GeoDataFrame without a geometry column is not supported. Supply geometry using the 'geometry=' keyword argument, or by providing a DataFrame with column name 'geometry'
+2025-08-05 10:39:50,863 - ERROR - Failed to download sentinel2_grid_359_2024_08.tiff: Assigning CRS to a GeoDataFrame without a geometry column is not supported. Supply geometry using the 'geometry=' keyword argument, or by providing a DataFrame with column name 'geometry'
+2025-08-05 10:39:50,864 - INFO - Processing grid 360 for 2024-08
+2025-08-05 10:39:50,864 - ERROR - Failed to download sentinel2_grid_360_2024_08.tiff: Assigning CRS to a GeoDataFrame without a geometry column is not supported. Supply geometry using the 'geometry=' keyword argument, or by providing a DataFrame with column name 'geometry'
+2025-08-05 10:39:50,864 - ERROR - Failed to download sentinel2_grid_360_2024_08.tiff: Assigning CRS to a GeoDataFrame without a geometry column is not supported. Supply geometry using the 'geometry=' keyword argument, or by providing a DataFrame with column name 'geometry'
+2025-08-05 10:39:50,864 - INFO - Processing grid 361 for 2024-08
+2025-08-05 10:39:50,865 - ERROR - Failed to download sentinel2_grid_361_2024_08.tiff: Assigning CRS to a GeoDataFrame without a geometry column is not supported. Supply geometry using the 'geometry=' keyword argument, or by providing a DataFrame with column name 'geometry'
+2025-08-05 10:39:50,865 - ERROR - Failed to download sentinel2_grid_361_2024_08.tiff: Assigning CRS to a GeoDataFrame without a geometry column is not supported. Supply geometry using the 'geometry=' keyword argument, or by providing a DataFrame with column name 'geometry'
+2025-08-05 10:39:50,865 - INFO - Processing grid 362 for 2024-08
+2025-08-05 10:39:50,865 - ERROR - Failed to download sentinel2_grid_362_2024_08.tiff: Assigning CRS to a GeoDataFrame without a geometry column is not supported. Supply geometry using the 'geometry=' keyword argument, or by providing a DataFrame with column name 'geometry'
+2025-08-05 10:39:50,865 - ERROR - Failed to download sentinel2_grid_362_2024_08.tiff: Assigning CRS to a GeoDataFrame without a geometry column is not supported. Supply geometry using the 'geometry=' keyword argument, or by providing a DataFrame with column name 'geometry'
+2025-08-05 10:39:50,865 - INFO - Processing grid 363 for 2024-08
+2025-08-05 10:39:50,866 - ERROR - Failed to download sentinel2_grid_363_2024_08.tiff: Assigning CRS to a GeoDataFrame without a geometry column is not supported. Supply geometry using the 'geometry=' keyword argument, or by providing a DataFrame with column name 'geometry'
+2025-08-05 10:39:50,866 - ERROR - Failed to download sentinel2_grid_363_2024_08.tiff: Assigning CRS to a GeoDataFrame without a geometry column is not supported. Supply geometry using the 'geometry=' keyword argument, or by providing a DataFrame with column name 'geometry'
+2025-08-05 10:39:50,866 - INFO - Processing grid 364 for 2024-08
+2025-08-05 10:39:50,867 - ERROR - Failed to download sentinel2_grid_364_2024_08.tiff: Assigning CRS to a GeoDataFrame without a geometry column is not supported. Supply geometry using the 'geometry=' keyword argument, or by providing a DataFrame with column name 'geometry'
+2025-08-05 10:39:50,867 - ERROR - Failed to download sentinel2_grid_364_2024_08.tiff: Assigning CRS to a GeoDataFrame without a geometry column is not supported. Supply geometry using the 'geometry=' keyword argument, or by providing a DataFrame with column name 'geometry'
+2025-08-05 10:39:50,867 - INFO - ============================================================
+2025-08-05 10:39:50,867 - INFO - DOWNLOAD SUMMARY
+2025-08-05 10:39:50,867 - INFO - ============================================================
+2025-08-05 10:39:50,867 - INFO - Total requested: 8
+2025-08-05 10:39:50,867 - INFO - Successfully downloaded: 0
+2025-08-05 10:39:50,867 - INFO - Failed: 8
+2025-08-05 10:39:50,867 - INFO - Skipped (already exist): 0
+2025-08-05 10:39:50,867 - INFO - Success rate: 0.0%
+2025-08-05 10:39:50,867 - INFO - ============================================================
+2025-08-05 10:39:50,867 - INFO - Download process completed
+2025-08-05 10:42:45,104 - INFO - Starting Sentinel-2 download script
+2025-08-05 10:42:45,105 - INFO - Target grid IDs: [357, 358, 359, 360, 361, 362, 363, 364]
+2025-08-05 10:42:45,105 - INFO - Years: [2024]
+2025-08-05 10:42:45,105 - INFO - Loading grid data from data/slovenia_grid.gpkg
+2025-08-05 10:42:45,336 - INFO - Loaded 940 grid cells
+2025-08-05 10:42:45,339 - INFO - Filtered to 8 target grid cells
+2025-08-05 10:42:45,339 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 10:42:45,342 - INFO - Connecting to OpenEO Copernicus Data Space Ecosystem...
+2025-08-05 10:42:45,343 - INFO - Loaded openEO client config from sources: []
+2025-08-05 10:42:45,728 - INFO - Please authenticate in your browser...
+2025-08-05 10:42:45,782 - INFO - Found OIDC providers: ['CDSE']
+2025-08-05 10:42:45,782 - INFO - No OIDC provider given, but only one available: 'CDSE'. Using that one.
+2025-08-05 10:42:45,979 - INFO - Using default client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e' from OIDC provider 'CDSE' info.
+2025-08-05 10:42:45,982 - INFO - Found refresh token: trying refresh token based authentication.
+2025-08-05 10:42:45,982 - INFO - Doing 'refresh_token' token request 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token' with post data fields ['grant_type', 'client_id', 'refresh_token'] (client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-05 10:42:46,272 - INFO - Obtained tokens: ['access_token', 'id_token', 'refresh_token']
+2025-08-05 10:42:46,273 - INFO - Storing refresh token for issuer 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE' (client 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-05 10:42:46,274 - INFO - Successfully connected and authenticated
+2025-08-05 10:42:46,280 - INFO - Generated 8 download tasks
+2025-08-05 10:42:46,280 - INFO - Grid IDs: [357, 358, 359, 360, 361, 362, 363, 364]
+2025-08-05 10:42:46,280 - INFO - Years: [2024]
+2025-08-05 10:42:46,280 - INFO - Max cloud coverage: 5%
+2025-08-05 10:42:46,280 - INFO - Download directory: /Users/gasper/Documents/ViCos/eo_cd_slo/data/images/sentinel_downloads_v2
+2025-08-05 10:42:46,298 - INFO - Processing grid 357 for 2024-08
+2025-08-05 10:42:46,402 - INFO - Downloading sentinel2_grid_357_2024_08.tiff with exact pixel alignment...
+2025-08-05 10:43:04,468 - INFO - Grid 357: Alignment verification passed
+2025-08-05 10:43:04,468 - INFO - Successfully downloaded: sentinel2_grid_357_2024_08.tiff
+2025-08-05 10:43:04,468 - INFO - Processing grid 358 for 2024-08
+2025-08-05 10:43:04,533 - INFO - Downloading sentinel2_grid_358_2024_08.tiff with exact pixel alignment...
+2025-08-05 10:43:18,955 - INFO - Grid 358: Alignment verification passed
+2025-08-05 10:43:18,955 - INFO - Successfully downloaded: sentinel2_grid_358_2024_08.tiff
+2025-08-05 10:43:18,955 - INFO - Processing grid 359 for 2024-08
+2025-08-05 10:43:19,009 - INFO - Downloading sentinel2_grid_359_2024_08.tiff with exact pixel alignment...
+2025-08-05 10:43:41,656 - INFO - Grid 359: Alignment verification passed
+2025-08-05 10:43:41,656 - INFO - Successfully downloaded: sentinel2_grid_359_2024_08.tiff
+2025-08-05 10:43:41,657 - INFO - Processing grid 360 for 2024-08
+2025-08-05 10:43:41,717 - INFO - Downloading sentinel2_grid_360_2024_08.tiff with exact pixel alignment...
+2025-08-05 10:44:38,277 - INFO - Grid 360: Alignment verification passed
+2025-08-05 10:44:38,277 - INFO - Successfully downloaded: sentinel2_grid_360_2024_08.tiff
+2025-08-05 10:44:38,278 - INFO - Processing grid 361 for 2024-08
+2025-08-05 10:44:38,340 - INFO - Downloading sentinel2_grid_361_2024_08.tiff with exact pixel alignment...
+2025-08-05 10:45:29,082 - INFO - Grid 361: Alignment verification passed
+2025-08-05 10:45:29,083 - INFO - Successfully downloaded: sentinel2_grid_361_2024_08.tiff
+2025-08-05 10:45:29,084 - INFO - Processing grid 362 for 2024-08
+2025-08-05 10:45:29,157 - INFO - Downloading sentinel2_grid_362_2024_08.tiff with exact pixel alignment...
+2025-08-05 10:46:29,696 - INFO - Grid 362: Alignment verification passed
+2025-08-05 10:46:29,696 - INFO - Successfully downloaded: sentinel2_grid_362_2024_08.tiff
+2025-08-05 10:46:29,697 - INFO - Processing grid 363 for 2024-08
+2025-08-05 10:46:29,770 - INFO - Downloading sentinel2_grid_363_2024_08.tiff with exact pixel alignment...
+2025-08-05 10:46:47,555 - INFO - Grid 363: Alignment verification passed
+2025-08-05 10:46:47,555 - INFO - Successfully downloaded: sentinel2_grid_363_2024_08.tiff
+2025-08-05 10:46:47,556 - INFO - Processing grid 364 for 2024-08
+2025-08-05 10:46:47,608 - INFO - Downloading sentinel2_grid_364_2024_08.tiff with exact pixel alignment...
+2025-08-05 10:47:05,493 - INFO - Grid 364: Alignment verification passed
+2025-08-05 10:47:05,493 - INFO - Successfully downloaded: sentinel2_grid_364_2024_08.tiff
+2025-08-05 10:47:05,494 - INFO - ============================================================
+2025-08-05 10:47:05,494 - INFO - DOWNLOAD SUMMARY
+2025-08-05 10:47:05,494 - INFO - ============================================================
+2025-08-05 10:47:05,494 - INFO - Total requested: 8
+2025-08-05 10:47:05,494 - INFO - Successfully downloaded: 8
+2025-08-05 10:47:05,494 - INFO - Failed: 0
+2025-08-05 10:47:05,494 - INFO - Skipped (already exist): 0
+2025-08-05 10:47:05,494 - INFO - Success rate: 100.0%
+2025-08-05 10:47:05,494 - INFO - ============================================================
+2025-08-05 10:47:05,494 - INFO - Download process completed
+2025-08-05 11:05:52,346 - INFO - Starting Sentinel-2 download script
+2025-08-05 11:05:52,346 - INFO - Target grid IDs: [357, 358, 359, 360, 361, 362, 363, 364]
+2025-08-05 11:05:52,346 - INFO - Years: [2024]
+2025-08-05 11:05:52,347 - INFO - Loading grid data from grid_output/slovenia_grid_expanded.gpkg
+2025-08-05 11:05:52,454 - INFO - Loaded 947 grid cells
+2025-08-05 11:05:52,456 - INFO - Filtered to 8 target grid cells
+2025-08-05 11:05:52,456 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 11:05:52,460 - INFO - Connecting to OpenEO Copernicus Data Space Ecosystem...
+2025-08-05 11:05:52,460 - INFO - Loaded openEO client config from sources: []
+2025-08-05 11:05:53,026 - INFO - Please authenticate in your browser...
+2025-08-05 11:05:53,080 - INFO - Found OIDC providers: ['CDSE']
+2025-08-05 11:05:53,080 - INFO - No OIDC provider given, but only one available: 'CDSE'. Using that one.
+2025-08-05 11:05:53,316 - INFO - Using default client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e' from OIDC provider 'CDSE' info.
+2025-08-05 11:05:53,316 - INFO - Found refresh token: trying refresh token based authentication.
+2025-08-05 11:05:53,317 - INFO - Doing 'refresh_token' token request 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token' with post data fields ['grant_type', 'client_id', 'refresh_token'] (client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-05 11:05:53,525 - INFO - Obtained tokens: ['access_token', 'id_token', 'refresh_token']
+2025-08-05 11:05:53,526 - INFO - Storing refresh token for issuer 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE' (client 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-05 11:05:53,530 - INFO - Successfully connected and authenticated
+2025-08-05 11:05:53,535 - INFO - Generated 8 download tasks
+2025-08-05 11:05:53,535 - INFO - Grid IDs: [357, 358, 359, 360, 361, 362, 363, 364]
+2025-08-05 11:05:53,535 - INFO - Years: [2024]
+2025-08-05 11:05:53,535 - INFO - Max cloud coverage: 5%
+2025-08-05 11:05:53,536 - INFO - Download directory: /Users/gasper/Documents/ViCos/eo_cd_slo/data/images/sentinel_downloads_v2
+2025-08-05 11:05:53,554 - INFO - Processing grid 357 for 2024-08
+2025-08-05 11:05:53,554 - INFO - File sentinel2_grid_357_2024_08.tiff already exists, skipping
+2025-08-05 11:05:53,555 - INFO - Processing grid 358 for 2024-08
+2025-08-05 11:05:53,555 - INFO - File sentinel2_grid_358_2024_08.tiff already exists, skipping
+2025-08-05 11:05:53,555 - INFO - Processing grid 359 for 2024-08
+2025-08-05 11:05:53,555 - INFO - File sentinel2_grid_359_2024_08.tiff already exists, skipping
+2025-08-05 11:05:53,555 - INFO - Processing grid 360 for 2024-08
+2025-08-05 11:05:53,555 - INFO - File sentinel2_grid_360_2024_08.tiff already exists, skipping
+2025-08-05 11:05:53,556 - INFO - Processing grid 361 for 2024-08
+2025-08-05 11:05:53,556 - INFO - File sentinel2_grid_361_2024_08.tiff already exists, skipping
+2025-08-05 11:05:53,556 - INFO - Processing grid 362 for 2024-08
+2025-08-05 11:05:53,556 - INFO - File sentinel2_grid_362_2024_08.tiff already exists, skipping
+2025-08-05 11:05:53,556 - INFO - Processing grid 363 for 2024-08
+2025-08-05 11:05:53,556 - INFO - File sentinel2_grid_363_2024_08.tiff already exists, skipping
+2025-08-05 11:05:53,557 - INFO - Processing grid 364 for 2024-08
+2025-08-05 11:05:53,557 - INFO - File sentinel2_grid_364_2024_08.tiff already exists, skipping
+2025-08-05 11:05:53,557 - INFO - ============================================================
+2025-08-05 11:05:53,557 - INFO - DOWNLOAD SUMMARY
+2025-08-05 11:05:53,557 - INFO - ============================================================
+2025-08-05 11:05:53,557 - INFO - Total requested: 8
+2025-08-05 11:05:53,557 - INFO - Successfully downloaded: 0
+2025-08-05 11:05:53,557 - INFO - Failed: 0
+2025-08-05 11:05:53,557 - INFO - Skipped (already exist): 8
+2025-08-05 11:05:53,557 - INFO - Success rate: 0.0%
+2025-08-05 11:05:53,557 - INFO - ============================================================
+2025-08-05 11:05:53,557 - INFO - Download process completed
+2025-08-05 11:06:14,232 - INFO - Starting Sentinel-2 download script
+2025-08-05 11:06:14,232 - INFO - Target grid IDs: [357, 358, 359, 360, 361, 362, 363, 364]
+2025-08-05 11:06:14,233 - INFO - Years: [2024]
+2025-08-05 11:06:14,233 - INFO - Loading grid data from grid_output/slovenia_grid_expanded.gpkg
+2025-08-05 11:06:14,345 - INFO - Loaded 947 grid cells
+2025-08-05 11:06:14,346 - INFO - Filtered to 8 target grid cells
+2025-08-05 11:06:14,346 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 11:06:14,347 - INFO - Connecting to OpenEO Copernicus Data Space Ecosystem...
+2025-08-05 11:06:14,347 - INFO - Loaded openEO client config from sources: []
+2025-08-05 11:06:14,773 - INFO - Please authenticate in your browser...
+2025-08-05 11:06:14,822 - INFO - Found OIDC providers: ['CDSE']
+2025-08-05 11:06:14,823 - INFO - No OIDC provider given, but only one available: 'CDSE'. Using that one.
+2025-08-05 11:06:14,969 - INFO - Using default client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e' from OIDC provider 'CDSE' info.
+2025-08-05 11:06:14,971 - INFO - Found refresh token: trying refresh token based authentication.
+2025-08-05 11:06:14,971 - INFO - Doing 'refresh_token' token request 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token' with post data fields ['grant_type', 'client_id', 'refresh_token'] (client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-05 11:06:15,261 - INFO - Obtained tokens: ['access_token', 'id_token', 'refresh_token']
+2025-08-05 11:06:15,263 - INFO - Storing refresh token for issuer 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE' (client 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-05 11:06:15,265 - INFO - Successfully connected and authenticated
+2025-08-05 11:06:15,271 - INFO - Generated 8 download tasks
+2025-08-05 11:06:15,271 - INFO - Grid IDs: [357, 358, 359, 360, 361, 362, 363, 364]
+2025-08-05 11:06:15,271 - INFO - Years: [2024]
+2025-08-05 11:06:15,271 - INFO - Max cloud coverage: 5%
+2025-08-05 11:06:15,271 - INFO - Download directory: /Users/gasper/Documents/ViCos/eo_cd_slo/data/images/sentinel_downloads_v3
+2025-08-05 11:06:15,288 - INFO - Processing grid 357 for 2024-08
+2025-08-05 11:06:15,393 - INFO - Downloading sentinel2_grid_357_2024_08.tiff with exact pixel alignment...
+2025-08-05 11:06:36,020 - INFO - Grid 357: Alignment verification passed
+2025-08-05 11:06:36,020 - INFO - Successfully downloaded: sentinel2_grid_357_2024_08.tiff
+2025-08-05 11:06:36,020 - INFO - Processing grid 358 for 2024-08
+2025-08-05 11:06:36,069 - INFO - Downloading sentinel2_grid_358_2024_08.tiff with exact pixel alignment...
+2025-08-05 11:06:56,133 - INFO - Grid 358: Alignment verification passed
+2025-08-05 11:06:56,133 - INFO - Successfully downloaded: sentinel2_grid_358_2024_08.tiff
+2025-08-05 11:06:56,134 - INFO - Processing grid 359 for 2024-08
+2025-08-05 11:06:56,200 - INFO - Downloading sentinel2_grid_359_2024_08.tiff with exact pixel alignment...
+2025-08-05 11:07:31,724 - INFO - Grid 359: Alignment verification passed
+2025-08-05 11:07:31,725 - INFO - Successfully downloaded: sentinel2_grid_359_2024_08.tiff
+2025-08-05 11:07:31,725 - INFO - Processing grid 360 for 2024-08
+2025-08-05 11:07:31,782 - INFO - Downloading sentinel2_grid_360_2024_08.tiff with exact pixel alignment...
+2025-08-05 11:08:06,132 - INFO - Grid 360: Alignment verification passed
+2025-08-05 11:08:06,133 - INFO - Successfully downloaded: sentinel2_grid_360_2024_08.tiff
+2025-08-05 11:08:06,133 - INFO - Processing grid 361 for 2024-08
+2025-08-05 11:08:06,191 - INFO - Downloading sentinel2_grid_361_2024_08.tiff with exact pixel alignment...
+2025-08-05 11:08:25,054 - INFO - Grid 361: Alignment verification passed
+2025-08-05 11:08:25,055 - INFO - Successfully downloaded: sentinel2_grid_361_2024_08.tiff
+2025-08-05 11:08:25,055 - INFO - Processing grid 362 for 2024-08
+2025-08-05 11:08:25,106 - INFO - Downloading sentinel2_grid_362_2024_08.tiff with exact pixel alignment...
+2025-08-05 11:09:39,284 - ERROR - Failed to download sentinel2_grid_362_2024_08.tiff: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2025-08-05 11:09:39,286 - ERROR - Failed to download sentinel2_grid_362_2024_08.tiff: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2025-08-05 11:09:39,287 - INFO - Processing grid 363 for 2024-08
+2025-08-05 11:09:39,528 - INFO - Downloading sentinel2_grid_363_2024_08.tiff with exact pixel alignment...
+2025-08-05 11:10:05,231 - INFO - Grid 363: Alignment verification passed
+2025-08-05 11:10:05,232 - INFO - Successfully downloaded: sentinel2_grid_363_2024_08.tiff
+2025-08-05 11:10:05,232 - INFO - Processing grid 364 for 2024-08
+2025-08-05 11:10:05,350 - INFO - Downloading sentinel2_grid_364_2024_08.tiff with exact pixel alignment...
+2025-08-05 11:10:32,125 - INFO - Grid 364: Alignment verification passed
+2025-08-05 11:10:32,125 - INFO - Successfully downloaded: sentinel2_grid_364_2024_08.tiff
+2025-08-05 11:10:32,126 - INFO - ============================================================
+2025-08-05 11:10:32,126 - INFO - DOWNLOAD SUMMARY
+2025-08-05 11:10:32,126 - INFO - ============================================================
+2025-08-05 11:10:32,126 - INFO - Total requested: 8
+2025-08-05 11:10:32,126 - INFO - Successfully downloaded: 7
+2025-08-05 11:10:32,126 - INFO - Failed: 1
+2025-08-05 11:10:32,126 - INFO - Skipped (already exist): 0
+2025-08-05 11:10:32,126 - INFO - Success rate: 87.5%
+2025-08-05 11:10:32,126 - INFO - ============================================================
+2025-08-05 11:10:32,126 - INFO - Download process completed
+2025-08-05 11:20:36,562 - INFO - Starting Sentinel-2 download script
+2025-08-05 11:20:36,562 - INFO - Target grid IDs: [357, 358, 359, 360, 361, 362, 363, 364]
+2025-08-05 11:20:36,562 - INFO - Years: [2024]
+2025-08-05 11:20:36,562 - INFO - Loading grid data from grid_output/slovenia_grid_expanded.gpkg
+2025-08-05 11:20:36,773 - INFO - Loaded 947 grid cells
+2025-08-05 11:20:36,776 - INFO - Filtered to 8 target grid cells
+2025-08-05 11:20:36,776 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 11:20:36,780 - INFO - Connecting to OpenEO Copernicus Data Space Ecosystem...
+2025-08-05 11:20:36,780 - INFO - Loaded openEO client config from sources: []
+2025-08-05 11:20:37,424 - INFO - Please authenticate in your browser...
+2025-08-05 11:20:37,472 - INFO - Found OIDC providers: ['CDSE']
+2025-08-05 11:20:37,472 - INFO - No OIDC provider given, but only one available: 'CDSE'. Using that one.
+2025-08-05 11:20:37,712 - INFO - Using default client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e' from OIDC provider 'CDSE' info.
+2025-08-05 11:20:37,714 - INFO - Found refresh token: trying refresh token based authentication.
+2025-08-05 11:20:37,714 - INFO - Doing 'refresh_token' token request 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token' with post data fields ['grant_type', 'client_id', 'refresh_token'] (client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-05 11:20:38,044 - INFO - Obtained tokens: ['access_token', 'id_token', 'refresh_token']
+2025-08-05 11:20:38,044 - INFO - Storing refresh token for issuer 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE' (client 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-05 11:20:38,046 - INFO - Successfully connected and authenticated
+2025-08-05 11:20:38,049 - INFO - Generated 8 download tasks
+2025-08-05 11:20:38,049 - INFO - Grid IDs: [357, 358, 359, 360, 361, 362, 363, 364]
+2025-08-05 11:20:38,049 - INFO - Years: [2024]
+2025-08-05 11:20:38,049 - INFO - Max cloud coverage: 5%
+2025-08-05 11:20:38,050 - INFO - Download directory: /Users/gasper/Documents/ViCos/eo_cd_slo/data/images/sentinel_downloads_v3
+2025-08-05 11:20:38,063 - INFO - Processing grid 357 for 2024-08
+2025-08-05 11:20:38,063 - INFO - Using bbox: {'west': np.float64(14.86068750693979), 'south': np.float64(46.26038576405257), 'east': np.float64(14.925678969687432), 'north': np.float64(46.30544579065615)}
+2025-08-05 11:20:38,178 - INFO - Downloading sentinel2_grid_357_2024_08.tiff...
+2025-08-05 11:20:56,652 - ERROR - Failed to download sentinel2_grid_357_2024_08.tiff: name 'rasterio' is not defined
+2025-08-05 11:20:56,654 - WARNING - Attempt 1 failed, retrying: Failed to download sentinel2_grid_357_2024_08.tiff: name 'rasterio' is not defined
+2025-08-05 11:20:58,659 - INFO - Processing grid 357 for 2024-08
+2025-08-05 11:20:58,660 - INFO - File sentinel2_grid_357_2024_08.tiff already exists, skipping
+2025-08-05 11:20:58,662 - INFO - Processing grid 358 for 2024-08
+2025-08-05 11:20:58,662 - INFO - Using bbox: {'west': np.float64(14.925618095344568), 'south': np.float64(46.26044634354564), 'east': np.float64(14.990556564231762), 'north': np.float64(46.30546959338209)}
+2025-08-05 11:20:58,728 - INFO - Downloading sentinel2_grid_358_2024_08.tiff...
+2025-08-05 11:21:21,561 - ERROR - Failed to download sentinel2_grid_358_2024_08.tiff: name 'rasterio' is not defined
+2025-08-05 11:21:21,562 - WARNING - Attempt 1 failed, retrying: Failed to download sentinel2_grid_358_2024_08.tiff: name 'rasterio' is not defined
+2025-08-05 11:21:23,565 - INFO - Processing grid 358 for 2024-08
+2025-08-05 11:21:23,566 - INFO - File sentinel2_grid_358_2024_08.tiff already exists, skipping
+2025-08-05 11:21:23,567 - INFO - Processing grid 359 for 2024-08
+2025-08-05 11:21:23,567 - INFO - Using bbox: {'west': np.float64(14.990548829360765), 'south': np.float64(46.260457060671094), 'east': np.float64(15.055479581878792), 'north': np.float64(46.30546959338209)}
+2025-08-05 11:21:23,621 - INFO - Downloading sentinel2_grid_359_2024_08.tiff...
+2025-08-05 11:21:41,910 - ERROR - Failed to download sentinel2_grid_359_2024_08.tiff: name 'rasterio' is not defined
+2025-08-05 11:21:41,911 - WARNING - Attempt 1 failed, retrying: Failed to download sentinel2_grid_359_2024_08.tiff: name 'rasterio' is not defined
+2025-08-05 11:21:43,917 - INFO - Processing grid 359 for 2024-08
+2025-08-05 11:21:43,918 - INFO - File sentinel2_grid_359_2024_08.tiff already exists, skipping
+2025-08-05 11:21:43,919 - INFO - Processing grid 360 for 2024-08
+2025-08-05 11:21:43,920 - INFO - Using bbox: {'west': np.float64(15.0554341772231), 'south': np.float64(46.26040719824935), 'east': np.float64(15.120410225788833), 'north': np.float64(46.305456524532836)}
+2025-08-05 11:21:43,973 - INFO - Downloading sentinel2_grid_360_2024_08.tiff...
+2025-08-05 11:22:07,470 - ERROR - Failed to download sentinel2_grid_360_2024_08.tiff: name 'rasterio' is not defined
+2025-08-05 11:22:07,470 - WARNING - Attempt 1 failed, retrying: Failed to download sentinel2_grid_360_2024_08.tiff: name 'rasterio' is not defined
+2025-08-05 11:22:09,472 - INFO - Processing grid 360 for 2024-08
+2025-08-05 11:22:09,473 - INFO - File sentinel2_grid_360_2024_08.tiff already exists, skipping
+2025-08-05 11:22:09,475 - INFO - Processing grid 361 for 2024-08
+2025-08-05 11:22:09,475 - INFO - Using bbox: {'west': np.float64(15.120311681928293), 'south': np.float64(46.26032052211196), 'east': np.float64(15.185340633982419), 'north': np.float64(46.305406584174555)}
+2025-08-05 11:22:09,528 - INFO - Downloading sentinel2_grid_361_2024_08.tiff...
+2025-08-05 11:22:26,296 - ERROR - Failed to download sentinel2_grid_361_2024_08.tiff: name 'rasterio' is not defined
+2025-08-05 11:22:26,296 - WARNING - Attempt 1 failed, retrying: Failed to download sentinel2_grid_361_2024_08.tiff: name 'rasterio' is not defined
+2025-08-05 11:22:28,302 - INFO - Processing grid 361 for 2024-08
+2025-08-05 11:22:28,303 - INFO - File sentinel2_grid_361_2024_08.tiff already exists, skipping
+2025-08-05 11:22:28,304 - INFO - Processing grid 362 for 2024-08
+2025-08-05 11:22:28,304 - INFO - Using bbox: {'west': np.float64(15.185188951615538), 'south': np.float64(46.260197032697064), 'east': np.float64(15.25027067935399), 'north': np.float64(46.30531977255998)}
+2025-08-05 11:22:28,362 - INFO - Downloading sentinel2_grid_362_2024_08.tiff...
+2025-08-05 11:22:48,856 - ERROR - Failed to download sentinel2_grid_362_2024_08.tiff: name 'rasterio' is not defined
+2025-08-05 11:22:48,857 - WARNING - Attempt 1 failed, retrying: Failed to download sentinel2_grid_362_2024_08.tiff: name 'rasterio' is not defined
+2025-08-05 11:22:50,857 - INFO - Processing grid 362 for 2024-08
+2025-08-05 11:22:50,858 - INFO - File sentinel2_grid_362_2024_08.tiff already exists, skipping
+2025-08-05 11:22:50,858 - INFO - Processing grid 363 for 2024-08
+2025-08-05 11:22:50,858 - INFO - Using bbox: {'west': np.float64(15.250065859555932), 'south': np.float64(46.260036730628876), 'east': np.float64(15.315200234802493), 'north': np.float64(46.30519609012847)}
+2025-08-05 11:22:50,908 - INFO - Downloading sentinel2_grid_363_2024_08.tiff...
+2025-08-05 11:23:06,718 - INFO - Download interrupted by user
+2025-08-05 11:23:41,606 - INFO - Starting Sentinel-2 download script
+2025-08-05 11:23:41,606 - INFO - Target grid IDs: [357, 358, 359, 360, 361, 362, 363, 364]
+2025-08-05 11:23:41,606 - INFO - Years: [2024]
+2025-08-05 11:23:41,606 - INFO - Loading grid data from grid_output/slovenia_grid_expanded.gpkg
+2025-08-05 11:23:41,765 - INFO - Loaded 947 grid cells
+2025-08-05 11:23:41,768 - INFO - Filtered to 8 target grid cells
+2025-08-05 11:23:41,768 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 11:23:41,771 - INFO - Connecting to OpenEO Copernicus Data Space Ecosystem...
+2025-08-05 11:23:41,771 - INFO - Loaded openEO client config from sources: []
+2025-08-05 11:23:42,117 - INFO - Please authenticate in your browser...
+2025-08-05 11:23:42,172 - INFO - Found OIDC providers: ['CDSE']
+2025-08-05 11:23:42,172 - INFO - No OIDC provider given, but only one available: 'CDSE'. Using that one.
+2025-08-05 11:23:42,394 - INFO - Using default client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e' from OIDC provider 'CDSE' info.
+2025-08-05 11:23:42,396 - INFO - Found refresh token: trying refresh token based authentication.
+2025-08-05 11:23:42,397 - INFO - Doing 'refresh_token' token request 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token' with post data fields ['grant_type', 'client_id', 'refresh_token'] (client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-05 11:23:42,606 - INFO - Obtained tokens: ['access_token', 'id_token', 'refresh_token']
+2025-08-05 11:23:42,607 - INFO - Storing refresh token for issuer 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE' (client 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-05 11:23:42,610 - INFO - Successfully connected and authenticated
+2025-08-05 11:23:42,614 - INFO - Generated 8 download tasks
+2025-08-05 11:23:42,615 - INFO - Grid IDs: [357, 358, 359, 360, 361, 362, 363, 364]
+2025-08-05 11:23:42,615 - INFO - Years: [2024]
+2025-08-05 11:23:42,615 - INFO - Max cloud coverage: 5%
+2025-08-05 11:23:42,615 - INFO - Download directory: /Users/gasper/Documents/ViCos/eo_cd_slo/data/images/sentinel_downloads_v3
+2025-08-05 11:23:42,627 - INFO - Processing grid 357 for 2024-08
+2025-08-05 11:23:42,627 - INFO - Using bbox: {'west': np.float64(14.86068750693979), 'south': np.float64(46.26038576405257), 'east': np.float64(14.925678969687432), 'north': np.float64(46.30544579065615)}
+2025-08-05 11:23:42,726 - INFO - Downloading sentinel2_grid_357_2024_08.tiff...
+2025-08-05 11:23:56,827 - INFO - Downloaded image: 502x502, CRS: EPSG:32633
+2025-08-05 11:23:56,828 - INFO - Successfully downloaded: sentinel2_grid_357_2024_08.tiff
+2025-08-05 11:23:56,828 - INFO - Processing grid 358 for 2024-08
+2025-08-05 11:23:56,828 - INFO - Using bbox: {'west': np.float64(14.925618095344568), 'south': np.float64(46.26044634354564), 'east': np.float64(14.990556564231762), 'north': np.float64(46.30546959338209)}
+2025-08-05 11:23:56,980 - INFO - Downloading sentinel2_grid_358_2024_08.tiff...
+2025-08-05 11:24:14,492 - INFO - Downloaded image: 502x502, CRS: EPSG:32633
+2025-08-05 11:24:14,493 - INFO - Successfully downloaded: sentinel2_grid_358_2024_08.tiff
+2025-08-05 11:24:14,494 - INFO - Processing grid 359 for 2024-08
+2025-08-05 11:24:14,494 - INFO - Using bbox: {'west': np.float64(14.990548829360765), 'south': np.float64(46.260457060671094), 'east': np.float64(15.055479581878792), 'north': np.float64(46.30546959338209)}
+2025-08-05 11:24:14,547 - INFO - Downloading sentinel2_grid_359_2024_08.tiff...
+2025-08-05 11:24:31,287 - INFO - Downloaded image: 501x501, CRS: EPSG:32633
+2025-08-05 11:24:31,287 - INFO - Successfully downloaded: sentinel2_grid_359_2024_08.tiff
+2025-08-05 11:24:31,288 - INFO - Processing grid 360 for 2024-08
+2025-08-05 11:24:31,288 - INFO - Using bbox: {'west': np.float64(15.0554341772231), 'south': np.float64(46.26040719824935), 'east': np.float64(15.120410225788833), 'north': np.float64(46.305456524532836)}
+2025-08-05 11:24:31,336 - INFO - Downloading sentinel2_grid_360_2024_08.tiff...
+2025-08-05 11:25:01,094 - INFO - Downloaded image: 502x502, CRS: EPSG:32633
+2025-08-05 11:25:01,095 - INFO - Successfully downloaded: sentinel2_grid_360_2024_08.tiff
+2025-08-05 11:25:01,096 - INFO - Processing grid 361 for 2024-08
+2025-08-05 11:25:01,096 - INFO - Using bbox: {'west': np.float64(15.120311681928293), 'south': np.float64(46.26032052211196), 'east': np.float64(15.185340633982419), 'north': np.float64(46.305406584174555)}
+2025-08-05 11:25:01,160 - INFO - Downloading sentinel2_grid_361_2024_08.tiff...
+2025-08-05 11:25:21,451 - INFO - Downloaded image: 503x503, CRS: EPSG:32633
+2025-08-05 11:25:21,452 - INFO - Successfully downloaded: sentinel2_grid_361_2024_08.tiff
+2025-08-05 11:25:21,453 - INFO - Processing grid 362 for 2024-08
+2025-08-05 11:25:21,453 - INFO - Using bbox: {'west': np.float64(15.185188951615538), 'south': np.float64(46.260197032697064), 'east': np.float64(15.25027067935399), 'north': np.float64(46.30531977255998)}
+2025-08-05 11:25:21,502 - INFO - Downloading sentinel2_grid_362_2024_08.tiff...
+2025-08-05 11:25:34,984 - INFO - Download interrupted by user
+2025-08-05 11:36:25,686 - INFO - Starting Sentinel-2 download script
+2025-08-05 11:36:25,686 - INFO - Target grid IDs: [357, 358, 359, 360, 361, 362, 363, 364]
+2025-08-05 11:36:25,686 - INFO - Years: [2024]
+2025-08-05 11:36:25,686 - INFO - Loading grid data from grid_output/slovenia_grid_expanded.gpkg
+2025-08-05 11:36:25,835 - INFO - Loaded 947 grid cells
+2025-08-05 11:36:25,838 - INFO - Filtered to 8 target grid cells
+2025-08-05 11:36:25,838 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 11:36:25,840 - INFO - Connecting to OpenEO Copernicus Data Space Ecosystem...
+2025-08-05 11:36:25,841 - INFO - Loaded openEO client config from sources: []
+2025-08-05 11:36:26,317 - INFO - Please authenticate in your browser...
+2025-08-05 11:36:26,379 - INFO - Found OIDC providers: ['CDSE']
+2025-08-05 11:36:26,379 - INFO - No OIDC provider given, but only one available: 'CDSE'. Using that one.
+2025-08-05 11:36:26,573 - INFO - Using default client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e' from OIDC provider 'CDSE' info.
+2025-08-05 11:36:26,574 - INFO - Found refresh token: trying refresh token based authentication.
+2025-08-05 11:36:26,575 - INFO - Doing 'refresh_token' token request 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token' with post data fields ['grant_type', 'client_id', 'refresh_token'] (client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-05 11:36:26,839 - INFO - Obtained tokens: ['access_token', 'id_token', 'refresh_token']
+2025-08-05 11:36:26,841 - INFO - Storing refresh token for issuer 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE' (client 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-05 11:36:26,844 - INFO - Successfully connected and authenticated
+2025-08-05 11:36:26,850 - INFO - Generated 8 download tasks
+2025-08-05 11:36:26,851 - INFO - Grid IDs: [357, 358, 359, 360, 361, 362, 363, 364]
+2025-08-05 11:36:26,851 - INFO - Years: [2024]
+2025-08-05 11:36:26,851 - INFO - Max cloud coverage: 5%
+2025-08-05 11:36:26,851 - INFO - Download directory: /Users/gasper/Documents/ViCos/eo_cd_slo/data/images/sentinel_downloads_v3
+2025-08-05 11:36:26,869 - INFO - Processing grid 357 for 2024-08
+2025-08-05 11:36:26,869 - INFO - Using bbox: {'west': np.float64(14.86068750693979), 'south': np.float64(46.26038576405257), 'east': np.float64(14.925678969687432), 'north': np.float64(46.30544579065615)}
+2025-08-05 11:36:26,991 - INFO - SCL band not available, skipping cloud masking
+2025-08-05 11:36:26,991 - INFO - Downloading sentinel2_grid_357_2024_08.tiff...
+2025-08-05 11:36:43,007 - INFO - Downloaded image properties:
+2025-08-05 11:36:43,007 - INFO -   Size: 502x502
+2025-08-05 11:36:43,008 - INFO -   CRS: EPSG:32633
+2025-08-05 11:36:43,008 - INFO -   Bounds: BoundingBox(left=489260.0, bottom=5122980.0, right=494280.0, top=5128000.0)
+2025-08-05 11:36:43,008 - INFO -   Transform: | 10.00, 0.00, 489260.00|
+| 0.00,-10.00, 5128000.00|
+| 0.00, 0.00, 1.00|
+2025-08-05 11:36:43,008 - INFO - Successfully downloaded: sentinel2_grid_357_2024_08.tiff
+2025-08-05 11:36:43,008 - INFO - Processing grid 358 for 2024-08
+2025-08-05 11:36:43,008 - INFO - Using bbox: {'west': np.float64(14.925618095344568), 'south': np.float64(46.26044634354564), 'east': np.float64(14.990556564231762), 'north': np.float64(46.30546959338209)}
+2025-08-05 11:36:43,070 - INFO - SCL band not available, skipping cloud masking
+2025-08-05 11:36:43,070 - INFO - Downloading sentinel2_grid_358_2024_08.tiff...
+2025-08-05 11:36:59,773 - INFO - Downloaded image properties:
+2025-08-05 11:36:59,778 - INFO -   Size: 502x502
+2025-08-05 11:36:59,778 - INFO -   CRS: EPSG:32633
+2025-08-05 11:36:59,778 - INFO -   Bounds: BoundingBox(left=494260.0, bottom=5122980.0, right=499280.0, top=5128000.0)
+2025-08-05 11:36:59,778 - INFO -   Transform: | 10.00, 0.00, 494260.00|
+| 0.00,-10.00, 5128000.00|
+| 0.00, 0.00, 1.00|
+2025-08-05 11:36:59,778 - INFO - Successfully downloaded: sentinel2_grid_358_2024_08.tiff
+2025-08-05 11:36:59,778 - INFO - Processing grid 359 for 2024-08
+2025-08-05 11:36:59,778 - INFO - Using bbox: {'west': np.float64(14.990548829360765), 'south': np.float64(46.260457060671094), 'east': np.float64(15.055479581878792), 'north': np.float64(46.30546959338209)}
+2025-08-05 11:36:59,856 - INFO - SCL band not available, skipping cloud masking
+2025-08-05 11:36:59,856 - INFO - Downloading sentinel2_grid_359_2024_08.tiff...
+2025-08-05 11:37:21,002 - INFO - Downloaded image properties:
+2025-08-05 11:37:21,002 - INFO -   Size: 501x501
+2025-08-05 11:37:21,003 - INFO -   CRS: EPSG:32633
+2025-08-05 11:37:21,003 - INFO -   Bounds: BoundingBox(left=499270.0, bottom=5122980.0, right=504280.0, top=5127990.0)
+2025-08-05 11:37:21,003 - INFO -   Transform: | 10.00, 0.00, 499270.00|
+| 0.00,-10.00, 5127990.00|
+| 0.00, 0.00, 1.00|
+2025-08-05 11:37:21,003 - INFO - Successfully downloaded: sentinel2_grid_359_2024_08.tiff
+2025-08-05 11:37:21,004 - INFO - Processing grid 360 for 2024-08
+2025-08-05 11:37:21,004 - INFO - Using bbox: {'west': np.float64(15.0554341772231), 'south': np.float64(46.26040719824935), 'east': np.float64(15.120410225788833), 'north': np.float64(46.305456524532836)}
+2025-08-05 11:37:21,068 - INFO - SCL band not available, skipping cloud masking
+2025-08-05 11:37:21,069 - INFO - Downloading sentinel2_grid_360_2024_08.tiff...
+2025-08-05 11:37:44,151 - INFO - Downloaded image properties:
+2025-08-05 11:37:44,152 - INFO -   Size: 502x502
+2025-08-05 11:37:44,152 - INFO -   CRS: EPSG:32633
+2025-08-05 11:37:44,152 - INFO -   Bounds: BoundingBox(left=504260.0, bottom=5122980.0, right=509280.0, top=5128000.0)
+2025-08-05 11:37:44,152 - INFO -   Transform: | 10.00, 0.00, 504260.00|
+| 0.00,-10.00, 5128000.00|
+| 0.00, 0.00, 1.00|
+2025-08-05 11:37:44,152 - INFO - Successfully downloaded: sentinel2_grid_360_2024_08.tiff
+2025-08-05 11:37:44,153 - INFO - Processing grid 361 for 2024-08
+2025-08-05 11:37:44,153 - INFO - Using bbox: {'west': np.float64(15.120311681928293), 'south': np.float64(46.26032052211196), 'east': np.float64(15.185340633982419), 'north': np.float64(46.305406584174555)}
+2025-08-05 11:37:44,215 - INFO - SCL band not available, skipping cloud masking
+2025-08-05 11:37:44,215 - INFO - Downloading sentinel2_grid_361_2024_08.tiff...
+2025-08-05 11:38:06,230 - INFO - Downloaded image properties:
+2025-08-05 11:38:06,230 - INFO -   Size: 503x503
+2025-08-05 11:38:06,230 - INFO -   CRS: EPSG:32633
+2025-08-05 11:38:06,230 - INFO -   Bounds: BoundingBox(left=509260.0, bottom=5122970.0, right=514290.0, top=5128000.0)
+2025-08-05 11:38:06,230 - INFO -   Transform: | 10.00, 0.00, 509260.00|
+| 0.00,-10.00, 5128000.00|
+| 0.00, 0.00, 1.00|
+2025-08-05 11:38:06,230 - INFO - Successfully downloaded: sentinel2_grid_361_2024_08.tiff
+2025-08-05 11:38:06,231 - INFO - Processing grid 362 for 2024-08
+2025-08-05 11:38:06,231 - INFO - Using bbox: {'west': np.float64(15.185188951615538), 'south': np.float64(46.260197032697064), 'east': np.float64(15.25027067935399), 'north': np.float64(46.30531977255998)}
+2025-08-05 11:38:06,291 - INFO - SCL band not available, skipping cloud masking
+2025-08-05 11:38:06,291 - INFO - Downloading sentinel2_grid_362_2024_08.tiff...
+2025-08-05 11:38:27,648 - INFO - Downloaded image properties:
+2025-08-05 11:38:27,648 - INFO -   Size: 503x504
+2025-08-05 11:38:27,648 - INFO -   CRS: EPSG:32633
+2025-08-05 11:38:27,648 - INFO -   Bounds: BoundingBox(left=514260.0, bottom=5122970.0, right=519290.0, top=5128010.0)
+2025-08-05 11:38:27,648 - INFO -   Transform: | 10.00, 0.00, 514260.00|
+| 0.00,-10.00, 5128010.00|
+| 0.00, 0.00, 1.00|
+2025-08-05 11:38:27,648 - INFO - Successfully downloaded: sentinel2_grid_362_2024_08.tiff
+2025-08-05 11:38:27,649 - INFO - Processing grid 363 for 2024-08
+2025-08-05 11:38:27,649 - INFO - Using bbox: {'west': np.float64(15.250065859555932), 'south': np.float64(46.260036730628876), 'east': np.float64(15.315200234802493), 'north': np.float64(46.30519609012847)}
+2025-08-05 11:38:27,740 - INFO - SCL band not available, skipping cloud masking
+2025-08-05 11:38:27,740 - INFO - Downloading sentinel2_grid_363_2024_08.tiff...
+2025-08-05 11:38:44,204 - INFO - Downloaded image properties:
+2025-08-05 11:38:44,205 - INFO -   Size: 505x504
+2025-08-05 11:38:44,205 - INFO -   CRS: EPSG:32633
+2025-08-05 11:38:44,205 - INFO -   Bounds: BoundingBox(left=519250.0, bottom=5122970.0, right=524300.0, top=5128010.0)
+2025-08-05 11:38:44,205 - INFO -   Transform: | 10.00, 0.00, 519250.00|
+| 0.00,-10.00, 5128010.00|
+| 0.00, 0.00, 1.00|
+2025-08-05 11:38:44,205 - INFO - Successfully downloaded: sentinel2_grid_363_2024_08.tiff
+2025-08-05 11:38:44,206 - INFO - Processing grid 364 for 2024-08
+2025-08-05 11:38:44,206 - INFO - Using bbox: {'west': np.float64(15.314942279025034), 'south': np.float64(46.259839616717656), 'east': np.float64(15.38012917323292), 'north': np.float64(46.305035537505994)}
+2025-08-05 11:38:44,269 - INFO - SCL band not available, skipping cloud masking
+2025-08-05 11:38:44,270 - INFO - Downloading sentinel2_grid_364_2024_08.tiff...
+2025-08-05 11:39:02,126 - INFO - Downloaded image properties:
+2025-08-05 11:39:02,126 - INFO -   Size: 505x506
+2025-08-05 11:39:02,126 - INFO -   CRS: EPSG:32633
+2025-08-05 11:39:02,127 - INFO -   Bounds: BoundingBox(left=524250.0, bottom=5122960.0, right=529300.0, top=5128020.0)
+2025-08-05 11:39:02,127 - INFO -   Transform: | 10.00, 0.00, 524250.00|
+| 0.00,-10.00, 5128020.00|
+| 0.00, 0.00, 1.00|
+2025-08-05 11:39:02,127 - INFO - Successfully downloaded: sentinel2_grid_364_2024_08.tiff
+2025-08-05 11:39:02,128 - INFO - ============================================================
+2025-08-05 11:39:02,128 - INFO - DOWNLOAD SUMMARY
+2025-08-05 11:39:02,128 - INFO - ============================================================
+2025-08-05 11:39:02,128 - INFO - Total requested: 8
+2025-08-05 11:39:02,128 - INFO - Successfully downloaded: 8
+2025-08-05 11:39:02,128 - INFO - Failed: 0
+2025-08-05 11:39:02,128 - INFO - Skipped (already exist): 0
+2025-08-05 11:39:02,128 - INFO - Success rate: 100.0%
+2025-08-05 11:39:02,128 - INFO - ============================================================
+2025-08-05 11:39:02,128 - INFO - Download process completed

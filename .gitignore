@@ -2,5 +2,7 @@
 geotiffs/
 oscd/
 sentinel_downloads/
+sentinel_downloads_v2/
+sentinel_downloads_v3/
 .DS_Store
 __pycache__/

@@ -43,8 +43,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Configuration
-DOWNLOAD_DIR = Path("./data/images/sentinel_downloads")
-GRID_FILE = Path("./data/slovenia_grid.gpkg")
+DOWNLOAD_DIR = Path("./data/images/sentinel_downloads_v3")
+GRID_FILE = Path("./grid_output/slovenia_grid_expanded.gpkg")
 
 # Database configuration (should match your docker-compose)
 DB_CONFIG = {
@@ -263,33 +263,56 @@ class SentinelInserter:
         """Extract metadata from image file"""
         try:
             with rasterio.open(filepath) as src:
-                # Get basic metadata
+                # Get bounds in the image's native CRS
+                bounds = src.bounds
+                native_crs = src.crs
+
+                # Convert bounds to WGS84 for database storage
+                if native_crs != "EPSG:4326":
+                    from rasterio.warp import transform_bounds
+
+                    wgs84_bounds = transform_bounds(native_crs, "EPSG:4326", *bounds)
+                else:
+                    wgs84_bounds = bounds
+
+                # Create WKT polygon from WGS84 bounds
+                bbox_wkt = f"POLYGON(({wgs84_bounds[0]} {wgs84_bounds[1]}, {wgs84_bounds[2]} {wgs84_bounds[1]}, {wgs84_bounds[2]} {wgs84_bounds[3]}, {wgs84_bounds[0]} {wgs84_bounds[3]}, {wgs84_bounds[0]} {wgs84_bounds[1]}))"
+
+                # Get band information using the correct rasterio method
+                band_names = []
+                band_descriptions = []
+                for i in range(1, src.count + 1):
+                    # Get band description using tags
+                    tags = src.tags(i)
+                    desc = tags.get("DESCRIPTION", f"Band_{i}")
+
+                    # If no description in tags, try getting from band metadata
+                    if desc == f"Band_{i}":
+                        try:
+                            # For OpenEO/GDAL files, band names are often in the band description
+                            desc = src.descriptions[i - 1] or f"Band_{i}"
+                        except (IndexError, AttributeError):
+                            desc = f"Band_{i}"
+
+                    band_names.append(desc)
+                    band_descriptions.append(desc)
+
                 metadata = {
                     "width": src.width,
                     "height": src.height,
-                    "data_type": str(src.dtypes[0]),
                     "crs": str(src.crs),
-                    "bounds": src.bounds,
-                    "transform": src.transform,
+                    "native_bounds": bounds,
+                    "wgs84_bounds": wgs84_bounds,
+                    "bbox_wkt": bbox_wkt,
+                    "transform": list(src.transform),
+                    "data_type": str(src.dtypes[0]),
                     "band_count": src.count,
-                    "band_names": [],
+                    "band_names": band_names,
+                    "band_descriptions": band_descriptions,
+                    "nodata": src.nodata,
                 }
 
-                # Get band descriptions/names
-                for i in range(1, src.count + 1):
-                    band_desc = src.descriptions[i - 1] or f"Band_{i}"
-                    metadata["band_names"].append(band_desc)
-
-                # Calculate bounding box in WGS84
-                if src.crs != "EPSG:4326":
-                    bounds_4326 = transform_bounds(src.crs, "EPSG:4326", *src.bounds)
-                else:
-                    bounds_4326 = src.bounds
-
-                # Create bbox geometry
-                bbox_geom = box(*bounds_4326)
-                metadata["bbox_wkt"] = bbox_geom.wkt
-
+                logger.debug(f"Image metadata: {metadata}")
                 return metadata
 
         except Exception as e:
@@ -299,12 +322,20 @@ class SentinelInserter:
     def compress_band_data(self, band_array: np.ndarray) -> bytes:
         """Store band data as raw bytes (no compression for compatibility)"""
         try:
-            # Convert to uint16 if needed (for Sentinel-2)
-            if band_array.dtype != np.uint16:
-                band_array = band_array.astype(np.uint16)
+            # Keep original data type for Sentinel-2 (Int16)
+            # Convert only if necessary
+            if band_array.dtype == np.int16:
+                # Keep as int16 but ensure it's in a format the database can handle
+                band_array = band_array.astype(np.int16)
+            elif band_array.dtype != np.uint16:
+                # Convert to uint16 for other cases
+                # Shift int16 to uint16 range if needed
+                if band_array.dtype == np.int16:
+                    band_array = (band_array.astype(np.int32) + 32768).astype(np.uint16)
+                else:
+                    band_array = band_array.astype(np.uint16)
 
             # Store as raw bytes for direct backend compatibility
-            # This ensures the backend gets exactly width*height*sizeof(uint16) bytes
             return band_array.tobytes()
 
         except Exception as e:
@@ -317,34 +348,48 @@ class SentinelInserter:
 
         try:
             with rasterio.open(filepath) as src:
-                # Map bands by their names/descriptions
-                for i, band_name in enumerate(metadata["band_names"], 1):
-                    # Try to match with our band mapping
-                    db_column = None
-                    for sentinel_band, db_col in BAND_MAPPING.items():
-                        if (
-                            sentinel_band in band_name
-                            or sentinel_band.lower() in band_name.lower()
-                        ):
-                            db_column = db_col
-                            break
+                logger.debug(f"Processing {src.count} bands from {filepath.name}")
+                logger.debug(f"Band descriptions: {src.descriptions}")
 
-                    if db_column:
-                        logger.debug(f"Reading band {band_name} -> {db_column}")
-                        band_array = src.read(i)
-                        compressed_data = self.compress_band_data(band_array)
+                # Map bands by their descriptions (B02, B03, B04)
+                for i in range(1, src.count + 1):
+                    try:
+                        # Get band description
+                        band_desc = (
+                            src.descriptions[i - 1] if src.descriptions else f"Band_{i}"
+                        )
+                        logger.debug(f"Band {i}: description='{band_desc}'")
 
-                        if compressed_data:
-                            band_data[db_column] = compressed_data
+                        # Map to database column
+                        db_column = BAND_MAPPING.get(band_desc)
+
+                        if db_column:
+                            logger.debug(
+                                f"Reading band {i} ({band_desc}) -> {db_column}"
+                            )
+                            band_array = src.read(i)
+
+                            # Handle NoData values
+                            if src.nodata is not None:
+                                band_array = np.where(
+                                    band_array == src.nodata, 0, band_array
+                                )
+
+                            compressed_data = self.compress_band_data(band_array)
+
+                            if compressed_data:
+                                band_data[db_column] = compressed_data
+                            else:
+                                logger.warning(f"Failed to compress band {band_desc}")
                         else:
-                            logger.warning(f"Failed to compress band {band_name}")
-                    else:
-                        logger.debug(f"Skipping unmapped band: {band_name}")
+                            logger.debug(f"Skipping unmapped band {i}: {band_desc}")
 
-                logger.info(
-                    f"Extracted {len(band_data)} bands: {list(band_data.keys())}"
-                )
-                return band_data
+                    except Exception as e:
+                        logger.error(f"Failed to process band {i}: {e}")
+                        continue
+
+            logger.info(f"Extracted {len(band_data)} bands: {list(band_data.keys())}")
+            return band_data
 
         except Exception as e:
             logger.error(f"Failed to extract band data from {filepath}: {e}")
@@ -385,34 +430,43 @@ class SentinelInserter:
                 self.insertion_stats["skipped"] += 1
                 return True
 
-            # Get grid bbox
+            # Get the actual image bbox (from OpenEO processing)
+            image_bbox_wkt = metadata["bbox_wkt"]
+
+            # Get grid bbox for comparison/validation
             grid_bbox_wkt = self.get_grid_bbox_wkt(grid_id)
             if not grid_bbox_wkt:
                 logger.error(f"Could not get bbox for grid {grid_id}")
                 return False
 
+            # Log the comparison but use the actual image bbox
+            self._log_bbox_comparison(grid_id, grid_bbox_wkt, image_bbox_wkt)
+
+            # Use the actual image bbox from OpenEO processing
+            # This represents the real extent of the downloaded data
+            insert_bbox_wkt = image_bbox_wkt
+
             # Prepare insert statement
             insert_sql = """
                 INSERT INTO eo (
                     time, grid_id, bbox, width, height, data_type,
-                    b02, b03, b04, b08
+                    b02, b03, b04
                 ) VALUES (
                     %s, %s, ST_GeogFromText(%s), %s, %s, %s,
-                    %s, %s, %s, %s
+                    %s, %s, %s
                 )
             """
 
             values = (
                 date,
                 grid_id,
-                grid_bbox_wkt,
+                insert_bbox_wkt,  # Use actual image bbox
                 metadata["width"],
                 metadata["height"],
                 metadata["data_type"],
                 band_data.get("b02"),
                 band_data.get("b03"),
                 band_data.get("b04"),
-                band_data.get("b08"),
             )
 
             with self.conn.cursor() as cur:
@@ -431,6 +485,44 @@ class SentinelInserter:
                 self.conn.rollback()
             self.insertion_stats["failed"] += 1
             return False
+
+    def _log_bbox_comparison(
+        self, grid_id: int, grid_bbox_wkt: str, image_bbox_wkt: str
+    ):
+        """Log comparison between grid and image bboxes for debugging"""
+        try:
+            from shapely.wkt import loads
+
+            grid_geom = loads(grid_bbox_wkt)
+            image_geom = loads(image_bbox_wkt)
+
+            grid_bounds = grid_geom.bounds
+            image_bounds = image_geom.bounds
+
+            logger.debug(f"=== BBOX COMPARISON for Grid {grid_id} ===")
+            logger.debug(f"Grid bounds:  {grid_bounds}")
+            logger.debug(f"Image bounds: {image_bounds}")
+
+            # Calculate differences
+            diff_minx = image_bounds[0] - grid_bounds[0]
+            diff_miny = image_bounds[1] - grid_bounds[1]
+            diff_maxx = image_bounds[2] - grid_bounds[2]
+            diff_maxy = image_bounds[3] - grid_bounds[3]
+
+            logger.debug(f"Differences (image - grid):")
+            logger.debug(f"  minx: {diff_minx:.6f}°")
+            logger.debug(f"  miny: {diff_miny:.6f}°")
+            logger.debug(f"  maxx: {diff_maxx:.6f}°")
+            logger.debug(f"  maxy: {diff_maxy:.6f}°")
+
+            overlap_area = grid_geom.intersection(image_geom).area
+            grid_area = grid_geom.area
+            overlap_percent = (overlap_area / grid_area) * 100
+
+            logger.debug(f"Overlap: {overlap_percent:.2f}% of grid cell")
+
+        except Exception as e:
+            logger.debug(f"Could not compare bboxes: {e}")
 
     def process_image_file(self, filepath: Path) -> bool:
         """Process a single image file"""

@@ -27,6 +27,7 @@ from pathlib import Path
 from tqdm import tqdm
 from typing import List, Dict, Tuple, Optional
 import logging
+import rasterio
 
 # Configure logging
 logging.basicConfig(
@@ -37,13 +38,13 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Configuration
-GRID_IDS = [339, 340, 341, 360, 361, 362, 380, 381, 382]
-YEARS = list(range(2018, 2025))  # 2018 to 2024
+GRID_IDS = [357, 358, 359, 360, 361, 362, 363, 364]  # Example grid IDs]
+YEARS = list(range(2024, 2025))  # 2024
 AUGUST_START_DAY = 1
 AUGUST_END_DAY = 31
-MAX_CLOUD_COVERAGE = 20  # Maximum cloud coverage percentage
-DOWNLOAD_DIR = Path("./data/images/sentinel_downloads")
-GRID_FILE = Path("./data/slovenia_grid.gpkg")
+MAX_CLOUD_COVERAGE = 5  # Maximum cloud coverage percentage
+DOWNLOAD_DIR = Path("./data/images/sentinel_downloads_v3")
+GRID_FILE = Path("./grid_output/slovenia_grid_expanded.gpkg")
 BATCH_SIZE = 3  # Number of concurrent downloads
 RATE_LIMIT_DELAY = 2.0  # Seconds between API calls
 MAX_RETRIES = 3
@@ -146,7 +147,7 @@ class SentinelDownloader:
         return filepath.exists()
 
     def download_image(self, task: Dict) -> Tuple[bool, str]:
-        """Download a single image"""
+        """Download a single image using OpenEO's standard processing"""
         filename = task["filename"]
         filepath = DOWNLOAD_DIR / filename
 
@@ -157,22 +158,50 @@ class SentinelDownloader:
             if self.check_existing_file(filename):
                 logger.info(f"File {filename} already exists, skipping")
                 self.download_stats["skipped"] += 1
-                return True, f"Already exists: {filename}"
+                return True, f"Skipped: {filename}"
 
-            # Simple approach: Load collection and download directly
+            # Use the bbox directly from the grid (already in WGS84)
+            bbox_wgs84 = task["bbox"]
+            logger.info(f"Using bbox: {bbox_wgs84}")
+
+            # Load collection - let OpenEO handle all coordinate transformations
             cube = self.connection.load_collection(
                 "SENTINEL2_L2A",
-                spatial_extent=task["bbox"],
+                spatial_extent=bbox_wgs84,
                 temporal_extent=[task["start_date"], task["end_date"]],
                 bands=BANDS,
             )
 
-            # Take median over time to reduce clouds
+            # Apply cloud masking and temporal aggregation
+            cube = cube.filter_bands(BANDS)
+
+            # Mask clouds if available
+            try:
+                scl = cube.band("SCL")
+                mask = (
+                    scl.eq(4).or_(scl.eq(5)).or_(scl.eq(6))
+                )  # Vegetation, not vegetated, water
+                cube = cube.mask(mask)
+            except:
+                logger.info("SCL band not available, skipping cloud masking")
+
             cube = cube.median_time()
 
-            # Download directly
+            # Let OpenEO determine the output CRS and resolution
+            # This will likely be EPSG:4326 or EPSG:3857 with OpenEO's standard grid
             logger.info(f"Downloading {filename}...")
             cube.download(str(filepath), format="GTiff")
+
+            # Verify the file was created and log its properties
+            if not filepath.exists():
+                raise Exception("Download failed - file not created")
+
+            with rasterio.open(filepath) as src:
+                logger.info(f"Downloaded image properties:")
+                logger.info(f"  Size: {src.width}x{src.height}")
+                logger.info(f"  CRS: {src.crs}")
+                logger.info(f"  Bounds: {src.bounds}")
+                logger.info(f"  Transform: {src.transform}")
 
             self.download_stats["successful"] += 1
             logger.info(f"Successfully downloaded: {filename}")
@@ -184,24 +213,82 @@ class SentinelDownloader:
             self.download_stats["failed"] += 1
             return False, error_msg
 
+    def verify_alignment(self, filepath: Path, expected_bbox: Dict, grid_id: int):
+        """Verify the downloaded image has correct pixel alignment"""
+        try:
+            import rasterio
+
+            with rasterio.open(filepath) as src:
+                # Check CRS
+                if src.crs.to_string() != "EPSG:32633":
+                    logger.warning(
+                        f"Grid {grid_id}: CRS mismatch. Expected EPSG:32633, got {src.crs}"
+                    )
+
+                # Check bounds (allow small floating point differences)
+                bounds = src.bounds
+                tolerance = 5  # 5 meter tolerance
+
+                if (
+                    abs(bounds.left - expected_bbox["west"]) > tolerance
+                    or abs(bounds.bottom - expected_bbox["south"]) > tolerance
+                    or abs(bounds.right - expected_bbox["east"]) > tolerance
+                    or abs(bounds.top - expected_bbox["north"]) > tolerance
+                ):
+
+                    logger.warning(f"Grid {grid_id}: Bounds mismatch!")
+                    logger.warning(f"  Expected: {expected_bbox}")
+                    logger.warning(f"  Actual: {bounds}")
+
+                # Check pixel size
+                pixel_size_x = abs(src.transform.a)
+                pixel_size_y = abs(src.transform.e)
+
+                if abs(pixel_size_x - 10) > 0.1 or abs(pixel_size_y - 10) > 0.1:
+                    logger.warning(
+                        f"Grid {grid_id}: Pixel size mismatch. Expected 10m, got {pixel_size_x}x{pixel_size_y}"
+                    )
+
+                # Check if pixels are aligned to 10m grid
+                origin_x = src.transform.c % 10
+                origin_y = src.transform.f % 10
+
+                if origin_x > 0.1 and origin_x < 9.9:
+                    logger.warning(
+                        f"Grid {grid_id}: X origin not aligned to 10m grid: {origin_x}"
+                    )
+                if origin_y > 0.1 and origin_y < 9.9:
+                    logger.warning(
+                        f"Grid {grid_id}: Y origin not aligned to 10m grid: {origin_y}"
+                    )
+
+                logger.info(f"Grid {grid_id}: Alignment verification passed")
+
+        except Exception as e:
+            logger.error(f"Could not verify alignment for grid {grid_id}: {e}")
+
     def download_with_retry(self, task: Dict) -> Tuple[bool, str]:
         """Download with retry logic"""
         for attempt in range(MAX_RETRIES):
             try:
-                return self.download_image(task)
+                success, message = self.download_image(task)
+                if success:
+                    return success, message
+
+                if attempt < MAX_RETRIES - 1:
+                    logger.warning(f"Attempt {attempt + 1} failed, retrying: {message}")
+                    time.sleep(RATE_LIMIT_DELAY * (attempt + 1))  # Exponential backoff
+
             except Exception as e:
                 if attempt < MAX_RETRIES - 1:
-                    wait_time = (attempt + 1) * 5  # Exponential backoff
                     logger.warning(
-                        f"Attempt {attempt + 1} failed for {task['filename']}: {e}"
+                        f"Attempt {attempt + 1} failed with exception, retrying: {e}"
                     )
-                    logger.info(f"Retrying in {wait_time} seconds...")
-                    time.sleep(wait_time)
+                    time.sleep(RATE_LIMIT_DELAY * (attempt + 1))
                 else:
-                    logger.error(
-                        f"All {MAX_RETRIES} attempts failed for {task['filename']}"
-                    )
-                    return False, f"Failed after {MAX_RETRIES} attempts: {str(e)}"
+                    return False, f"All retry attempts failed: {e}"
+
+        return False, f"Failed after {MAX_RETRIES} attempts"
 
     def run_downloads(self):
         """Execute all downloads with progress tracking"""

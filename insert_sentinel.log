@@ -2681,3 +2681,740 @@ CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
 2025-08-05 10:00:54,957 - INFO - ============================================================
 2025-08-05 10:00:54,957 - INFO - Database connection closed
 2025-08-05 10:00:54,957 - INFO - Insertion process completed
+2025-08-05 10:44:59,098 - INFO - Starting Sentinel-2 database insertion script
+2025-08-05 10:44:59,098 - INFO - Loading grid data from data/slovenia_grid.gpkg
+2025-08-05 10:44:59,211 - INFO - Loaded 940 grid cells
+2025-08-05 10:44:59,211 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 10:44:59,213 - INFO - Connecting to database...
+2025-08-05 10:44:59,269 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-05 10:44:59,273 - INFO - Required database tables found
+2025-08-05 10:44:59,273 - INFO - Loading Slovenia grid cells into database...
+2025-08-05 10:44:59,381 - INFO - Successfully loaded 940 grid cells into database
+2025-08-05 10:44:59,381 - INFO - Found 125 image files
+2025-08-05 10:44:59,381 - INFO - Found 125 image files to process
+2025-08-05 10:44:59,390 - INFO - Processing sentinel2_grid_362_2022_08.tiff
+2025-08-05 10:44:59,427 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:44:59,527 - INFO - Successfully inserted record for grid 362, 2022-08
+2025-08-05 10:44:59,527 - INFO - Processing sentinel2_grid_361_2019_08.tiff
+2025-08-05 10:44:59,537 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:44:59,601 - INFO - Successfully inserted record for grid 361, 2019-08
+2025-08-05 10:44:59,601 - INFO - Processing sentinel2_grid_291_2020_08.tiff
+2025-08-05 10:44:59,611 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:44:59,674 - INFO - Successfully inserted record for grid 291, 2020-08
+2025-08-05 10:44:59,675 - INFO - Processing sentinel2_grid_296_2020_08.tiff
+2025-08-05 10:44:59,685 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:44:59,747 - INFO - Successfully inserted record for grid 296, 2020-08
+2025-08-05 10:44:59,748 - INFO - Processing sentinel2_grid_295_2024_08.tiff
+2025-08-05 10:44:59,757 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:44:59,846 - INFO - Successfully inserted record for grid 295, 2024-08
+2025-08-05 10:44:59,846 - INFO - Processing sentinel2_grid_340_2023_08.tiff
+2025-08-05 10:44:59,857 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:44:59,929 - INFO - Successfully inserted record for grid 340, 2023-08
+2025-08-05 10:44:59,930 - INFO - Processing sentinel2_grid_292_2024_08.tiff
+2025-08-05 10:44:59,938 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:00,023 - INFO - Successfully inserted record for grid 292, 2024-08
+2025-08-05 10:45:00,024 - INFO - Processing sentinel2_grid_335_2018_08.tiff
+2025-08-05 10:45:00,034 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:00,109 - INFO - Successfully inserted record for grid 335, 2018-08
+2025-08-05 10:45:00,110 - INFO - Processing sentinel2_grid_360_2018_08.tiff
+2025-08-05 10:45:00,120 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:00,175 - INFO - Successfully inserted record for grid 360, 2018-08
+2025-08-05 10:45:00,176 - INFO - Processing sentinel2_grid_382_2020_08.tiff
+2025-08-05 10:45:00,186 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:00,250 - INFO - Successfully inserted record for grid 382, 2020-08
+2025-08-05 10:45:00,250 - INFO - Processing sentinel2_grid_297_2021_08.tiff
+2025-08-05 10:45:00,260 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:00,334 - INFO - Successfully inserted record for grid 297, 2021-08
+2025-08-05 10:45:00,335 - INFO - Processing sentinel2_grid_341_2022_08.tiff
+2025-08-05 10:45:00,346 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:00,412 - INFO - Successfully inserted record for grid 341, 2022-08
+2025-08-05 10:45:00,413 - INFO - Processing sentinel2_grid_313_2022_08.tiff
+2025-08-05 10:45:00,423 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:00,495 - INFO - Successfully inserted record for grid 313, 2022-08
+2025-08-05 10:45:00,496 - INFO - Processing sentinel2_grid_381_2024_08.tiff
+2025-08-05 10:45:00,506 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:00,568 - INFO - Successfully inserted record for grid 381, 2024-08
+2025-08-05 10:45:00,569 - INFO - Processing sentinel2_grid_339_2024_08.tiff
+2025-08-05 10:45:00,579 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:00,656 - INFO - Successfully inserted record for grid 339, 2024-08
+2025-08-05 10:45:00,657 - INFO - Processing sentinel2_grid_297_2020_08.tiff
+2025-08-05 10:45:00,667 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:00,733 - INFO - Successfully inserted record for grid 297, 2020-08
+2025-08-05 10:45:00,734 - INFO - Processing sentinel2_grid_382_2021_08.tiff
+2025-08-05 10:45:00,743 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:00,842 - INFO - Successfully inserted record for grid 382, 2021-08
+2025-08-05 10:45:00,842 - INFO - Processing sentinel2_grid_335_2019_08.tiff
+2025-08-05 10:45:00,852 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:00,923 - INFO - Successfully inserted record for grid 335, 2019-08
+2025-08-05 10:45:00,924 - INFO - Processing sentinel2_grid_360_2019_08.tiff
+2025-08-05 10:45:00,933 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:00,986 - INFO - Successfully inserted record for grid 360, 2019-08
+2025-08-05 10:45:00,987 - INFO - Processing sentinel2_grid_313_2023_08.tiff
+2025-08-05 10:45:00,996 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:01,054 - INFO - Successfully inserted record for grid 313, 2023-08
+2025-08-05 10:45:01,054 - INFO - Processing sentinel2_grid_293_2024_08.tiff
+2025-08-05 10:45:01,063 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:01,143 - INFO - Successfully inserted record for grid 293, 2024-08
+2025-08-05 10:45:01,144 - INFO - Processing sentinel2_grid_341_2023_08.tiff
+2025-08-05 10:45:01,153 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:01,218 - INFO - Successfully inserted record for grid 341, 2023-08
+2025-08-05 10:45:01,219 - INFO - Processing sentinel2_grid_294_2024_08.tiff
+2025-08-05 10:45:01,228 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:01,308 - INFO - Successfully inserted record for grid 294, 2024-08
+2025-08-05 10:45:01,309 - INFO - Processing sentinel2_grid_362_2023_08.tiff
+2025-08-05 10:45:01,318 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:01,383 - INFO - Successfully inserted record for grid 362, 2023-08
+2025-08-05 10:45:01,384 - INFO - Processing sentinel2_grid_296_2021_08.tiff
+2025-08-05 10:45:01,393 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:01,456 - INFO - Successfully inserted record for grid 296, 2021-08
+2025-08-05 10:45:01,457 - INFO - Processing sentinel2_grid_361_2018_08.tiff
+2025-08-05 10:45:01,467 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:01,540 - INFO - Successfully inserted record for grid 361, 2018-08
+2025-08-05 10:45:01,540 - INFO - Processing sentinel2_grid_291_2021_08.tiff
+2025-08-05 10:45:01,549 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:01,641 - INFO - Successfully inserted record for grid 291, 2021-08
+2025-08-05 10:45:01,642 - INFO - Processing sentinel2_grid_380_2024_08.tiff
+2025-08-05 10:45:01,652 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:01,716 - INFO - Successfully inserted record for grid 380, 2024-08
+2025-08-05 10:45:01,717 - INFO - Processing sentinel2_grid_340_2022_08.tiff
+2025-08-05 10:45:01,729 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:01,787 - INFO - Successfully inserted record for grid 340, 2022-08
+2025-08-05 10:45:01,788 - INFO - Processing sentinel2_grid_313_2021_08.tiff
+2025-08-05 10:45:01,798 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:01,862 - INFO - Successfully inserted record for grid 313, 2021-08
+2025-08-05 10:45:01,863 - INFO - Processing sentinel2_grid_339_2018_08.tiff
+2025-08-05 10:45:01,872 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:01,951 - INFO - Successfully inserted record for grid 339, 2018-08
+2025-08-05 10:45:01,952 - INFO - Processing sentinel2_grid_341_2021_08.tiff
+2025-08-05 10:45:01,962 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:02,029 - INFO - Successfully inserted record for grid 341, 2021-08
+2025-08-05 10:45:02,030 - INFO - Processing sentinel2_grid_297_2022_08.tiff
+2025-08-05 10:45:02,039 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:02,102 - INFO - Successfully inserted record for grid 297, 2022-08
+2025-08-05 10:45:02,103 - INFO - Processing sentinel2_grid_382_2023_08.tiff
+2025-08-05 10:45:02,113 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:02,170 - INFO - Successfully inserted record for grid 382, 2023-08
+2025-08-05 10:45:02,171 - INFO - Processing sentinel2_grid_294_2019_08.tiff
+2025-08-05 10:45:02,180 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:02,244 - INFO - Successfully inserted record for grid 294, 2019-08
+2025-08-05 10:45:02,246 - INFO - Processing sentinel2_grid_381_2018_08.tiff
+2025-08-05 10:45:02,256 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:02,345 - INFO - Successfully inserted record for grid 381, 2018-08
+2025-08-05 10:45:02,346 - INFO - Processing sentinel2_grid_293_2019_08.tiff
+2025-08-05 10:45:02,357 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:02,438 - INFO - Successfully inserted record for grid 293, 2019-08
+2025-08-05 10:45:02,439 - INFO - Processing sentinel2_grid_360_2024_08.tiff
+2025-08-05 10:45:02,448 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:02,514 - INFO - Successfully inserted record for grid 360, 2024-08
+2025-08-05 10:45:02,515 - INFO - Processing sentinel2_grid_295_2018_08.tiff
+2025-08-05 10:45:02,525 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:02,611 - INFO - Successfully inserted record for grid 295, 2018-08
+2025-08-05 10:45:02,612 - INFO - Processing sentinel2_grid_362_2021_08.tiff
+2025-08-05 10:45:02,622 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:02,699 - INFO - Successfully inserted record for grid 362, 2021-08
+2025-08-05 10:45:02,700 - INFO - Processing sentinel2_grid_292_2018_08.tiff
+2025-08-05 10:45:02,709 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:02,797 - INFO - Successfully inserted record for grid 292, 2018-08
+2025-08-05 10:45:02,797 - INFO - Processing sentinel2_grid_380_2019_08.tiff
+2025-08-05 10:45:02,807 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:02,862 - INFO - Successfully inserted record for grid 380, 2019-08
+2025-08-05 10:45:02,863 - INFO - Processing sentinel2_grid_340_2020_08.tiff
+2025-08-05 10:45:02,873 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:02,948 - INFO - Successfully inserted record for grid 340, 2020-08
+2025-08-05 10:45:02,948 - INFO - Processing sentinel2_grid_296_2023_08.tiff
+2025-08-05 10:45:02,958 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:03,028 - INFO - Successfully inserted record for grid 296, 2023-08
+2025-08-05 10:45:03,029 - INFO - Processing sentinel2_grid_291_2023_08.tiff
+2025-08-05 10:45:03,039 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:03,119 - INFO - Successfully inserted record for grid 291, 2023-08
+2025-08-05 10:45:03,120 - INFO - Processing sentinel2_grid_380_2018_08.tiff
+2025-08-05 10:45:03,129 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:03,218 - INFO - Successfully inserted record for grid 380, 2018-08
+2025-08-05 10:45:03,218 - INFO - Processing sentinel2_grid_362_2020_08.tiff
+2025-08-05 10:45:03,228 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:03,289 - INFO - Successfully inserted record for grid 362, 2020-08
+2025-08-05 10:45:03,290 - INFO - Processing sentinel2_grid_292_2019_08.tiff
+2025-08-05 10:45:03,299 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:03,373 - INFO - Successfully inserted record for grid 292, 2019-08
+2025-08-05 10:45:03,374 - INFO - Processing sentinel2_grid_295_2019_08.tiff
+2025-08-05 10:45:03,383 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:03,448 - INFO - Successfully inserted record for grid 295, 2019-08
+2025-08-05 10:45:03,448 - INFO - Processing sentinel2_grid_361_2024_08.tiff
+2025-08-05 10:45:03,459 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:03,531 - INFO - Successfully inserted record for grid 361, 2024-08
+2025-08-05 10:45:03,531 - INFO - Processing sentinel2_grid_340_2021_08.tiff
+2025-08-05 10:45:03,542 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:03,620 - INFO - Successfully inserted record for grid 340, 2021-08
+2025-08-05 10:45:03,621 - INFO - Processing sentinel2_grid_291_2022_08.tiff
+2025-08-05 10:45:03,632 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:03,690 - INFO - Successfully inserted record for grid 291, 2022-08
+2025-08-05 10:45:03,691 - INFO - Processing sentinel2_grid_296_2022_08.tiff
+2025-08-05 10:45:03,701 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:03,754 - INFO - Successfully inserted record for grid 296, 2022-08
+2025-08-05 10:45:03,755 - INFO - Processing sentinel2_grid_339_2019_08.tiff
+2025-08-05 10:45:03,765 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:45:03,833 - INFO - Database connection closed
+2025-08-05 10:45:03,833 - INFO - Insertion interrupted by user
+2025-08-05 10:48:11,552 - INFO - Starting Sentinel-2 database insertion script
+2025-08-05 10:48:11,552 - INFO - Loading grid data from data/slovenia_grid.gpkg
+2025-08-05 10:48:11,722 - INFO - Loaded 940 grid cells
+2025-08-05 10:48:11,722 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 10:48:11,727 - INFO - Connecting to database...
+2025-08-05 10:48:11,765 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-05 10:48:11,768 - INFO - Required database tables found
+2025-08-05 10:48:11,769 - INFO - Loading Slovenia grid cells into database...
+2025-08-05 10:48:11,949 - INFO - Successfully loaded 940 grid cells into database
+2025-08-05 10:48:11,949 - INFO - Found 8 image files
+2025-08-05 10:48:11,949 - INFO - Found 8 image files to process
+2025-08-05 10:48:11,976 - INFO - Processing sentinel2_grid_360_2024_08.tiff
+2025-08-05 10:48:12,213 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:48:12,295 - INFO - Successfully inserted record for grid 360, 2024-08
+2025-08-05 10:48:12,296 - INFO - Processing sentinel2_grid_361_2024_08.tiff
+2025-08-05 10:48:12,309 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:48:12,363 - INFO - Successfully inserted record for grid 361, 2024-08
+2025-08-05 10:48:12,363 - INFO - Processing sentinel2_grid_357_2024_08.tiff
+2025-08-05 10:48:12,371 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:48:12,430 - INFO - Successfully inserted record for grid 357, 2024-08
+2025-08-05 10:48:12,430 - INFO - Processing sentinel2_grid_363_2024_08.tiff
+2025-08-05 10:48:12,438 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:48:12,502 - INFO - Successfully inserted record for grid 363, 2024-08
+2025-08-05 10:48:12,502 - INFO - Processing sentinel2_grid_364_2024_08.tiff
+2025-08-05 10:48:12,511 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:48:12,574 - INFO - Successfully inserted record for grid 364, 2024-08
+2025-08-05 10:48:12,575 - INFO - Processing sentinel2_grid_362_2024_08.tiff
+2025-08-05 10:48:12,582 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:48:12,643 - INFO - Successfully inserted record for grid 362, 2024-08
+2025-08-05 10:48:12,644 - INFO - Processing sentinel2_grid_359_2024_08.tiff
+2025-08-05 10:48:12,653 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:48:12,717 - INFO - Successfully inserted record for grid 359, 2024-08
+2025-08-05 10:48:12,717 - INFO - Processing sentinel2_grid_358_2024_08.tiff
+2025-08-05 10:48:12,725 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:48:12,787 - INFO - Successfully inserted record for grid 358, 2024-08
+2025-08-05 10:48:12,788 - INFO - ============================================================
+2025-08-05 10:48:12,788 - INFO - INSERTION SUMMARY
+2025-08-05 10:48:12,788 - INFO - ============================================================
+2025-08-05 10:48:12,788 - INFO - Total files processed: 8
+2025-08-05 10:48:12,788 - INFO - Successfully inserted: 8
+2025-08-05 10:48:12,788 - INFO - Failed: 0
+2025-08-05 10:48:12,788 - INFO - Skipped (already exist): 0
+2025-08-05 10:48:12,788 - INFO - Success rate: 100.0%
+2025-08-05 10:48:12,788 - INFO - ============================================================
+2025-08-05 10:48:12,788 - INFO - Database connection closed
+2025-08-05 10:48:12,788 - INFO - Insertion process completed
+2025-08-05 11:07:09,434 - INFO - Starting Sentinel-2 database insertion script
+2025-08-05 11:07:09,434 - INFO - Loading grid data from grid_output/slovenia_grid_expanded.gpkg
+2025-08-05 11:07:09,526 - INFO - Loaded 947 grid cells
+2025-08-05 11:07:09,526 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 11:07:09,528 - INFO - Connecting to database...
+2025-08-05 11:07:09,574 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-05 11:07:09,577 - INFO - Required database tables found
+2025-08-05 11:07:09,577 - INFO - Loading Slovenia grid cells into database...
+2025-08-05 11:07:09,657 - INFO - Successfully loaded 947 grid cells into database
+2025-08-05 11:07:09,658 - INFO - Found 2 image files
+2025-08-05 11:07:09,658 - INFO - Found 2 image files to process
+2025-08-05 11:07:09,665 - INFO - Processing sentinel2_grid_357_2024_08.tiff
+2025-08-05 11:07:09,698 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:07:09,766 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_357_2024_08.tiff: Image bbox must be fully contained within grid cell 357
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:07:09,768 - INFO - Processing sentinel2_grid_358_2024_08.tiff
+2025-08-05 11:07:09,775 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:07:09,831 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_358_2024_08.tiff: Image bbox must be fully contained within grid cell 358
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:07:09,832 - INFO - ============================================================
+2025-08-05 11:07:09,832 - INFO - INSERTION SUMMARY
+2025-08-05 11:07:09,832 - INFO - ============================================================
+2025-08-05 11:07:09,832 - INFO - Total files processed: 2
+2025-08-05 11:07:09,832 - INFO - Successfully inserted: 0
+2025-08-05 11:07:09,832 - INFO - Failed: 2
+2025-08-05 11:07:09,832 - INFO - Skipped (already exist): 0
+2025-08-05 11:07:09,832 - INFO - Success rate: 0.0%
+2025-08-05 11:07:09,832 - INFO - ============================================================
+2025-08-05 11:07:09,832 - INFO - Database connection closed
+2025-08-05 11:07:09,833 - INFO - Insertion process completed
+2025-08-05 11:10:00,375 - INFO - Starting Sentinel-2 database insertion script
+2025-08-05 11:10:00,376 - INFO - Loading grid data from grid_output/slovenia_grid_expanded.gpkg
+2025-08-05 11:10:00,470 - INFO - Loaded 947 grid cells
+2025-08-05 11:10:00,470 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 11:10:00,472 - INFO - Connecting to database...
+2025-08-05 11:10:00,523 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-05 11:10:00,527 - INFO - Required database tables found
+2025-08-05 11:10:00,533 - INFO - Grid cells table already contains 947 records, skipping grid load
+2025-08-05 11:10:00,533 - INFO - Found 5 image files
+2025-08-05 11:10:00,533 - INFO - Found 5 image files to process
+2025-08-05 11:10:00,549 - INFO - Processing sentinel2_grid_360_2024_08.tiff
+2025-08-05 11:10:00,584 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:10:00,684 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_360_2024_08.tiff: Image bbox must be fully contained within grid cell 360
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:10:00,687 - INFO - Processing sentinel2_grid_361_2024_08.tiff
+2025-08-05 11:10:00,695 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:10:00,820 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_361_2024_08.tiff: Image bbox must be fully contained within grid cell 361
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:10:00,822 - INFO - Processing sentinel2_grid_357_2024_08.tiff
+2025-08-05 11:10:00,832 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:10:00,901 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_357_2024_08.tiff: Image bbox must be fully contained within grid cell 357
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:10:00,904 - INFO - Processing sentinel2_grid_359_2024_08.tiff
+2025-08-05 11:10:00,912 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:10:00,977 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_359_2024_08.tiff: Image bbox must be fully contained within grid cell 359
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:10:00,979 - INFO - Processing sentinel2_grid_358_2024_08.tiff
+2025-08-05 11:10:00,987 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:10:01,053 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_358_2024_08.tiff: Image bbox must be fully contained within grid cell 358
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:10:01,055 - INFO - ============================================================
+2025-08-05 11:10:01,055 - INFO - INSERTION SUMMARY
+2025-08-05 11:10:01,055 - INFO - ============================================================
+2025-08-05 11:10:01,055 - INFO - Total files processed: 5
+2025-08-05 11:10:01,055 - INFO - Successfully inserted: 0
+2025-08-05 11:10:01,055 - INFO - Failed: 5
+2025-08-05 11:10:01,055 - INFO - Skipped (already exist): 0
+2025-08-05 11:10:01,055 - INFO - Success rate: 0.0%
+2025-08-05 11:10:01,055 - INFO - ============================================================
+2025-08-05 11:10:01,055 - INFO - Database connection closed
+2025-08-05 11:10:01,055 - INFO - Insertion process completed
+2025-08-05 11:13:25,766 - INFO - Starting Sentinel-2 database insertion script
+2025-08-05 11:13:25,766 - INFO - Loading grid data from grid_output/slovenia_grid_expanded.gpkg
+2025-08-05 11:13:25,933 - INFO - Loaded 947 grid cells
+2025-08-05 11:13:25,935 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 11:13:25,946 - INFO - Connecting to database...
+2025-08-05 11:13:25,986 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-05 11:13:25,989 - INFO - Required database tables found
+2025-08-05 11:13:25,990 - INFO - Grid cells table already contains 947 records, skipping grid load
+2025-08-05 11:13:25,991 - INFO - Found 7 image files
+2025-08-05 11:13:25,991 - INFO - Found 7 image files to process
+2025-08-05 11:13:25,998 - INFO - Processing sentinel2_grid_360_2024_08.tiff
+2025-08-05 11:13:26,055 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:13:26,162 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_360_2024_08.tiff: Image bbox must be fully contained within grid cell 360
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:13:26,164 - INFO - Processing sentinel2_grid_361_2024_08.tiff
+2025-08-05 11:13:26,174 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:13:26,248 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_361_2024_08.tiff: Image bbox must be fully contained within grid cell 361
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:13:26,249 - INFO - Processing sentinel2_grid_357_2024_08.tiff
+2025-08-05 11:13:26,258 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:13:26,328 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_357_2024_08.tiff: Image bbox must be fully contained within grid cell 357
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:13:26,331 - INFO - Processing sentinel2_grid_363_2024_08.tiff
+2025-08-05 11:13:26,340 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:13:26,407 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_363_2024_08.tiff: Image bbox must be fully contained within grid cell 363
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:13:26,410 - INFO - Processing sentinel2_grid_364_2024_08.tiff
+2025-08-05 11:13:26,417 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:13:26,477 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_364_2024_08.tiff: Image bbox must be fully contained within grid cell 364
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:13:26,478 - INFO - Processing sentinel2_grid_359_2024_08.tiff
+2025-08-05 11:13:26,487 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:13:26,549 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_359_2024_08.tiff: Image bbox must be fully contained within grid cell 359
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:13:26,550 - INFO - Processing sentinel2_grid_358_2024_08.tiff
+2025-08-05 11:13:26,558 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:13:26,609 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_358_2024_08.tiff: Image bbox must be fully contained within grid cell 358
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:13:26,610 - INFO - ============================================================
+2025-08-05 11:13:26,610 - INFO - INSERTION SUMMARY
+2025-08-05 11:13:26,610 - INFO - ============================================================
+2025-08-05 11:13:26,610 - INFO - Total files processed: 7
+2025-08-05 11:13:26,610 - INFO - Successfully inserted: 0
+2025-08-05 11:13:26,610 - INFO - Failed: 7
+2025-08-05 11:13:26,610 - INFO - Skipped (already exist): 0
+2025-08-05 11:13:26,610 - INFO - Success rate: 0.0%
+2025-08-05 11:13:26,610 - INFO - ============================================================
+2025-08-05 11:13:26,610 - INFO - Database connection closed
+2025-08-05 11:13:26,610 - INFO - Insertion process completed
+2025-08-05 11:15:15,197 - INFO - Starting Sentinel-2 database insertion script
+2025-08-05 11:15:15,197 - INFO - Loading grid data from grid_output/slovenia_grid_expanded.gpkg
+2025-08-05 11:15:15,363 - INFO - Loaded 947 grid cells
+2025-08-05 11:15:15,363 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 11:15:15,367 - INFO - Connecting to database...
+2025-08-05 11:15:15,408 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-05 11:15:15,411 - INFO - Required database tables found
+2025-08-05 11:15:15,412 - INFO - Grid cells table already contains 947 records, skipping grid load
+2025-08-05 11:15:15,412 - INFO - Found 7 image files
+2025-08-05 11:15:15,412 - INFO - Found 7 image files to process
+2025-08-05 11:15:15,421 - INFO - Processing sentinel2_grid_360_2024_08.tiff
+2025-08-05 11:15:15,488 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:15:15,578 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_360_2024_08.tiff: Image bbox must be fully contained within grid cell 360
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:15:15,582 - INFO - Processing sentinel2_grid_361_2024_08.tiff
+2025-08-05 11:15:15,590 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:15:15,651 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_361_2024_08.tiff: Image bbox must be fully contained within grid cell 361
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:15:15,653 - INFO - Processing sentinel2_grid_357_2024_08.tiff
+2025-08-05 11:15:15,661 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:15:15,735 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_357_2024_08.tiff: Image bbox must be fully contained within grid cell 357
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:15:15,736 - INFO - Processing sentinel2_grid_363_2024_08.tiff
+2025-08-05 11:15:15,745 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:15:15,812 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_363_2024_08.tiff: Image bbox must be fully contained within grid cell 363
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:15:15,813 - INFO - Processing sentinel2_grid_364_2024_08.tiff
+2025-08-05 11:15:15,821 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:15:15,882 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_364_2024_08.tiff: Image bbox must be fully contained within grid cell 364
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:15:15,883 - INFO - Processing sentinel2_grid_359_2024_08.tiff
+2025-08-05 11:15:15,892 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:15:15,959 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_359_2024_08.tiff: Image bbox must be fully contained within grid cell 359
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:15:15,961 - INFO - Processing sentinel2_grid_358_2024_08.tiff
+2025-08-05 11:15:15,979 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:15:16,038 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_358_2024_08.tiff: Image bbox must be fully contained within grid cell 358
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:15:16,039 - INFO - ============================================================
+2025-08-05 11:15:16,039 - INFO - INSERTION SUMMARY
+2025-08-05 11:15:16,039 - INFO - ============================================================
+2025-08-05 11:15:16,039 - INFO - Total files processed: 7
+2025-08-05 11:15:16,039 - INFO - Successfully inserted: 0
+2025-08-05 11:15:16,039 - INFO - Failed: 7
+2025-08-05 11:15:16,039 - INFO - Skipped (already exist): 0
+2025-08-05 11:15:16,039 - INFO - Success rate: 0.0%
+2025-08-05 11:15:16,039 - INFO - ============================================================
+2025-08-05 11:15:16,040 - INFO - Database connection closed
+2025-08-05 11:15:16,040 - INFO - Insertion process completed
+2025-08-05 11:18:35,142 - INFO - Starting Sentinel-2 database insertion script
+2025-08-05 11:18:35,142 - INFO - Loading grid data from grid_output/slovenia_grid_expanded.gpkg
+2025-08-05 11:18:35,293 - INFO - Loaded 947 grid cells
+2025-08-05 11:18:35,293 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 11:18:35,299 - INFO - Connecting to database...
+2025-08-05 11:18:35,353 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-05 11:18:35,358 - INFO - Required database tables found
+2025-08-05 11:18:35,359 - INFO - Grid cells table already contains 947 records, skipping grid load
+2025-08-05 11:18:35,359 - INFO - Found 7 image files
+2025-08-05 11:18:35,359 - INFO - Found 7 image files to process
+2025-08-05 11:18:35,370 - INFO - Processing sentinel2_grid_360_2024_08.tiff
+2025-08-05 11:18:35,452 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:18:35,464 - WARNING - Image bbox extends beyond grid cell boundaries!
+2025-08-05 11:18:35,464 - WARNING -   Image extends 0.0000286814 degrees west of grid
+2025-08-05 11:18:35,464 - WARNING -   Image extends 0.0000160947 degrees north of grid
+2025-08-05 11:18:35,598 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_360_2024_08.tiff: Image bbox must be fully contained within grid cell 360
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:18:35,600 - INFO - Processing sentinel2_grid_361_2024_08.tiff
+2025-08-05 11:18:35,611 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:18:35,613 - WARNING - Image bbox extends beyond grid cell boundaries!
+2025-08-05 11:18:35,613 - WARNING -   Image extends 0.0000286623 degrees west of grid
+2025-08-05 11:18:35,613 - WARNING -   Image extends 0.0000161110 degrees north of grid
+2025-08-05 11:18:35,690 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_361_2024_08.tiff: Image bbox must be fully contained within grid cell 361
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:18:35,692 - INFO - Processing sentinel2_grid_357_2024_08.tiff
+2025-08-05 11:18:35,700 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:18:35,703 - WARNING - Image bbox extends beyond grid cell boundaries!
+2025-08-05 11:18:35,703 - WARNING -   Image extends 0.0000287618 degrees west of grid
+2025-08-05 11:18:35,703 - WARNING -   Image extends 0.0000160621 degrees north of grid
+2025-08-05 11:18:35,831 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_357_2024_08.tiff: Image bbox must be fully contained within grid cell 357
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:18:35,833 - INFO - Processing sentinel2_grid_363_2024_08.tiff
+2025-08-05 11:18:35,841 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:18:35,843 - WARNING - Image bbox extends beyond grid cell boundaries!
+2025-08-05 11:18:35,843 - WARNING -   Image extends 0.0000286241 degrees west of grid
+2025-08-05 11:18:35,843 - WARNING -   Image extends 0.0000161435 degrees north of grid
+2025-08-05 11:18:35,910 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_363_2024_08.tiff: Image bbox must be fully contained within grid cell 363
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:18:35,911 - INFO - Processing sentinel2_grid_364_2024_08.tiff
+2025-08-05 11:18:35,919 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:18:35,921 - WARNING - Image bbox extends beyond grid cell boundaries!
+2025-08-05 11:18:35,921 - WARNING -   Image extends 0.0000286049 degrees west of grid
+2025-08-05 11:18:35,921 - WARNING -   Image extends 0.0000161597 degrees north of grid
+2025-08-05 11:18:35,980 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_364_2024_08.tiff: Image bbox must be fully contained within grid cell 364
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:18:35,981 - INFO - Processing sentinel2_grid_359_2024_08.tiff
+2025-08-05 11:18:35,989 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:18:35,993 - WARNING - Image bbox extends beyond grid cell boundaries!
+2025-08-05 11:18:35,994 - WARNING -   Image extends 0.0000287239 degrees west of grid
+2025-08-05 11:18:35,994 - WARNING -   Image extends 0.0000164697 degrees north of grid
+2025-08-05 11:18:36,065 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_359_2024_08.tiff: Image bbox must be fully contained within grid cell 359
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:18:36,066 - INFO - Processing sentinel2_grid_358_2024_08.tiff
+2025-08-05 11:18:36,074 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:18:36,076 - WARNING - Image bbox extends beyond grid cell boundaries!
+2025-08-05 11:18:36,076 - WARNING -   Image extends 0.0000287429 degrees west of grid
+2025-08-05 11:18:36,076 - WARNING -   Image extends 0.0000160784 degrees north of grid
+2025-08-05 11:18:36,148 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_358_2024_08.tiff: Image bbox must be fully contained within grid cell 358
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:18:36,150 - INFO - ============================================================
+2025-08-05 11:18:36,150 - INFO - INSERTION SUMMARY
+2025-08-05 11:18:36,150 - INFO - ============================================================
+2025-08-05 11:18:36,150 - INFO - Total files processed: 7
+2025-08-05 11:18:36,150 - INFO - Successfully inserted: 0
+2025-08-05 11:18:36,150 - INFO - Failed: 7
+2025-08-05 11:18:36,150 - INFO - Skipped (already exist): 0
+2025-08-05 11:18:36,150 - INFO - Success rate: 0.0%
+2025-08-05 11:18:36,150 - INFO - ============================================================
+2025-08-05 11:18:36,150 - INFO - Database connection closed
+2025-08-05 11:18:36,150 - INFO - Insertion process completed
+2025-08-05 11:24:03,840 - INFO - Starting Sentinel-2 database insertion script
+2025-08-05 11:24:03,840 - INFO - Loading grid data from grid_output/slovenia_grid_expanded.gpkg
+2025-08-05 11:24:03,936 - INFO - Loaded 947 grid cells
+2025-08-05 11:24:03,936 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 11:24:03,938 - INFO - Connecting to database...
+2025-08-05 11:24:03,990 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-05 11:24:03,994 - INFO - Required database tables found
+2025-08-05 11:24:03,995 - INFO - Loading Slovenia grid cells into database...
+2025-08-05 11:24:04,087 - INFO - Successfully loaded 947 grid cells into database
+2025-08-05 11:24:04,088 - INFO - Found 1 image files
+2025-08-05 11:24:04,088 - INFO - Found 1 image files to process
+2025-08-05 11:24:04,095 - INFO - Processing sentinel2_grid_357_2024_08.tiff
+2025-08-05 11:24:04,128 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:24:04,134 - WARNING - Image bbox extends beyond grid cell boundaries!
+2025-08-05 11:24:04,134 - WARNING -   Image extends 0.0001588513 degrees west of grid
+2025-08-05 11:24:04,134 - WARNING -   Image extends 0.0000741112 degrees south of grid
+2025-08-05 11:24:04,134 - WARNING -   Image extends 0.0001011573 degrees east of grid
+2025-08-05 11:24:04,134 - WARNING -   Image extends 0.0001061450 degrees north of grid
+2025-08-05 11:24:04,220 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_357_2024_08.tiff: Image bbox must be fully contained within grid cell 357
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:24:04,224 - INFO - ============================================================
+2025-08-05 11:24:04,224 - INFO - INSERTION SUMMARY
+2025-08-05 11:24:04,224 - INFO - ============================================================
+2025-08-05 11:24:04,224 - INFO - Total files processed: 1
+2025-08-05 11:24:04,225 - INFO - Successfully inserted: 0
+2025-08-05 11:24:04,225 - INFO - Failed: 1
+2025-08-05 11:24:04,225 - INFO - Skipped (already exist): 0
+2025-08-05 11:24:04,225 - INFO - Success rate: 0.0%
+2025-08-05 11:24:04,225 - INFO - ============================================================
+2025-08-05 11:24:04,225 - INFO - Database connection closed
+2025-08-05 11:24:04,225 - INFO - Insertion process completed
+2025-08-05 11:28:18,724 - INFO - Starting Sentinel-2 database insertion script
+2025-08-05 11:28:18,724 - INFO - Loading grid data from grid_output/slovenia_grid_expanded.gpkg
+2025-08-05 11:28:18,887 - INFO - Loaded 947 grid cells
+2025-08-05 11:28:18,888 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 11:28:18,891 - INFO - Connecting to database...
+2025-08-05 11:28:18,944 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-05 11:28:18,952 - INFO - Required database tables found
+2025-08-05 11:28:18,954 - INFO - Grid cells table already contains 947 records, skipping grid load
+2025-08-05 11:28:18,955 - INFO - Found 5 image files
+2025-08-05 11:28:18,955 - INFO - Found 5 image files to process
+2025-08-05 11:28:18,963 - INFO - Processing sentinel2_grid_360_2024_08.tiff
+2025-08-05 11:28:19,035 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:28:19,177 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_360_2024_08.tiff: Image bbox must be fully contained within grid cell 360
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:28:19,179 - INFO - Processing sentinel2_grid_361_2024_08.tiff
+2025-08-05 11:28:19,188 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:28:19,294 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_361_2024_08.tiff: Image bbox must be fully contained within grid cell 361
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:28:19,295 - INFO - Processing sentinel2_grid_357_2024_08.tiff
+2025-08-05 11:28:19,303 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:28:19,375 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_357_2024_08.tiff: Image bbox must be fully contained within grid cell 357
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:28:19,376 - INFO - Processing sentinel2_grid_359_2024_08.tiff
+2025-08-05 11:28:19,384 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:28:19,454 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_359_2024_08.tiff: Image bbox must be fully contained within grid cell 359
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:28:19,457 - INFO - Processing sentinel2_grid_358_2024_08.tiff
+2025-08-05 11:28:19,464 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:28:19,536 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_358_2024_08.tiff: Image bbox must be fully contained within grid cell 358
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:28:19,538 - INFO - ============================================================
+2025-08-05 11:28:19,538 - INFO - INSERTION SUMMARY
+2025-08-05 11:28:19,538 - INFO - ============================================================
+2025-08-05 11:28:19,538 - INFO - Total files processed: 5
+2025-08-05 11:28:19,538 - INFO - Successfully inserted: 0
+2025-08-05 11:28:19,538 - INFO - Failed: 5
+2025-08-05 11:28:19,538 - INFO - Skipped (already exist): 0
+2025-08-05 11:28:19,538 - INFO - Success rate: 0.0%
+2025-08-05 11:28:19,538 - INFO - ============================================================
+2025-08-05 11:28:19,538 - INFO - Database connection closed
+2025-08-05 11:28:19,538 - INFO - Insertion process completed
+2025-08-05 11:29:40,432 - INFO - Starting Sentinel-2 database insertion script
+2025-08-05 11:29:40,432 - INFO - Loading grid data from grid_output/slovenia_grid_expanded.gpkg
+2025-08-05 11:29:40,585 - INFO - Loaded 947 grid cells
+2025-08-05 11:29:40,585 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 11:29:40,589 - INFO - Connecting to database...
+2025-08-05 11:29:40,636 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-05 11:29:40,646 - INFO - Required database tables found
+2025-08-05 11:29:40,648 - INFO - Grid cells table already contains 947 records, skipping grid load
+2025-08-05 11:29:40,649 - INFO - Found 5 image files
+2025-08-05 11:29:40,649 - INFO - Found 5 image files to process
+2025-08-05 11:29:40,657 - INFO - Processing sentinel2_grid_360_2024_08.tiff
+2025-08-05 11:29:40,729 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:29:40,739 - WARNING - Image bbox extends beyond grid cell boundaries!
+2025-08-05 11:29:40,739 - WARNING -   Image extends 0.0001585270 degrees west of grid
+2025-08-05 11:29:40,739 - WARNING -   Image extends 0.0000740247 degrees south of grid
+2025-08-05 11:29:40,739 - WARNING -   Image extends 0.0001013729 degrees east of grid
+2025-08-05 11:29:40,739 - WARNING -   Image extends 0.0001061562 degrees north of grid
+2025-08-05 11:29:40,854 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_360_2024_08.tiff: Image bbox must be fully contained within grid cell 360
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:29:40,856 - INFO - Processing sentinel2_grid_361_2024_08.tiff
+2025-08-05 11:29:40,866 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:29:40,868 - WARNING - Image bbox extends beyond grid cell boundaries!
+2025-08-05 11:29:40,868 - WARNING -   Image extends 0.0001588104 degrees west of grid
+2025-08-05 11:29:40,868 - WARNING -   Image extends 0.0001642910 degrees south of grid
+2025-08-05 11:29:40,868 - WARNING -   Image extends 0.0002313586 degrees east of grid
+2025-08-05 11:29:40,868 - WARNING -   Image extends 0.0001062460 degrees north of grid
+2025-08-05 11:29:40,960 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_361_2024_08.tiff: Image bbox must be fully contained within grid cell 361
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:29:40,961 - INFO - Processing sentinel2_grid_357_2024_08.tiff
+2025-08-05 11:29:40,970 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:29:40,973 - WARNING - Image bbox extends beyond grid cell boundaries!
+2025-08-05 11:29:40,973 - WARNING -   Image extends 0.0001588513 degrees west of grid
+2025-08-05 11:29:40,973 - WARNING -   Image extends 0.0000741112 degrees south of grid
+2025-08-05 11:29:40,973 - WARNING -   Image extends 0.0001011573 degrees east of grid
+2025-08-05 11:29:40,973 - WARNING -   Image extends 0.0001061450 degrees north of grid
+2025-08-05 11:29:41,043 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_357_2024_08.tiff: Image bbox must be fully contained within grid cell 357
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:29:41,044 - INFO - Processing sentinel2_grid_359_2024_08.tiff
+2025-08-05 11:29:41,052 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:29:41,054 - WARNING - Image bbox extends beyond grid cell boundaries!
+2025-08-05 11:29:41,055 - WARNING -   Image extends 0.0000287239 degrees west of grid
+2025-08-05 11:29:41,055 - WARNING -   Image extends 0.0000739674 degrees south of grid
+2025-08-05 11:29:41,055 - WARNING -   Image extends 0.0001011566 degrees east of grid
+2025-08-05 11:29:41,055 - WARNING -   Image extends 0.0000164698 degrees north of grid
+2025-08-05 11:29:41,118 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_359_2024_08.tiff: Image bbox must be fully contained within grid cell 359
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:29:41,119 - INFO - Processing sentinel2_grid_358_2024_08.tiff
+2025-08-05 11:29:41,128 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:29:41,130 - WARNING - Image bbox extends beyond grid cell boundaries!
+2025-08-05 11:29:41,130 - WARNING -   Image extends 0.0001587264 degrees west of grid
+2025-08-05 11:29:41,130 - WARNING -   Image extends 0.0000740215 degrees south of grid
+2025-08-05 11:29:41,130 - WARNING -   Image extends 0.0001010702 degrees east of grid
+2025-08-05 11:29:41,130 - WARNING -   Image extends 0.0001060877 degrees north of grid
+2025-08-05 11:29:41,203 - ERROR - Failed to insert record for data/images/sentinel_downloads_v3/sentinel2_grid_358_2024_08.tiff: Image bbox must be fully contained within grid cell 358
+CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
+
+2025-08-05 11:29:41,204 - INFO - ============================================================
+2025-08-05 11:29:41,204 - INFO - INSERTION SUMMARY
+2025-08-05 11:29:41,204 - INFO - ============================================================
+2025-08-05 11:29:41,204 - INFO - Total files processed: 5
+2025-08-05 11:29:41,204 - INFO - Successfully inserted: 0
+2025-08-05 11:29:41,204 - INFO - Failed: 5
+2025-08-05 11:29:41,204 - INFO - Skipped (already exist): 0
+2025-08-05 11:29:41,205 - INFO - Success rate: 0.0%
+2025-08-05 11:29:41,205 - INFO - ============================================================
+2025-08-05 11:29:41,205 - INFO - Database connection closed
+2025-08-05 11:29:41,205 - INFO - Insertion process completed
+2025-08-05 11:31:57,075 - INFO - Starting Sentinel-2 database insertion script
+2025-08-05 11:31:57,075 - INFO - Loading grid data from grid_output/slovenia_grid_expanded.gpkg
+2025-08-05 11:31:57,225 - INFO - Loaded 947 grid cells
+2025-08-05 11:31:57,225 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 11:31:57,230 - INFO - Connecting to database...
+2025-08-05 11:31:57,265 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-05 11:31:57,267 - INFO - Required database tables found
+2025-08-05 11:31:57,268 - INFO - Loading Slovenia grid cells into database...
+2025-08-05 11:31:57,339 - INFO - Successfully loaded 947 grid cells into database
+2025-08-05 11:31:57,340 - INFO - Found 5 image files
+2025-08-05 11:31:57,340 - INFO - Found 5 image files to process
+2025-08-05 11:31:57,347 - INFO - Processing sentinel2_grid_360_2024_08.tiff
+2025-08-05 11:31:57,397 - ERROR - Failed to extract band data from data/images/sentinel_downloads_v3/sentinel2_grid_360_2024_08.tiff: 'band_names'
+2025-08-05 11:31:57,397 - ERROR - Could not extract band data: data/images/sentinel_downloads_v3/sentinel2_grid_360_2024_08.tiff
+2025-08-05 11:31:57,397 - INFO - Processing sentinel2_grid_361_2024_08.tiff
+2025-08-05 11:31:57,399 - ERROR - Failed to extract band data from data/images/sentinel_downloads_v3/sentinel2_grid_361_2024_08.tiff: 'band_names'
+2025-08-05 11:31:57,399 - ERROR - Could not extract band data: data/images/sentinel_downloads_v3/sentinel2_grid_361_2024_08.tiff
+2025-08-05 11:31:57,400 - INFO - Processing sentinel2_grid_357_2024_08.tiff
+2025-08-05 11:31:57,401 - ERROR - Failed to extract band data from data/images/sentinel_downloads_v3/sentinel2_grid_357_2024_08.tiff: 'band_names'
+2025-08-05 11:31:57,401 - ERROR - Could not extract band data: data/images/sentinel_downloads_v3/sentinel2_grid_357_2024_08.tiff
+2025-08-05 11:31:57,402 - INFO - Processing sentinel2_grid_359_2024_08.tiff
+2025-08-05 11:31:57,403 - ERROR - Failed to extract band data from data/images/sentinel_downloads_v3/sentinel2_grid_359_2024_08.tiff: 'band_names'
+2025-08-05 11:31:57,403 - ERROR - Could not extract band data: data/images/sentinel_downloads_v3/sentinel2_grid_359_2024_08.tiff
+2025-08-05 11:31:57,404 - INFO - Processing sentinel2_grid_358_2024_08.tiff
+2025-08-05 11:31:57,405 - ERROR - Failed to extract band data from data/images/sentinel_downloads_v3/sentinel2_grid_358_2024_08.tiff: 'band_names'
+2025-08-05 11:31:57,405 - ERROR - Could not extract band data: data/images/sentinel_downloads_v3/sentinel2_grid_358_2024_08.tiff
+2025-08-05 11:31:57,406 - INFO - ============================================================
+2025-08-05 11:31:57,406 - INFO - INSERTION SUMMARY
+2025-08-05 11:31:57,406 - INFO - ============================================================
+2025-08-05 11:31:57,406 - INFO - Total files processed: 5
+2025-08-05 11:31:57,406 - INFO - Successfully inserted: 0
+2025-08-05 11:31:57,406 - INFO - Failed: 0
+2025-08-05 11:31:57,406 - INFO - Skipped (already exist): 0
+2025-08-05 11:31:57,406 - INFO - Success rate: 0.0%
+2025-08-05 11:31:57,406 - INFO - ============================================================
+2025-08-05 11:31:57,406 - INFO - Database connection closed
+2025-08-05 11:31:57,406 - INFO - Insertion process completed
+2025-08-05 11:34:07,298 - INFO - Starting Sentinel-2 database insertion script
+2025-08-05 11:34:07,298 - INFO - Loading grid data from grid_output/slovenia_grid_expanded.gpkg
+2025-08-05 11:34:07,489 - INFO - Loaded 947 grid cells
+2025-08-05 11:34:07,489 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 11:34:07,494 - INFO - Connecting to database...
+2025-08-05 11:34:07,604 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-05 11:34:07,624 - INFO - Required database tables found
+2025-08-05 11:34:07,630 - INFO - Grid cells table already contains 947 records, skipping grid load
+2025-08-05 11:34:07,631 - INFO - Found 5 image files
+2025-08-05 11:34:07,631 - INFO - Found 5 image files to process
+2025-08-05 11:34:07,641 - INFO - Processing sentinel2_grid_360_2024_08.tiff
+2025-08-05 11:34:07,719 - ERROR - Failed to extract metadata from data/images/sentinel_downloads_v3/sentinel2_grid_360_2024_08.tiff: 'DatasetReader' object has no attribute 'get_band_description'
+2025-08-05 11:34:07,719 - ERROR - Could not extract metadata: data/images/sentinel_downloads_v3/sentinel2_grid_360_2024_08.tiff
+2025-08-05 11:34:07,719 - INFO - Processing sentinel2_grid_361_2024_08.tiff
+2025-08-05 11:34:07,720 - ERROR - Failed to extract metadata from data/images/sentinel_downloads_v3/sentinel2_grid_361_2024_08.tiff: 'DatasetReader' object has no attribute 'get_band_description'
+2025-08-05 11:34:07,721 - ERROR - Could not extract metadata: data/images/sentinel_downloads_v3/sentinel2_grid_361_2024_08.tiff
+2025-08-05 11:34:07,721 - INFO - Processing sentinel2_grid_357_2024_08.tiff
+2025-08-05 11:34:07,722 - ERROR - Failed to extract metadata from data/images/sentinel_downloads_v3/sentinel2_grid_357_2024_08.tiff: 'DatasetReader' object has no attribute 'get_band_description'
+2025-08-05 11:34:07,722 - ERROR - Could not extract metadata: data/images/sentinel_downloads_v3/sentinel2_grid_357_2024_08.tiff
+2025-08-05 11:34:07,722 - INFO - Processing sentinel2_grid_359_2024_08.tiff
+2025-08-05 11:34:07,724 - ERROR - Failed to extract metadata from data/images/sentinel_downloads_v3/sentinel2_grid_359_2024_08.tiff: 'DatasetReader' object has no attribute 'get_band_description'
+2025-08-05 11:34:07,724 - ERROR - Could not extract metadata: data/images/sentinel_downloads_v3/sentinel2_grid_359_2024_08.tiff
+2025-08-05 11:34:07,724 - INFO - Processing sentinel2_grid_358_2024_08.tiff
+2025-08-05 11:34:07,725 - ERROR - Failed to extract metadata from data/images/sentinel_downloads_v3/sentinel2_grid_358_2024_08.tiff: 'DatasetReader' object has no attribute 'get_band_description'
+2025-08-05 11:34:07,725 - ERROR - Could not extract metadata: data/images/sentinel_downloads_v3/sentinel2_grid_358_2024_08.tiff
+2025-08-05 11:34:07,726 - INFO - ============================================================
+2025-08-05 11:34:07,726 - INFO - INSERTION SUMMARY
+2025-08-05 11:34:07,726 - INFO - ============================================================
+2025-08-05 11:34:07,726 - INFO - Total files processed: 5
+2025-08-05 11:34:07,726 - INFO - Successfully inserted: 0
+2025-08-05 11:34:07,726 - INFO - Failed: 0
+2025-08-05 11:34:07,726 - INFO - Skipped (already exist): 0
+2025-08-05 11:34:07,726 - INFO - Success rate: 0.0%
+2025-08-05 11:34:07,726 - INFO - ============================================================
+2025-08-05 11:34:07,726 - INFO - Database connection closed
+2025-08-05 11:34:07,726 - INFO - Insertion process completed
+2025-08-05 11:37:05,959 - INFO - Starting Sentinel-2 database insertion script
+2025-08-05 11:37:05,960 - INFO - Loading grid data from grid_output/slovenia_grid_expanded.gpkg
+2025-08-05 11:37:06,051 - INFO - Loaded 947 grid cells
+2025-08-05 11:37:06,051 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 11:37:06,053 - INFO - Connecting to database...
+2025-08-05 11:37:06,115 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-05 11:37:06,117 - INFO - Required database tables found
+2025-08-05 11:37:06,118 - INFO - Loading Slovenia grid cells into database...
+2025-08-05 11:37:06,199 - INFO - Successfully loaded 947 grid cells into database
+2025-08-05 11:37:06,199 - INFO - Found 2 image files
+2025-08-05 11:37:06,199 - INFO - Found 2 image files to process
+2025-08-05 11:37:06,207 - INFO - Processing sentinel2_grid_357_2024_08.tiff
+2025-08-05 11:37:06,241 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:37:06,327 - INFO - Successfully inserted record for grid 357, 2024-08
+2025-08-05 11:37:06,327 - INFO - Processing sentinel2_grid_358_2024_08.tiff
+2025-08-05 11:37:06,335 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:37:06,398 - INFO - Successfully inserted record for grid 358, 2024-08
+2025-08-05 11:37:06,398 - INFO - ============================================================
+2025-08-05 11:37:06,398 - INFO - INSERTION SUMMARY
+2025-08-05 11:37:06,399 - INFO - ============================================================
+2025-08-05 11:37:06,399 - INFO - Total files processed: 2
+2025-08-05 11:37:06,399 - INFO - Successfully inserted: 2
+2025-08-05 11:37:06,399 - INFO - Failed: 0
+2025-08-05 11:37:06,399 - INFO - Skipped (already exist): 0
+2025-08-05 11:37:06,399 - INFO - Success rate: 100.0%
+2025-08-05 11:37:06,399 - INFO - ============================================================
+2025-08-05 11:37:06,399 - INFO - Database connection closed
+2025-08-05 11:37:06,399 - INFO - Insertion process completed

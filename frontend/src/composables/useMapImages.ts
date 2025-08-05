@@ -120,7 +120,6 @@ export function useMapImages() {
 
         // Create image overlay
         const imageOverlay = L.imageOverlay(imageUrl, polygonData.bounds, {
-          opacity: 0.7,
           interactive: true,
           crossOrigin: true,
         });
