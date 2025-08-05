@@ -301,7 +301,7 @@ class SentinelInserter:
                     "width": src.width,
                     "height": src.height,
                     "crs": str(src.crs),
-                    "native_bounds": bounds,
+                    "native_bounds": list(src.bounds),  # UTM bounds
                     "wgs84_bounds": wgs84_bounds,
                     "bbox_wkt": bbox_wkt,
                     "transform": list(src.transform),

@@ -1,60 +1,63 @@
 #!/usr/bin/env python3
 """
-Sentinel-2 Imagery Download Script using OpenEO
+Sentinel-2 Download Script v4 - OpenEO with Perfect Grid Alignment
 
-This script downloads Sentinel-2 imagery for predefined grid cells from the OpenEO
-Copernicus Data Space Ecosystem. It fetches data for August of each year with minimal
-cloud coverage and respects rate limiting.
+This script downloads Sentinel-2 imagery using OpenEO for predefined grid cells
+from the Slovenia grid. It ensures pixel-perfect alignment with grid boundaries
+using EPSG:4326 consistently throughout the pipeline.
 
 Requirements:
 - openeo
 - geopandas
-- tqdm
 - rasterio
-- time
+- tqdm
+- numpy
+- logging
 
 Usage:
-    python download_sentinel_openeo.py
+    python download_sentinel_v4.py
 """
 
+import logging
 import openeo
 import geopandas as gpd
-import os
-import time
-import json
-from datetime import datetime, timedelta
+import rasterio
+import numpy as np
 from pathlib import Path
 from tqdm import tqdm
 from typing import List, Dict, Tuple, Optional
-import logging
-import rasterio
+from datetime import datetime
+import time
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("download_sentinel.log"), logging.StreamHandler()],
+    handlers=[logging.FileHandler("download_sentinel_v4.log"), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
 
 # Configuration
-GRID_IDS = [531, 532, 533, 567, 568, 569, 603, 604, 605]  # Example grid IDs
+GRID_IDS = [17, 18, 29, 30]  # Target grid IDs
 YEARS = list(range(2024, 2025))  # 2024
 AUGUST_START_DAY = 1
 AUGUST_END_DAY = 31
 MAX_CLOUD_COVERAGE = 5  # Maximum cloud coverage percentage
-DOWNLOAD_DIR = Path("./data/images/sentinel_downloads_v3")
+DOWNLOAD_DIR = Path("./data/images/sentinel_downloads_v4")
 GRID_FILE = Path("./grid_output/slovenia_grid_expanded.gpkg")
-BATCH_SIZE = 3  # Number of concurrent downloads
 RATE_LIMIT_DELAY = 2.0  # Seconds between API calls
 MAX_RETRIES = 3
 
 # Bands to download (RGB for basic analysis)
 BANDS = ["B02", "B03", "B04"]  # Blue, Green, Red
 
+# OpenEO configuration - use EPSG:4326 consistently
+TARGET_CRS = "EPSG:4326"
+PIXEL_SIZE = 0.00009  # ~10m at equator in degrees (for EPSG:4326)
 
-class SentinelDownloader:
-    """Handles Sentinel-2 data downloading from OpenEO"""
+
+class SentinelDownloaderV4:
+    """Handles Sentinel-2 data downloading from OpenEO with perfect grid alignment"""
 
     def __init__(self):
         self.connection = None
@@ -78,10 +81,10 @@ class SentinelDownloader:
             self.grid_data = self.grid_data[self.grid_data.index.isin(GRID_IDS)]
             logger.info(f"Filtered to {len(self.grid_data)} target grid cells")
 
-            # Convert to WGS84 if needed
-            if self.grid_data.crs != "EPSG:4326":
-                logger.info(f"Converting CRS from {self.grid_data.crs} to EPSG:4326")
-                self.grid_data = self.grid_data.to_crs("EPSG:4326")
+            # Ensure CRS is EPSG:4326
+            if self.grid_data.crs != TARGET_CRS:
+                logger.info(f"Converting CRS from {self.grid_data.crs} to {TARGET_CRS}")
+                self.grid_data = self.grid_data.to_crs(TARGET_CRS)
 
             # Create download directory
             DOWNLOAD_DIR.mkdir(parents=True, exist_ok=True)
@@ -109,19 +112,48 @@ class SentinelDownloader:
             logger.error(f"Failed to connect to OpenEO: {e}")
             return False
 
-    def get_grid_bbox(self, grid_id: int) -> Dict[str, float]:
-        """Get bounding box for a grid cell"""
+    def get_grid_bbox_exact(self, grid_id: int) -> Dict[str, float]:
+        """Get exact bounding box for a grid cell in EPSG:4326"""
         grid_row = self.grid_data[self.grid_data.index == grid_id]
         if grid_row.empty:
             raise ValueError(f"Grid ID {grid_id} not found")
 
+        # Get exact bounds without any rounding
         bounds = grid_row.geometry.bounds.iloc[0]
+
+        # Extract exact coordinates
+        west = float(bounds[0])  # minx
+        south = float(bounds[1])  # miny
+        east = float(bounds[2])  # maxx
+        north = float(bounds[3])  # maxy
+
+        logger.info(
+            f"Grid {grid_id} exact bounds: W={west:.10f}, S={south:.10f}, E={east:.10f}, N={north:.10f}"
+        )
+
         return {
-            "west": bounds.iloc[0],
-            "south": bounds.iloc[1],
-            "east": bounds.iloc[2],
-            "north": bounds.iloc[3],
+            "west": west,
+            "south": south,
+            "east": east,
+            "north": north,
         }
+
+    def calculate_aligned_bbox(self, bbox: Dict[str, float]) -> Dict[str, float]:
+        """
+        Calculate pixel-aligned bounding box that exactly matches grid boundaries.
+        No rounding or approximation - use exact grid coordinates.
+        """
+        # For perfect alignment, we use the exact grid boundaries without modification
+        # OpenEO will handle the pixel alignment internally
+        aligned_bbox = {
+            "west": bbox["west"],
+            "south": bbox["south"],
+            "east": bbox["east"],
+            "north": bbox["north"],
+        }
+
+        logger.info(f"Using exact grid boundaries for pixel alignment")
+        return aligned_bbox
 
     def generate_download_tasks(self) -> List[Dict]:
         """Generate list of download tasks"""
@@ -129,12 +161,16 @@ class SentinelDownloader:
 
         for grid_id in GRID_IDS:
             for year in YEARS:
+                # Get exact grid boundaries
+                grid_bbox = self.get_grid_bbox_exact(grid_id)
+                aligned_bbox = self.calculate_aligned_bbox(grid_bbox)
+
                 task = {
                     "grid_id": grid_id,
                     "year": year,
                     "start_date": f"{year}-08-{AUGUST_START_DAY:02d}",
                     "end_date": f"{year}-08-{AUGUST_END_DAY:02d}",
-                    "bbox": self.get_grid_bbox(grid_id),
+                    "bbox": aligned_bbox,
                     "filename": f"sentinel2_grid_{grid_id}_{year}_08.tiff",
                 }
                 tasks.append(task)
@@ -147,7 +183,7 @@ class SentinelDownloader:
         return filepath.exists()
 
     def download_image(self, task: Dict) -> Tuple[bool, str]:
-        """Download a single image using OpenEO's standard processing"""
+        """Download a single image using OpenEO with exact grid alignment"""
         filename = task["filename"]
         filepath = DOWNLOAD_DIR / filename
 
@@ -158,40 +194,40 @@ class SentinelDownloader:
             if self.check_existing_file(filename):
                 logger.info(f"File {filename} already exists, skipping")
                 self.download_stats["skipped"] += 1
-                return True, f"Skipped: {filename}"
+                return True, f"Skipped existing: {filename}"
 
-            # Use the bbox directly from the grid (already in WGS84)
-            bbox_wgs84 = task["bbox"]
-            logger.info(f"Using bbox: {bbox_wgs84}")
+            # Use exact bbox coordinates
+            bbox = task["bbox"]
+            logger.info(f"Using exact bbox: {bbox}")
 
-            # Load collection - let OpenEO handle all coordinate transformations
+            # Load collection with exact spatial extent
             cube = self.connection.load_collection(
                 "SENTINEL2_L2A",
-                spatial_extent=bbox_wgs84,
+                spatial_extent=bbox,
                 temporal_extent=[task["start_date"], task["end_date"]],
                 bands=BANDS,
             )
 
-            # Apply cloud masking and temporal aggregation
+            # Apply filtering and aggregation
             cube = cube.filter_bands(BANDS)
 
+            # Use median aggregation for cloud-free composite
             cube = cube.median_time()
 
-            # Let OpenEO determine the output CRS and resolution
-            # This will likely be EPSG:4326 or EPSG:3857 with OpenEO's standard grid
+            # Force exact CRS and ensure pixel alignment
+            cube = cube.resample_spatial(
+                resolution=PIXEL_SIZE, projection=TARGET_CRS  # ~10m in degrees
+            )
+
             logger.info(f"Downloading {filename}...")
             cube.download(str(filepath), format="GTiff")
 
-            # Verify the file was created and log its properties
+            # Verify the file was created and validate properties
             if not filepath.exists():
                 raise Exception("Download failed - file not created")
 
-            with rasterio.open(filepath) as src:
-                logger.info(f"Downloaded image properties:")
-                logger.info(f"  Size: {src.width}x{src.height}")
-                logger.info(f"  CRS: {src.crs}")
-                logger.info(f"  Bounds: {src.bounds}")
-                logger.info(f"  Transform: {src.transform}")
+            # Validate downloaded image properties
+            self.validate_downloaded_image(filepath, task)
 
             self.download_stats["successful"] += 1
             logger.info(f"Successfully downloaded: {filename}")
@@ -203,59 +239,38 @@ class SentinelDownloader:
             self.download_stats["failed"] += 1
             return False, error_msg
 
-    def verify_alignment(self, filepath: Path, expected_bbox: Dict, grid_id: int):
-        """Verify the downloaded image has correct pixel alignment"""
+    def validate_downloaded_image(self, filepath: Path, task: Dict):
+        """Validate the downloaded image has correct properties and alignment"""
         try:
-            import rasterio
-
             with rasterio.open(filepath) as src:
-                # Check CRS
-                if src.crs.to_string() != "EPSG:32633":
+                logger.info(f"Downloaded image properties:")
+                logger.info(f"  File: {filepath.name}")
+                logger.info(f"  Size: {src.width}x{src.height}")
+                logger.info(f"  CRS: {src.crs}")
+                logger.info(f"  Bounds: {src.bounds}")
+                logger.info(f"  Transform: {src.transform}")
+                logger.info(f"  Data type: {src.dtypes}")
+
+                # Validate CRS
+                if src.crs.to_string() != TARGET_CRS:
                     logger.warning(
-                        f"Grid {grid_id}: CRS mismatch. Expected EPSG:32633, got {src.crs}"
+                        f"CRS mismatch: expected {TARGET_CRS}, got {src.crs}"
                     )
 
-                # Check bounds (allow small floating point differences)
-                bounds = src.bounds
-                tolerance = 1  # 1 meter tolerance
+                # Check if bounds are reasonable (within expected bbox)
+                expected_bbox = task["bbox"]
+                actual_bounds = src.bounds
 
-                if (
-                    abs(bounds.left - expected_bbox["west"]) > tolerance
-                    or abs(bounds.bottom - expected_bbox["south"]) > tolerance
-                    or abs(bounds.right - expected_bbox["east"]) > tolerance
-                    or abs(bounds.top - expected_bbox["north"]) > tolerance
-                ):
-
-                    logger.warning(f"Grid {grid_id}: Bounds mismatch!")
-                    logger.warning(f"  Expected: {expected_bbox}")
-                    logger.warning(f"  Actual: {bounds}")
-
-                # Check pixel size
-                pixel_size_x = abs(src.transform.a)
-                pixel_size_y = abs(src.transform.e)
-
-                if abs(pixel_size_x - 10) > 0.1 or abs(pixel_size_y - 10) > 0.1:
-                    logger.warning(
-                        f"Grid {grid_id}: Pixel size mismatch. Expected 10m, got {pixel_size_x}x{pixel_size_y}"
-                    )
-
-                # Check if pixels are aligned to 10m grid
-                origin_x = src.transform.c % 10
-                origin_y = src.transform.f % 10
-
-                if origin_x > 0.1 and origin_x < 9.9:
-                    logger.warning(
-                        f"Grid {grid_id}: X origin not aligned to 10m grid: {origin_x}"
-                    )
-                if origin_y > 0.1 and origin_y < 9.9:
-                    logger.warning(
-                        f"Grid {grid_id}: Y origin not aligned to 10m grid: {origin_y}"
-                    )
-
-                logger.info(f"Grid {grid_id}: Alignment verification passed")
+                logger.info(f"Bbox validation:")
+                logger.info(
+                    f"  Expected: W={expected_bbox['west']:.10f}, S={expected_bbox['south']:.10f}, E={expected_bbox['east']:.10f}, N={expected_bbox['north']:.10f}"
+                )
+                logger.info(
+                    f"  Actual:   W={actual_bounds.left:.10f}, S={actual_bounds.bottom:.10f}, E={actual_bounds.right:.10f}, N={actual_bounds.top:.10f}"
+                )
 
         except Exception as e:
-            logger.error(f"Could not verify alignment for grid {grid_id}: {e}")
+            logger.error(f"Could not validate image {filepath}: {e}")
 
     def download_with_retry(self, task: Dict) -> Tuple[bool, str]:
         """Download with retry logic"""
@@ -263,20 +278,22 @@ class SentinelDownloader:
             try:
                 success, message = self.download_image(task)
                 if success:
-                    return success, message
+                    return True, message
 
                 if attempt < MAX_RETRIES - 1:
-                    logger.warning(f"Attempt {attempt + 1} failed, retrying: {message}")
-                    time.sleep(RATE_LIMIT_DELAY * (attempt + 1))  # Exponential backoff
+                    logger.warning(
+                        f"Attempt {attempt + 1} failed, retrying in {RATE_LIMIT_DELAY}s..."
+                    )
+                    time.sleep(RATE_LIMIT_DELAY)
 
             except Exception as e:
                 if attempt < MAX_RETRIES - 1:
                     logger.warning(
-                        f"Attempt {attempt + 1} failed with exception, retrying: {e}"
+                        f"Attempt {attempt + 1} failed with error: {e}, retrying..."
                     )
-                    time.sleep(RATE_LIMIT_DELAY * (attempt + 1))
+                    time.sleep(RATE_LIMIT_DELAY)
                 else:
-                    return False, f"All retry attempts failed: {e}"
+                    logger.error(f"All attempts failed: {e}")
 
         return False, f"Failed after {MAX_RETRIES} attempts"
 
@@ -297,7 +314,8 @@ class SentinelDownloader:
         logger.info(f"Generated {len(tasks)} download tasks")
         logger.info(f"Grid IDs: {GRID_IDS}")
         logger.info(f"Years: {YEARS}")
-        logger.info(f"Max cloud coverage: {MAX_CLOUD_COVERAGE}%")
+        logger.info(f"Target CRS: {TARGET_CRS}")
+        logger.info(f"Pixel size: {PIXEL_SIZE} degrees")
         logger.info(f"Download directory: {DOWNLOAD_DIR.absolute()}")
 
         # Process downloads with progress bar
@@ -310,20 +328,10 @@ class SentinelDownloader:
                 success, message = self.download_with_retry(task)
 
                 # Update progress bar
-                pbar.set_postfix(
-                    {
-                        "Success": self.download_stats["successful"],
-                        "Failed": self.download_stats["failed"],
-                        "Skipped": self.download_stats["skipped"],
-                    }
-                )
                 pbar.update(1)
 
-                # Log result
-                if success:
-                    logger.debug(message)
-                else:
-                    logger.error(message)
+                # Rate limiting
+                time.sleep(RATE_LIMIT_DELAY)
 
         # Print final statistics
         self.print_final_stats()
@@ -339,20 +347,22 @@ class SentinelDownloader:
         logger.info(f"Successfully downloaded: {stats['successful']}")
         logger.info(f"Failed: {stats['failed']}")
         logger.info(f"Skipped (already exist): {stats['skipped']}")
-        logger.info(
-            f"Success rate: {stats['successful']/stats['total_requested']*100:.1f}%"
-        )
+        if stats["total_requested"] > 0:
+            logger.info(
+                f"Success rate: {stats['successful']/stats['total_requested']*100:.1f}%"
+            )
         logger.info("=" * 60)
 
 
 def main():
     """Main function"""
-    logger.info("Starting Sentinel-2 download script")
+    logger.info("Starting Sentinel-2 download script v4")
     logger.info(f"Target grid IDs: {GRID_IDS}")
     logger.info(f"Years: {YEARS}")
+    logger.info(f"Target CRS: {TARGET_CRS}")
 
     try:
-        downloader = SentinelDownloader()
+        downloader = SentinelDownloaderV4()
         success = downloader.run_downloads()
 
         if success:

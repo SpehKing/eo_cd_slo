@@ -195,6 +195,7 @@ class GPKGPreviewer:
         figsize: tuple = (12, 8),
         add_basemap: bool = True,
         save_path: str = None,
+        show_ids: bool = True,
     ):
         """Create a static map visualization"""
         if not self.layers:
@@ -225,6 +226,56 @@ class GPKGPreviewer:
             gdf.plot(ax=ax, alpha=0.7, edgecolor="black", linewidth=0.5)
         else:
             gdf.plot(ax=ax, markersize=50, alpha=0.7)
+
+        # Add field IDs as text labels
+        if show_ids and not gdf.empty:
+            # Try to find an ID field
+            id_field = None
+            possible_id_fields = [
+                "id",
+                "ID",
+                "fid",
+                "FID",
+                "objectid",
+                "OBJECTID",
+                "gid",
+                "GID",
+            ]
+
+            for field in possible_id_fields:
+                if field in gdf.columns:
+                    id_field = field
+                    break
+
+            # If no ID field found, use the index
+            if id_field is None:
+                gdf["temp_id"] = gdf.index
+                id_field = "temp_id"
+
+            # Add text annotations for each feature
+            for idx, row in gdf.iterrows():
+                try:
+                    # Get centroid for text placement
+                    if row.geometry and not row.geometry.is_empty:
+                        centroid = row.geometry.centroid
+                        ax.annotate(
+                            str(row[id_field]),
+                            xy=(centroid.x, centroid.y),
+                            xytext=(3, 3),
+                            textcoords="offset points",
+                            fontsize=8,
+                            color="red",
+                            weight="bold",
+                            bbox=dict(
+                                boxstyle="round,pad=0.2", facecolor="white", alpha=0.8
+                            ),
+                        )
+                except Exception as e:
+                    continue  # Skip problematic geometries
+
+            # Clean up temporary ID field
+            if id_field == "temp_id":
+                gdf.drop(columns=["temp_id"], inplace=True)
 
         # Add basemap if available and requested
         if add_basemap and HAS_CONTEXTILY:
@@ -261,7 +312,9 @@ class GPKGPreviewer:
 
         plt.show()
 
-    def create_interactive_map(self, layer_name: str = None, save_path: str = None):
+    def create_interactive_map(
+        self, layer_name: str = None, save_path: str = None, show_ids: bool = True
+    ):
         """Create an interactive map using Folium"""
         if not HAS_FOLIUM:
             print("Folium not available. Install with: pip install folium")
@@ -299,12 +352,71 @@ class GPKGPreviewer:
         # Create map
         m = folium.Map(location=[center_lat, center_lon], zoom_start=10)
 
-        # Add the data
-        folium.GeoJson(
-            gdf.to_json(),
-            name=layer_name,
-            popup=folium.features.GeoJsonPopup(fields=list(gdf.columns)),
-        ).add_to(m)
+        # Try to find an ID field
+        id_field = None
+        possible_id_fields = [
+            "id",
+            "ID",
+            "fid",
+            "FID",
+            "objectid",
+            "OBJECTID",
+            "gid",
+            "GID",
+        ]
+
+        for field in possible_id_fields:
+            if field in gdf.columns:
+                id_field = field
+                break
+
+        # If no ID field found, use the index
+        if id_field is None:
+            gdf["temp_id"] = gdf.index
+            id_field = "temp_id"
+
+        # Add the data with enhanced popups including ID
+        for idx, row in gdf.iterrows():
+            try:
+                # Create popup content with ID prominently displayed
+                popup_html = f"<b>Feature ID: {row[id_field]}</b><br><br>"
+
+                # Add other fields
+                for col in gdf.columns:
+                    if col != "geometry" and col != id_field:
+                        popup_html += f"<b>{col}:</b> {row[col]}<br>"
+
+                # Create GeoJson feature
+                feature = folium.GeoJson(
+                    row.geometry.__geo_interface__,
+                    popup=folium.Popup(popup_html, max_width=300),
+                    tooltip=f"ID: {row[id_field]}",
+                )
+                feature.add_to(m)
+
+                # Add ID labels for point geometries or centroids
+                if show_ids:
+                    if row.geometry.geom_type in ["Point"]:
+                        coords = [row.geometry.y, row.geometry.x]
+                    else:
+                        centroid = row.geometry.centroid
+                        coords = [centroid.y, centroid.x]
+
+                    folium.Marker(
+                        coords,
+                        icon=folium.DivIcon(
+                            html=f'<div style="font-size: 10px; color: red; font-weight: bold; text-shadow: 1px 1px 1px white;">{row[id_field]}</div>',
+                            icon_size=(20, 20),
+                            icon_anchor=(10, 10),
+                        ),
+                    ).add_to(m)
+
+            except Exception as e:
+                continue  # Skip problematic geometries
+
+        # Clean up temporary ID field
+        if id_field == "temp_id":
+            gdf.drop(columns=["temp_id"], inplace=True)
 
         # Add layer control
         folium.LayerControl().add_to(m)
@@ -331,6 +443,7 @@ class GPKGPreviewer:
         show_map: bool = True,
         interactive: bool = False,
         save_map: str = None,
+        show_ids: bool = True,
     ):
         """Main preview function"""
         if not self.check_file_exists():
@@ -351,9 +464,9 @@ class GPKGPreviewer:
             # Show map
             if show_map and self.layers:
                 if interactive:
-                    self.create_interactive_map(save_path=save_map)
+                    self.create_interactive_map(save_path=save_map, show_ids=show_ids)
                 else:
-                    self.create_static_map(save_path=save_map)
+                    self.create_static_map(save_path=save_map, show_ids=show_ids)
 
             return True
 
@@ -375,6 +488,7 @@ def main():
     )
     parser.add_argument("--save-map", help="Save map to specified path")
     parser.add_argument("--layer", help="Specify layer name to preview")
+    parser.add_argument("--no-ids", action="store_true", help="Hide feature IDs on map")
 
     args = parser.parse_args()
 
@@ -387,6 +501,7 @@ def main():
         show_map=not args.no_map,
         interactive=args.interactive,
         save_map=args.save_map,
+        show_ids=not args.no_ids,
     )
 
     return 0 if success else 1

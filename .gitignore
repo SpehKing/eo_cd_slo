@@ -4,5 +4,6 @@ oscd/
 sentinel_downloads/
 sentinel_downloads_v2/
 sentinel_downloads_v3/
+sentinel_downloads_v4/
 .DS_Store
 __pycache__/

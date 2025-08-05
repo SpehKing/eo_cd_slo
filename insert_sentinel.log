@@ -3418,3 +3418,201 @@ CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
 2025-08-05 11:37:06,399 - INFO - ============================================================
 2025-08-05 11:37:06,399 - INFO - Database connection closed
 2025-08-05 11:37:06,399 - INFO - Insertion process completed
+2025-08-05 11:39:23,798 - INFO - Starting Sentinel-2 database insertion script
+2025-08-05 11:39:23,798 - INFO - Loading grid data from grid_output/slovenia_grid_expanded.gpkg
+2025-08-05 11:39:23,963 - INFO - Loaded 947 grid cells
+2025-08-05 11:39:23,963 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 11:39:23,969 - INFO - Connecting to database...
+2025-08-05 11:39:24,007 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-05 11:39:24,011 - INFO - Required database tables found
+2025-08-05 11:39:24,012 - INFO - Grid cells table already contains 947 records, skipping grid load
+2025-08-05 11:39:24,012 - INFO - Found 8 image files
+2025-08-05 11:39:24,012 - INFO - Found 8 image files to process
+2025-08-05 11:39:24,019 - INFO - Processing sentinel2_grid_360_2024_08.tiff
+2025-08-05 11:39:24,086 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:39:24,221 - INFO - Successfully inserted record for grid 360, 2024-08
+2025-08-05 11:39:24,222 - INFO - Processing sentinel2_grid_361_2024_08.tiff
+2025-08-05 11:39:24,230 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:39:24,303 - INFO - Successfully inserted record for grid 361, 2024-08
+2025-08-05 11:39:24,304 - INFO - Processing sentinel2_grid_357_2024_08.tiff
+2025-08-05 11:39:24,313 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:39:24,315 - INFO - Record already exists for grid 357, 2024-08
+2025-08-05 11:39:24,315 - INFO - Processing sentinel2_grid_363_2024_08.tiff
+2025-08-05 11:39:24,325 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:39:24,395 - INFO - Successfully inserted record for grid 363, 2024-08
+2025-08-05 11:39:24,396 - INFO - Processing sentinel2_grid_364_2024_08.tiff
+2025-08-05 11:39:24,404 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:39:24,471 - INFO - Successfully inserted record for grid 364, 2024-08
+2025-08-05 11:39:24,472 - INFO - Processing sentinel2_grid_362_2024_08.tiff
+2025-08-05 11:39:24,480 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:39:24,545 - INFO - Successfully inserted record for grid 362, 2024-08
+2025-08-05 11:39:24,546 - INFO - Processing sentinel2_grid_359_2024_08.tiff
+2025-08-05 11:39:24,554 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:39:24,624 - INFO - Successfully inserted record for grid 359, 2024-08
+2025-08-05 11:39:24,624 - INFO - Processing sentinel2_grid_358_2024_08.tiff
+2025-08-05 11:39:24,634 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:39:24,635 - INFO - Record already exists for grid 358, 2024-08
+2025-08-05 11:39:24,635 - INFO - ============================================================
+2025-08-05 11:39:24,635 - INFO - INSERTION SUMMARY
+2025-08-05 11:39:24,635 - INFO - ============================================================
+2025-08-05 11:39:24,635 - INFO - Total files processed: 8
+2025-08-05 11:39:24,635 - INFO - Successfully inserted: 6
+2025-08-05 11:39:24,635 - INFO - Failed: 0
+2025-08-05 11:39:24,635 - INFO - Skipped (already exist): 2
+2025-08-05 11:39:24,635 - INFO - Success rate: 75.0%
+2025-08-05 11:39:24,635 - INFO - ============================================================
+2025-08-05 11:39:24,635 - INFO - Database connection closed
+2025-08-05 11:39:24,635 - INFO - Insertion process completed
+2025-08-05 11:42:02,433 - INFO - Starting Sentinel-2 database insertion script
+2025-08-05 11:42:02,433 - INFO - Loading grid data from grid_output/slovenia_grid_expanded.gpkg
+2025-08-05 11:42:02,528 - INFO - Loaded 947 grid cells
+2025-08-05 11:42:02,529 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 11:42:02,531 - INFO - Connecting to database...
+2025-08-05 11:42:02,572 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-05 11:42:02,574 - INFO - Required database tables found
+2025-08-05 11:42:02,575 - INFO - Grid cells table already contains 947 records, skipping grid load
+2025-08-05 11:42:02,576 - INFO - Found 12 image files
+2025-08-05 11:42:02,576 - INFO - Found 12 image files to process
+2025-08-05 11:42:02,583 - INFO - Processing sentinel2_grid_360_2024_08.tiff
+2025-08-05 11:42:02,619 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:42:02,623 - INFO - Record already exists for grid 360, 2024-08
+2025-08-05 11:42:02,623 - INFO - Processing sentinel2_grid_2_2024_08.tiff
+2025-08-05 11:42:02,632 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:42:02,758 - INFO - Successfully inserted record for grid 2, 2024-08
+2025-08-05 11:42:02,759 - INFO - Processing sentinel2_grid_361_2024_08.tiff
+2025-08-05 11:42:02,767 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:42:02,769 - INFO - Record already exists for grid 361, 2024-08
+2025-08-05 11:42:02,769 - INFO - Processing sentinel2_grid_3_2024_08.tiff
+2025-08-05 11:42:02,778 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:42:02,861 - INFO - Successfully inserted record for grid 3, 2024-08
+2025-08-05 11:42:02,863 - INFO - Processing sentinel2_grid_4_2024_08.tiff
+2025-08-05 11:42:02,871 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:42:02,943 - INFO - Successfully inserted record for grid 4, 2024-08
+2025-08-05 11:42:02,943 - INFO - Processing sentinel2_grid_357_2024_08.tiff
+2025-08-05 11:42:02,953 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:42:02,955 - INFO - Record already exists for grid 357, 2024-08
+2025-08-05 11:42:02,955 - INFO - Processing sentinel2_grid_363_2024_08.tiff
+2025-08-05 11:42:02,963 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:42:02,965 - INFO - Record already exists for grid 363, 2024-08
+2025-08-05 11:42:02,965 - INFO - Processing sentinel2_grid_364_2024_08.tiff
+2025-08-05 11:42:02,974 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:42:02,975 - INFO - Record already exists for grid 364, 2024-08
+2025-08-05 11:42:02,976 - INFO - Processing sentinel2_grid_1_2024_08.tiff
+2025-08-05 11:42:02,987 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:42:03,071 - INFO - Successfully inserted record for grid 1, 2024-08
+2025-08-05 11:42:03,072 - INFO - Processing sentinel2_grid_362_2024_08.tiff
+2025-08-05 11:42:03,081 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:42:03,082 - INFO - Record already exists for grid 362, 2024-08
+2025-08-05 11:42:03,082 - INFO - Processing sentinel2_grid_359_2024_08.tiff
+2025-08-05 11:42:03,090 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:42:03,091 - INFO - Record already exists for grid 359, 2024-08
+2025-08-05 11:42:03,091 - INFO - Processing sentinel2_grid_358_2024_08.tiff
+2025-08-05 11:42:03,099 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 11:42:03,101 - INFO - Record already exists for grid 358, 2024-08
+2025-08-05 11:42:03,101 - INFO - ============================================================
+2025-08-05 11:42:03,101 - INFO - INSERTION SUMMARY
+2025-08-05 11:42:03,101 - INFO - ============================================================
+2025-08-05 11:42:03,101 - INFO - Total files processed: 12
+2025-08-05 11:42:03,101 - INFO - Successfully inserted: 4
+2025-08-05 11:42:03,101 - INFO - Failed: 0
+2025-08-05 11:42:03,101 - INFO - Skipped (already exist): 8
+2025-08-05 11:42:03,101 - INFO - Success rate: 33.3%
+2025-08-05 11:42:03,101 - INFO - ============================================================
+2025-08-05 11:42:03,101 - INFO - Database connection closed
+2025-08-05 11:42:03,101 - INFO - Insertion process completed
+2025-08-05 12:30:47,584 - INFO - Starting Sentinel-2 database insertion script
+2025-08-05 12:30:47,584 - INFO - Loading grid data from grid_output/slovenia_grid_expanded.gpkg
+2025-08-05 12:30:47,739 - INFO - Loaded 947 grid cells
+2025-08-05 12:30:47,739 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 12:30:47,744 - INFO - Connecting to database...
+2025-08-05 12:30:47,870 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-05 12:30:47,873 - INFO - Required database tables found
+2025-08-05 12:30:47,875 - INFO - Grid cells table already contains 947 records, skipping grid load
+2025-08-05 12:30:47,875 - INFO - Found 25 image files
+2025-08-05 12:30:47,875 - INFO - Found 25 image files to process
+2025-08-05 12:30:47,885 - INFO - Processing sentinel2_grid_605_2024_08.tiff
+2025-08-05 12:30:47,966 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:48,128 - INFO - Successfully inserted record for grid 605, 2024-08
+2025-08-05 12:30:48,128 - INFO - Processing sentinel2_grid_8_2024_08.tiff
+2025-08-05 12:30:48,137 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:48,227 - INFO - Successfully inserted record for grid 8, 2024-08
+2025-08-05 12:30:48,227 - INFO - Processing sentinel2_grid_604_2024_08.tiff
+2025-08-05 12:30:48,236 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:48,315 - INFO - Successfully inserted record for grid 604, 2024-08
+2025-08-05 12:30:48,316 - INFO - Processing sentinel2_grid_603_2024_08.tiff
+2025-08-05 12:30:48,324 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:48,383 - INFO - Successfully inserted record for grid 603, 2024-08
+2025-08-05 12:30:48,384 - INFO - Processing sentinel2_grid_360_2024_08.tiff
+2025-08-05 12:30:48,395 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:48,400 - INFO - Record already exists for grid 360, 2024-08
+2025-08-05 12:30:48,400 - INFO - Processing sentinel2_grid_533_2024_08.tiff
+2025-08-05 12:30:48,411 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:48,464 - INFO - Successfully inserted record for grid 533, 2024-08
+2025-08-05 12:30:48,468 - INFO - Processing sentinel2_grid_5_2024_08.tiff
+2025-08-05 12:30:48,476 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:48,545 - INFO - Successfully inserted record for grid 5, 2024-08
+2025-08-05 12:30:48,545 - INFO - Processing sentinel2_grid_2_2024_08.tiff
+2025-08-05 12:30:48,555 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:48,557 - INFO - Record already exists for grid 2, 2024-08
+2025-08-05 12:30:48,557 - INFO - Processing sentinel2_grid_532_2024_08.tiff
+2025-08-05 12:30:48,566 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:48,630 - INFO - Successfully inserted record for grid 532, 2024-08
+2025-08-05 12:30:48,630 - INFO - Processing sentinel2_grid_567_2024_08.tiff
+2025-08-05 12:30:48,638 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:48,705 - INFO - Successfully inserted record for grid 567, 2024-08
+2025-08-05 12:30:48,706 - INFO - Processing sentinel2_grid_361_2024_08.tiff
+2025-08-05 12:30:48,716 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:48,717 - INFO - Record already exists for grid 361, 2024-08
+2025-08-05 12:30:48,718 - INFO - Processing sentinel2_grid_3_2024_08.tiff
+2025-08-05 12:30:48,726 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:48,727 - INFO - Record already exists for grid 3, 2024-08
+2025-08-05 12:30:48,727 - INFO - Processing sentinel2_grid_4_2024_08.tiff
+2025-08-05 12:30:48,736 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:48,737 - INFO - Record already exists for grid 4, 2024-08
+2025-08-05 12:30:48,737 - INFO - Processing sentinel2_grid_357_2024_08.tiff
+2025-08-05 12:30:48,748 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:48,749 - INFO - Record already exists for grid 357, 2024-08
+2025-08-05 12:30:48,749 - INFO - Processing sentinel2_grid_363_2024_08.tiff
+2025-08-05 12:30:48,759 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:48,760 - INFO - Record already exists for grid 363, 2024-08
+2025-08-05 12:30:48,760 - INFO - Processing sentinel2_grid_364_2024_08.tiff
+2025-08-05 12:30:48,768 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:48,770 - INFO - Record already exists for grid 364, 2024-08
+2025-08-05 12:30:48,770 - INFO - Processing sentinel2_grid_6_2024_08.tiff
+2025-08-05 12:30:48,779 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:48,849 - INFO - Successfully inserted record for grid 6, 2024-08
+2025-08-05 12:30:48,850 - INFO - Processing sentinel2_grid_1_2024_08.tiff
+2025-08-05 12:30:48,859 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:48,860 - INFO - Record already exists for grid 1, 2024-08
+2025-08-05 12:30:48,861 - INFO - Processing sentinel2_grid_531_2024_08.tiff
+2025-08-05 12:30:48,869 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:48,939 - INFO - Successfully inserted record for grid 531, 2024-08
+2025-08-05 12:30:48,939 - INFO - Processing sentinel2_grid_362_2024_08.tiff
+2025-08-05 12:30:48,947 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:48,948 - INFO - Record already exists for grid 362, 2024-08
+2025-08-05 12:30:48,949 - INFO - Processing sentinel2_grid_7_2024_08.tiff
+2025-08-05 12:30:48,957 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:49,019 - INFO - Successfully inserted record for grid 7, 2024-08
+2025-08-05 12:30:49,020 - INFO - Processing sentinel2_grid_359_2024_08.tiff
+2025-08-05 12:30:49,030 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:49,031 - INFO - Record already exists for grid 359, 2024-08
+2025-08-05 12:30:49,031 - INFO - Processing sentinel2_grid_569_2024_08.tiff
+2025-08-05 12:30:49,040 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:49,092 - INFO - Successfully inserted record for grid 569, 2024-08
+2025-08-05 12:30:49,093 - INFO - Processing sentinel2_grid_358_2024_08.tiff
+2025-08-05 12:30:49,100 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:49,101 - INFO - Record already exists for grid 358, 2024-08
+2025-08-05 12:30:49,102 - INFO - Processing sentinel2_grid_568_2024_08.tiff
+2025-08-05 12:30:49,109 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 12:30:49,171 - INFO - Successfully inserted record for grid 568, 2024-08
+2025-08-05 12:30:49,172 - INFO - ============================================================
+2025-08-05 12:30:49,172 - INFO - INSERTION SUMMARY
+2025-08-05 12:30:49,172 - INFO - ============================================================
+2025-08-05 12:30:49,172 - INFO - Total files processed: 25
+2025-08-05 12:30:49,172 - INFO - Successfully inserted: 13
+2025-08-05 12:30:49,172 - INFO - Failed: 0
+2025-08-05 12:30:49,172 - INFO - Skipped (already exist): 12
+2025-08-05 12:30:49,172 - INFO - Success rate: 52.0%
+2025-08-05 12:30:49,172 - INFO - ============================================================
+2025-08-05 12:30:49,172 - INFO - Database connection closed
+2025-08-05 12:30:49,172 - INFO - Insertion process completed

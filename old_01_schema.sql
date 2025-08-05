@@ -1,5 +1,5 @@
 -- ==============================================
--- schema_v4.sql   (TimescaleDB + PostGIS with perfect grid alignment)
+-- schema_v2.sql   (TimescaleDB + PostGIS with grid partitioning)
 -- ==============================================
 
 BEGIN;
@@ -11,14 +11,14 @@ CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
 CREATE EXTENSION IF NOT EXISTS postgis;
 
 ------------------------------------------------------------
--- 2. Grid cells reference table (Slovenia grid with exact boundaries)
+-- 2. Grid cells reference table (Slovenia 5km x 5km grid)
 ------------------------------------------------------------
 CREATE TABLE grid_cells (
     grid_id     INTEGER PRIMARY KEY,           -- from 'index' field in GeoDataFrame
     index_x     INTEGER NOT NULL,              -- grid x coordinate
     index_y     INTEGER NOT NULL,              -- grid y coordinate
-    geom        GEOMETRY(POLYGON, 3857) NOT NULL,  -- Slovenia grid in EPSG:3857
-    bbox_4326   GEOGRAPHY(POLYGON, 4326) NOT NULL  -- Exact boundaries in WGS84
+    geom        GEOMETRY(POLYGON, 3857) NOT NULL,  -- assuming Slovenia grid is in EPSG:3857
+    bbox_4326   GEOGRAPHY(POLYGON, 4326)       -- converted to WGS84 for matching with eo.bbox
 );
 
 -- Spatial indices for fast lookups
@@ -27,14 +27,14 @@ CREATE INDEX grid_cells_bbox_4326_gix ON grid_cells USING GIST (bbox_4326);
 CREATE INDEX grid_cells_xy_idx ON grid_cells (index_x, index_y);
 
 ------------------------------------------------------------
--- 3. Master imagery table : eo (with perfect grid alignment)
+-- 3. Master imagery table : eo (now with grid partitioning)
 ------------------------------------------------------------
 CREATE TABLE eo (
     id          SERIAL,                         -- surrogate key
     time        TIMESTAMPTZ NOT NULL,           -- observation time
     month       DATE NOT NULL,                  -- first day of month (for partitioning)
     grid_id     INTEGER NOT NULL,              -- FK to grid_cells
-    bbox        GEOGRAPHY(POLYGON, 4326) NOT NULL,   -- exact footprint (matches grid cell)
+    bbox        GEOGRAPHY(POLYGON, 4326) NOT NULL,   -- footprint
     
     -- image metadata
     width       INTEGER,                        -- image width in pixels
@@ -60,7 +60,7 @@ CREATE TABLE eo (
     CONSTRAINT eo_pk PRIMARY KEY (id, time, grid_id),
     -- Foreign key to grid
     CONSTRAINT eo_grid_fk FOREIGN KEY (grid_id) REFERENCES grid_cells(grid_id),
-    -- Unique constraint for one image per grid cell per month
+    -- Unique constraint for one image per grid cell per month (including time for partitioning)
     CONSTRAINT eo_unique_grid_month UNIQUE (grid_id, month, time)
 );
 
@@ -72,7 +72,7 @@ SELECT create_hypertable('eo',
 
 -- Add space dimension based on grid_id
 SELECT add_dimension('eo', 'grid_id', 
-    number_partitions => 16  -- optimized for ~940 grid cells
+    number_partitions => 64  -- adjust based on total grid cells (~600 for Slovenia)
 );
 
 -- Create optimized indices
@@ -83,7 +83,7 @@ CREATE INDEX eo_bbox_gix ON eo USING GIST (bbox);
 CREATE INDEX eo_grid_month_idx ON eo (grid_id, month);
 
 ------------------------------------------------------------
--- 4. Enhanced validation function with zero tolerance
+-- 4. Function to validate and auto-populate month
 ------------------------------------------------------------
 CREATE OR REPLACE FUNCTION eo_validate_and_populate() 
 RETURNS TRIGGER 
@@ -98,7 +98,7 @@ BEGIN
     -- Auto-populate month from time
     NEW.month := date_trunc('month', NEW.time)::date;
     
-    -- Get the grid cell geography (exact boundaries)
+    -- Get the grid cell geography
     SELECT bbox_4326 INTO grid_geom
     FROM grid_cells
     WHERE grid_id = NEW.grid_id;
@@ -107,20 +107,16 @@ BEGIN
         RAISE EXCEPTION 'Invalid grid_id: %', NEW.grid_id;
     END IF;
     
-    -- Check for perfect alignment (zero tolerance policy)
+    -- Check significant overlap instead of strict containment
     grid_area := ST_Area(grid_geom);
     overlap_area := ST_Area(ST_Intersection(grid_geom, NEW.bbox));
     overlap_percent := (overlap_area / grid_area) * 100;
 
-    -- Require 99.9% overlap (near-perfect alignment)
-    IF overlap_percent < 99.9 THEN
-        RAISE EXCEPTION 'Image bbox must have at least 99.9%% overlap with grid cell % (current: %.6f%%). Ensure perfect pixel alignment.', 
+    -- Require at least 99% overlap with the grid cell
+    IF overlap_percent < 99 THEN
+        RAISE EXCEPTION 'Image bbox must have at least 99%% overlap with grid cell % (current: %.1f%%)', 
             NEW.grid_id, overlap_percent;
     END IF;
-    
-    -- Optional: Force exact grid boundaries for perfect consistency
-    -- Uncomment the next line to use exact grid bbox instead of image bbox
-    -- NEW.bbox := grid_geom;
     
     RETURN NEW;
 END;
@@ -131,7 +127,7 @@ BEFORE INSERT OR UPDATE ON eo
 FOR EACH ROW EXECUTE FUNCTION eo_validate_and_populate();
 
 ------------------------------------------------------------
--- 5. Enhanced upsert function with perfect alignment
+-- 5. Upsert function for conflict handling
 ------------------------------------------------------------
 CREATE OR REPLACE FUNCTION upsert_eo(
     p_time TIMESTAMPTZ,
@@ -157,25 +153,14 @@ CREATE OR REPLACE FUNCTION upsert_eo(
 DECLARE
     v_month DATE;
     v_id INTEGER;
-    v_grid_bbox GEOGRAPHY(POLYGON, 4326);
 BEGIN
     v_month := date_trunc('month', p_time)::date;
     
-    -- Get exact grid bbox for consistency
-    SELECT bbox_4326 INTO v_grid_bbox
-    FROM grid_cells
-    WHERE grid_id = p_grid_id;
-    
-    IF v_grid_bbox IS NULL THEN
-        RAISE EXCEPTION 'Grid ID % not found', p_grid_id;
-    END IF;
-    
-    -- Use exact grid bbox for perfect alignment
     INSERT INTO eo (
         time, month, grid_id, bbox, width, height, data_type,
         b01, b02, b03, b04, b05, b06, b07, b08, b8a, b09, b10, b11, b12
     ) VALUES (
-        p_time, v_month, p_grid_id, v_grid_bbox, p_width, p_height, p_data_type,
+        p_time, v_month, p_grid_id, p_bbox, p_width, p_height, p_data_type,
         p_b01, p_b02, p_b03, p_b04, p_b05, p_b06, p_b07, p_b08, p_b8a, p_b09, p_b10, p_b11, p_b12
     )
     ON CONFLICT (grid_id, month, time) DO UPDATE SET
@@ -203,7 +188,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 ------------------------------------------------------------
--- 6. Updated change detection table with perfect alignment
+-- 6. Updated change detection table
 ------------------------------------------------------------
 CREATE TABLE eo_change (
     img_a_id     INTEGER NOT NULL,
@@ -212,7 +197,7 @@ CREATE TABLE eo_change (
     
     period_start TIMESTAMPTZ NOT NULL,          -- LEAST(time_a,time_b)
     period_end   TIMESTAMPTZ NOT NULL,          -- GREATEST(time_a,time_b)
-    bbox         GEOGRAPHY(POLYGON, 4326) NOT NULL, -- exact grid bbox
+    bbox         GEOGRAPHY(POLYGON, 4326) NOT NULL,
     
     -- change mask metadata
     width        INTEGER,                       -- mask width in pixels
@@ -258,75 +243,36 @@ CREATE INDEX eo_prev_next_grid_id_idx ON eo_prev_next (grid_id);
 CREATE INDEX eo_prev_next_month_idx ON eo_prev_next (month);
 
 ------------------------------------------------------------
--- 8. Alignment validation functions
+-- 8. Function to prepopulate grid cells with empty months
 ------------------------------------------------------------
-
--- Check bbox alignment for a specific grid
-CREATE OR REPLACE FUNCTION validate_grid_alignment(p_grid_id INTEGER)
-RETURNS TABLE (
-    image_id INTEGER,
-    image_time TIMESTAMPTZ,
-    overlap_percent NUMERIC,
-    is_aligned BOOLEAN
-) AS $$
+CREATE OR REPLACE FUNCTION prepopulate_grid_months(
+    start_date DATE,
+    end_date DATE
+) RETURNS TABLE (grid_id INTEGER, month DATE) AS $$
 BEGIN
     RETURN QUERY
-    SELECT 
-        eo.id,
-        eo.time,
-        ROUND(
-            (ST_Area(ST_Intersection(gc.bbox_4326, eo.bbox)) / ST_Area(gc.bbox_4326)) * 100,
-            6
-        ) as overlap_percent,
-        (ST_Area(ST_Intersection(gc.bbox_4326, eo.bbox)) / ST_Area(gc.bbox_4326)) >= 0.999 as is_aligned
-    FROM eo
-    JOIN grid_cells gc ON eo.grid_id = gc.grid_id
-    WHERE eo.grid_id = p_grid_id
-    ORDER BY eo.time;
-END;
-$$ LANGUAGE plpgsql;
-
--- Get alignment statistics across all grids
-CREATE OR REPLACE FUNCTION get_alignment_stats()
-RETURNS TABLE (
-    grid_id INTEGER,
-    total_images INTEGER,
-    aligned_images INTEGER,
-    alignment_rate NUMERIC
-) AS $$
-BEGIN
-    RETURN QUERY
-    WITH alignment_check AS (
-        SELECT 
-            eo.grid_id,
-            eo.id,
-            (ST_Area(ST_Intersection(gc.bbox_4326, eo.bbox)) / ST_Area(gc.bbox_4326)) >= 0.999 as is_aligned
-        FROM eo
-        JOIN grid_cells gc ON eo.grid_id = gc.grid_id
-    )
-    SELECT 
-        ac.grid_id,
-        COUNT(*)::INTEGER as total_images,
-        COUNT(*) FILTER (WHERE ac.is_aligned)::INTEGER as aligned_images,
-        ROUND((COUNT(*) FILTER (WHERE ac.is_aligned)::NUMERIC / COUNT(*)) * 100, 2) as alignment_rate
-    FROM alignment_check ac
-    GROUP BY ac.grid_id
-    ORDER BY ac.grid_id;
+    SELECT gc.grid_id, 
+           generate_series(
+               date_trunc('month', start_date::timestamp), 
+               date_trunc('month', end_date::timestamp), 
+               '1 month'::interval
+           )::date AS month
+    FROM grid_cells gc
+    ORDER BY gc.grid_id, month;
 END;
 $$ LANGUAGE plpgsql;
 
 ------------------------------------------------------------
--- 9. Enhanced query helper functions
+-- 9. Query helper functions
 ------------------------------------------------------------
 
--- Get all data for a specific month with alignment info
-CREATE OR REPLACE FUNCTION get_month_data_with_alignment(target_month DATE)
+-- Get all data for a specific month
+CREATE OR REPLACE FUNCTION get_month_data(target_month DATE)
 RETURNS TABLE (
     grid_id INTEGER,
     "time" TIMESTAMPTZ,
     bbox GEOGRAPHY(POLYGON, 4326),
-    has_data BOOLEAN,
-    is_aligned BOOLEAN
+    has_data BOOLEAN
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -334,12 +280,7 @@ BEGIN
         gc.grid_id,
         eo.time,
         COALESCE(eo.bbox, gc.bbox_4326) as bbox,
-        (eo.id IS NOT NULL) as has_data,
-        CASE 
-            WHEN eo.id IS NOT NULL THEN 
-                (ST_Area(ST_Intersection(gc.bbox_4326, eo.bbox)) / ST_Area(gc.bbox_4326)) >= 0.999
-            ELSE NULL
-        END as is_aligned
+        (eo.id IS NOT NULL) as has_data
     FROM grid_cells gc
     LEFT JOIN eo ON gc.grid_id = eo.grid_id 
                  AND eo.month = target_month
@@ -347,63 +288,34 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Get coverage statistics with alignment metrics
-CREATE OR REPLACE FUNCTION get_coverage_stats_v4()
+-- Get data coverage statistics by month
+CREATE OR REPLACE FUNCTION get_coverage_stats()
 RETURNS TABLE (
     month DATE,
     total_cells INTEGER,
     filled_cells INTEGER,
-    aligned_cells INTEGER,
-    coverage_percent NUMERIC,
-    alignment_percent NUMERIC
+    coverage_percent NUMERIC
 ) AS $$
 BEGIN
     RETURN QUERY
     WITH grid_count AS (
         SELECT COUNT(*) as total FROM grid_cells
     ),
-    monthly_stats AS (
+    monthly_coverage AS (
         SELECT 
-            eo.month,
-            COUNT(DISTINCT eo.grid_id) as filled,
-            COUNT(DISTINCT eo.grid_id) FILTER (
-                WHERE (ST_Area(ST_Intersection(gc.bbox_4326, eo.bbox)) / ST_Area(gc.bbox_4326)) >= 0.999
-            ) as aligned
+            month,
+            COUNT(DISTINCT grid_id) as filled
         FROM eo
-        JOIN grid_cells gc ON eo.grid_id = gc.grid_id
-        GROUP BY eo.month
+        GROUP BY month
     )
     SELECT 
-        ms.month,
+        mc.month,
         gc.total::INTEGER as total_cells,
-        ms.filled::INTEGER as filled_cells,
-        ms.aligned::INTEGER as aligned_cells,
-        ROUND((ms.filled::NUMERIC / gc.total) * 100, 2) as coverage_percent,
-        ROUND((ms.aligned::NUMERIC / ms.filled) * 100, 2) as alignment_percent
-    FROM monthly_stats ms
+        mc.filled::INTEGER as filled_cells,
+        ROUND((mc.filled::NUMERIC / gc.total) * 100, 2) as coverage_percent
+    FROM monthly_coverage mc
     CROSS JOIN grid_count gc
-    ORDER BY ms.month DESC;
-END;
-$$ LANGUAGE plpgsql;
-
-------------------------------------------------------------
--- 10. Grid boundary enforcement function
-------------------------------------------------------------
-CREATE OR REPLACE FUNCTION enforce_exact_grid_boundaries()
-RETURNS INTEGER AS $$
-DECLARE
-    updated_count INTEGER := 0;
-BEGIN
-    -- Update all eo records to use exact grid boundaries
-    UPDATE eo 
-    SET bbox = gc.bbox_4326
-    FROM grid_cells gc
-    WHERE eo.grid_id = gc.grid_id
-    AND eo.bbox != gc.bbox_4326;
-    
-    GET DIAGNOSTICS updated_count = ROW_COUNT;
-    
-    RETURN updated_count;
+    ORDER BY mc.month DESC;
 END;
 $$ LANGUAGE plpgsql;
 
