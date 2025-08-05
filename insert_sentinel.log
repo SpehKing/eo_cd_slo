@@ -2284,3 +2284,400 @@ CONTEXT:  PL/pgSQL function eo_validate_and_populate() line 20 at RAISE
 2025-08-04 15:48:55,804 - INFO - ============================================================
 2025-08-04 15:48:55,804 - INFO - Database connection closed
 2025-08-04 15:48:55,804 - INFO - Insertion process completed
+2025-08-05 10:00:44,330 - INFO - Starting Sentinel-2 database insertion script
+2025-08-05 10:00:44,331 - INFO - Loading grid data from data/slovenia_grid.gpkg
+2025-08-05 10:00:44,498 - INFO - Loaded 940 grid cells
+2025-08-05 10:00:44,498 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-05 10:00:44,503 - INFO - Connecting to database...
+2025-08-05 10:00:44,572 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-05 10:00:44,580 - INFO - Required database tables found
+2025-08-05 10:00:44,581 - INFO - Loading Slovenia grid cells into database...
+2025-08-05 10:00:44,680 - INFO - Successfully loaded 940 grid cells into database
+2025-08-05 10:00:44,681 - INFO - Found 125 image files
+2025-08-05 10:00:44,681 - INFO - Found 125 image files to process
+2025-08-05 10:00:44,690 - INFO - Processing sentinel2_grid_362_2022_08.tiff
+2025-08-05 10:00:44,749 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:44,866 - INFO - Successfully inserted record for grid 362, 2022-08
+2025-08-05 10:00:44,867 - INFO - Processing sentinel2_grid_361_2019_08.tiff
+2025-08-05 10:00:44,877 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:44,944 - INFO - Successfully inserted record for grid 361, 2019-08
+2025-08-05 10:00:44,944 - INFO - Processing sentinel2_grid_291_2020_08.tiff
+2025-08-05 10:00:44,954 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:45,016 - INFO - Successfully inserted record for grid 291, 2020-08
+2025-08-05 10:00:45,016 - INFO - Processing sentinel2_grid_296_2020_08.tiff
+2025-08-05 10:00:45,026 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:45,090 - INFO - Successfully inserted record for grid 296, 2020-08
+2025-08-05 10:00:45,090 - INFO - Processing sentinel2_grid_295_2024_08.tiff
+2025-08-05 10:00:45,100 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:45,183 - INFO - Successfully inserted record for grid 295, 2024-08
+2025-08-05 10:00:45,183 - INFO - Processing sentinel2_grid_340_2023_08.tiff
+2025-08-05 10:00:45,193 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:45,268 - INFO - Successfully inserted record for grid 340, 2023-08
+2025-08-05 10:00:45,268 - INFO - Processing sentinel2_grid_292_2024_08.tiff
+2025-08-05 10:00:45,277 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:45,364 - INFO - Successfully inserted record for grid 292, 2024-08
+2025-08-05 10:00:45,364 - INFO - Processing sentinel2_grid_335_2018_08.tiff
+2025-08-05 10:00:45,374 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:45,454 - INFO - Successfully inserted record for grid 335, 2018-08
+2025-08-05 10:00:45,457 - INFO - Processing sentinel2_grid_360_2018_08.tiff
+2025-08-05 10:00:45,467 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:45,525 - INFO - Successfully inserted record for grid 360, 2018-08
+2025-08-05 10:00:45,527 - INFO - Processing sentinel2_grid_382_2020_08.tiff
+2025-08-05 10:00:45,541 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:45,610 - INFO - Successfully inserted record for grid 382, 2020-08
+2025-08-05 10:00:45,611 - INFO - Processing sentinel2_grid_297_2021_08.tiff
+2025-08-05 10:00:45,621 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:45,703 - INFO - Successfully inserted record for grid 297, 2021-08
+2025-08-05 10:00:45,705 - INFO - Processing sentinel2_grid_341_2022_08.tiff
+2025-08-05 10:00:45,717 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:45,787 - INFO - Successfully inserted record for grid 341, 2022-08
+2025-08-05 10:00:45,790 - INFO - Processing sentinel2_grid_313_2022_08.tiff
+2025-08-05 10:00:45,802 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:45,880 - INFO - Successfully inserted record for grid 313, 2022-08
+2025-08-05 10:00:45,882 - INFO - Processing sentinel2_grid_381_2024_08.tiff
+2025-08-05 10:00:45,895 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:45,963 - INFO - Successfully inserted record for grid 381, 2024-08
+2025-08-05 10:00:45,965 - INFO - Processing sentinel2_grid_339_2024_08.tiff
+2025-08-05 10:00:45,976 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:46,057 - INFO - Successfully inserted record for grid 339, 2024-08
+2025-08-05 10:00:46,058 - INFO - Processing sentinel2_grid_297_2020_08.tiff
+2025-08-05 10:00:46,068 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:46,140 - INFO - Successfully inserted record for grid 297, 2020-08
+2025-08-05 10:00:46,141 - INFO - Processing sentinel2_grid_382_2021_08.tiff
+2025-08-05 10:00:46,151 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:46,260 - INFO - Successfully inserted record for grid 382, 2021-08
+2025-08-05 10:00:46,261 - INFO - Processing sentinel2_grid_335_2019_08.tiff
+2025-08-05 10:00:46,270 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:46,343 - INFO - Successfully inserted record for grid 335, 2019-08
+2025-08-05 10:00:46,343 - INFO - Processing sentinel2_grid_360_2019_08.tiff
+2025-08-05 10:00:46,352 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:46,408 - INFO - Successfully inserted record for grid 360, 2019-08
+2025-08-05 10:00:46,409 - INFO - Processing sentinel2_grid_313_2023_08.tiff
+2025-08-05 10:00:46,418 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:46,475 - INFO - Successfully inserted record for grid 313, 2023-08
+2025-08-05 10:00:46,476 - INFO - Processing sentinel2_grid_293_2024_08.tiff
+2025-08-05 10:00:46,485 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:46,566 - INFO - Successfully inserted record for grid 293, 2024-08
+2025-08-05 10:00:46,567 - INFO - Processing sentinel2_grid_341_2023_08.tiff
+2025-08-05 10:00:46,576 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:46,644 - INFO - Successfully inserted record for grid 341, 2023-08
+2025-08-05 10:00:46,644 - INFO - Processing sentinel2_grid_294_2024_08.tiff
+2025-08-05 10:00:46,654 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:46,736 - INFO - Successfully inserted record for grid 294, 2024-08
+2025-08-05 10:00:46,737 - INFO - Processing sentinel2_grid_362_2023_08.tiff
+2025-08-05 10:00:46,747 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:46,813 - INFO - Successfully inserted record for grid 362, 2023-08
+2025-08-05 10:00:46,813 - INFO - Processing sentinel2_grid_296_2021_08.tiff
+2025-08-05 10:00:46,823 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:46,886 - INFO - Successfully inserted record for grid 296, 2021-08
+2025-08-05 10:00:46,887 - INFO - Processing sentinel2_grid_361_2018_08.tiff
+2025-08-05 10:00:46,896 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:46,970 - INFO - Successfully inserted record for grid 361, 2018-08
+2025-08-05 10:00:46,970 - INFO - Processing sentinel2_grid_291_2021_08.tiff
+2025-08-05 10:00:46,980 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:47,075 - INFO - Successfully inserted record for grid 291, 2021-08
+2025-08-05 10:00:47,075 - INFO - Processing sentinel2_grid_380_2024_08.tiff
+2025-08-05 10:00:47,084 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:47,150 - INFO - Successfully inserted record for grid 380, 2024-08
+2025-08-05 10:00:47,151 - INFO - Processing sentinel2_grid_340_2022_08.tiff
+2025-08-05 10:00:47,161 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:47,224 - INFO - Successfully inserted record for grid 340, 2022-08
+2025-08-05 10:00:47,224 - INFO - Processing sentinel2_grid_313_2021_08.tiff
+2025-08-05 10:00:47,234 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:47,302 - INFO - Successfully inserted record for grid 313, 2021-08
+2025-08-05 10:00:47,303 - INFO - Processing sentinel2_grid_339_2018_08.tiff
+2025-08-05 10:00:47,312 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:47,389 - INFO - Successfully inserted record for grid 339, 2018-08
+2025-08-05 10:00:47,390 - INFO - Processing sentinel2_grid_341_2021_08.tiff
+2025-08-05 10:00:47,400 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:47,468 - INFO - Successfully inserted record for grid 341, 2021-08
+2025-08-05 10:00:47,469 - INFO - Processing sentinel2_grid_297_2022_08.tiff
+2025-08-05 10:00:47,479 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:47,539 - INFO - Successfully inserted record for grid 297, 2022-08
+2025-08-05 10:00:47,539 - INFO - Processing sentinel2_grid_382_2023_08.tiff
+2025-08-05 10:00:47,549 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:47,606 - INFO - Successfully inserted record for grid 382, 2023-08
+2025-08-05 10:00:47,607 - INFO - Processing sentinel2_grid_294_2019_08.tiff
+2025-08-05 10:00:47,617 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:47,676 - INFO - Successfully inserted record for grid 294, 2019-08
+2025-08-05 10:00:47,677 - INFO - Processing sentinel2_grid_381_2018_08.tiff
+2025-08-05 10:00:47,686 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:47,776 - INFO - Successfully inserted record for grid 381, 2018-08
+2025-08-05 10:00:47,776 - INFO - Processing sentinel2_grid_293_2019_08.tiff
+2025-08-05 10:00:47,788 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:47,868 - INFO - Successfully inserted record for grid 293, 2019-08
+2025-08-05 10:00:47,869 - INFO - Processing sentinel2_grid_360_2024_08.tiff
+2025-08-05 10:00:47,879 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:47,949 - INFO - Successfully inserted record for grid 360, 2024-08
+2025-08-05 10:00:47,949 - INFO - Processing sentinel2_grid_295_2018_08.tiff
+2025-08-05 10:00:47,960 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:48,045 - INFO - Successfully inserted record for grid 295, 2018-08
+2025-08-05 10:00:48,046 - INFO - Processing sentinel2_grid_362_2021_08.tiff
+2025-08-05 10:00:48,056 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:48,128 - INFO - Successfully inserted record for grid 362, 2021-08
+2025-08-05 10:00:48,128 - INFO - Processing sentinel2_grid_292_2018_08.tiff
+2025-08-05 10:00:48,137 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:48,221 - INFO - Successfully inserted record for grid 292, 2018-08
+2025-08-05 10:00:48,222 - INFO - Processing sentinel2_grid_380_2019_08.tiff
+2025-08-05 10:00:48,232 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:48,284 - INFO - Successfully inserted record for grid 380, 2019-08
+2025-08-05 10:00:48,284 - INFO - Processing sentinel2_grid_340_2020_08.tiff
+2025-08-05 10:00:48,295 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:48,369 - INFO - Successfully inserted record for grid 340, 2020-08
+2025-08-05 10:00:48,370 - INFO - Processing sentinel2_grid_296_2023_08.tiff
+2025-08-05 10:00:48,379 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:48,440 - INFO - Successfully inserted record for grid 296, 2023-08
+2025-08-05 10:00:48,441 - INFO - Processing sentinel2_grid_291_2023_08.tiff
+2025-08-05 10:00:48,451 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:48,528 - INFO - Successfully inserted record for grid 291, 2023-08
+2025-08-05 10:00:48,529 - INFO - Processing sentinel2_grid_380_2018_08.tiff
+2025-08-05 10:00:48,538 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:48,616 - INFO - Successfully inserted record for grid 380, 2018-08
+2025-08-05 10:00:48,617 - INFO - Processing sentinel2_grid_362_2020_08.tiff
+2025-08-05 10:00:48,627 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:48,683 - INFO - Successfully inserted record for grid 362, 2020-08
+2025-08-05 10:00:48,684 - INFO - Processing sentinel2_grid_292_2019_08.tiff
+2025-08-05 10:00:48,694 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:48,777 - INFO - Successfully inserted record for grid 292, 2019-08
+2025-08-05 10:00:48,778 - INFO - Processing sentinel2_grid_295_2019_08.tiff
+2025-08-05 10:00:48,787 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:48,847 - INFO - Successfully inserted record for grid 295, 2019-08
+2025-08-05 10:00:48,848 - INFO - Processing sentinel2_grid_361_2024_08.tiff
+2025-08-05 10:00:48,858 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:48,921 - INFO - Successfully inserted record for grid 361, 2024-08
+2025-08-05 10:00:48,922 - INFO - Processing sentinel2_grid_340_2021_08.tiff
+2025-08-05 10:00:48,932 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:49,010 - INFO - Successfully inserted record for grid 340, 2021-08
+2025-08-05 10:00:49,011 - INFO - Processing sentinel2_grid_291_2022_08.tiff
+2025-08-05 10:00:49,021 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:49,078 - INFO - Successfully inserted record for grid 291, 2022-08
+2025-08-05 10:00:49,079 - INFO - Processing sentinel2_grid_296_2022_08.tiff
+2025-08-05 10:00:49,088 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:49,143 - INFO - Successfully inserted record for grid 296, 2022-08
+2025-08-05 10:00:49,143 - INFO - Processing sentinel2_grid_339_2019_08.tiff
+2025-08-05 10:00:49,153 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:49,217 - INFO - Successfully inserted record for grid 339, 2019-08
+2025-08-05 10:00:49,217 - INFO - Processing sentinel2_grid_341_2020_08.tiff
+2025-08-05 10:00:49,228 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:49,301 - INFO - Successfully inserted record for grid 341, 2020-08
+2025-08-05 10:00:49,301 - INFO - Processing sentinel2_grid_313_2020_08.tiff
+2025-08-05 10:00:49,311 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:49,395 - INFO - Successfully inserted record for grid 313, 2020-08
+2025-08-05 10:00:49,396 - INFO - Processing sentinel2_grid_382_2022_08.tiff
+2025-08-05 10:00:49,405 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:49,469 - INFO - Successfully inserted record for grid 382, 2022-08
+2025-08-05 10:00:49,470 - INFO - Processing sentinel2_grid_297_2023_08.tiff
+2025-08-05 10:00:49,479 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:49,560 - INFO - Successfully inserted record for grid 297, 2023-08
+2025-08-05 10:00:49,560 - INFO - Processing sentinel2_grid_293_2018_08.tiff
+2025-08-05 10:00:49,569 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:49,648 - INFO - Successfully inserted record for grid 293, 2018-08
+2025-08-05 10:00:49,648 - INFO - Processing sentinel2_grid_381_2019_08.tiff
+2025-08-05 10:00:49,658 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:49,727 - INFO - Successfully inserted record for grid 381, 2019-08
+2025-08-05 10:00:49,728 - INFO - Processing sentinel2_grid_294_2018_08.tiff
+2025-08-05 10:00:49,737 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:49,817 - INFO - Successfully inserted record for grid 294, 2018-08
+2025-08-05 10:00:49,818 - INFO - Processing sentinel2_grid_339_2023_08.tiff
+2025-08-05 10:00:49,829 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:49,891 - INFO - Successfully inserted record for grid 339, 2023-08
+2025-08-05 10:00:49,891 - INFO - Processing sentinel2_grid_297_2019_08.tiff
+2025-08-05 10:00:49,901 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:49,973 - INFO - Successfully inserted record for grid 297, 2019-08
+2025-08-05 10:00:49,974 - INFO - Processing sentinel2_grid_382_2018_08.tiff
+2025-08-05 10:00:49,983 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:50,034 - INFO - Successfully inserted record for grid 382, 2018-08
+2025-08-05 10:00:50,035 - INFO - Processing sentinel2_grid_335_2020_08.tiff
+2025-08-05 10:00:50,045 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:50,105 - INFO - Successfully inserted record for grid 335, 2020-08
+2025-08-05 10:00:50,106 - INFO - Processing sentinel2_grid_360_2020_08.tiff
+2025-08-05 10:00:50,115 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:50,200 - INFO - Successfully inserted record for grid 360, 2020-08
+2025-08-05 10:00:50,201 - INFO - Processing sentinel2_grid_294_2022_08.tiff
+2025-08-05 10:00:50,211 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:50,269 - INFO - Successfully inserted record for grid 294, 2022-08
+2025-08-05 10:00:50,269 - INFO - Processing sentinel2_grid_293_2022_08.tiff
+2025-08-05 10:00:50,279 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:50,347 - INFO - Successfully inserted record for grid 293, 2022-08
+2025-08-05 10:00:50,347 - INFO - Processing sentinel2_grid_381_2023_08.tiff
+2025-08-05 10:00:50,357 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:50,435 - INFO - Successfully inserted record for grid 381, 2023-08
+2025-08-05 10:00:50,436 - INFO - Processing sentinel2_grid_295_2023_08.tiff
+2025-08-05 10:00:50,445 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:50,517 - INFO - Successfully inserted record for grid 295, 2023-08
+2025-08-05 10:00:50,517 - INFO - Processing sentinel2_grid_340_2024_08.tiff
+2025-08-05 10:00:50,528 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:50,598 - INFO - Successfully inserted record for grid 340, 2024-08
+2025-08-05 10:00:50,599 - INFO - Processing sentinel2_grid_380_2022_08.tiff
+2025-08-05 10:00:50,609 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:50,661 - INFO - Successfully inserted record for grid 380, 2022-08
+2025-08-05 10:00:50,662 - INFO - Processing sentinel2_grid_292_2023_08.tiff
+2025-08-05 10:00:50,672 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:50,743 - INFO - Successfully inserted record for grid 292, 2023-08
+2025-08-05 10:00:50,744 - INFO - Processing sentinel2_grid_296_2018_08.tiff
+2025-08-05 10:00:50,753 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:50,833 - INFO - Successfully inserted record for grid 296, 2018-08
+2025-08-05 10:00:50,834 - INFO - Processing sentinel2_grid_361_2021_08.tiff
+2025-08-05 10:00:50,844 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:50,903 - INFO - Successfully inserted record for grid 361, 2021-08
+2025-08-05 10:00:50,904 - INFO - Processing sentinel2_grid_291_2018_08.tiff
+2025-08-05 10:00:50,913 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:51,008 - INFO - Successfully inserted record for grid 291, 2018-08
+2025-08-05 10:00:51,009 - INFO - Processing sentinel2_grid_292_2022_08.tiff
+2025-08-05 10:00:51,019 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:51,079 - INFO - Successfully inserted record for grid 292, 2022-08
+2025-08-05 10:00:51,079 - INFO - Processing sentinel2_grid_380_2023_08.tiff
+2025-08-05 10:00:51,089 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:51,144 - INFO - Successfully inserted record for grid 380, 2023-08
+2025-08-05 10:00:51,145 - INFO - Processing sentinel2_grid_295_2022_08.tiff
+2025-08-05 10:00:51,155 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:51,212 - INFO - Successfully inserted record for grid 295, 2022-08
+2025-08-05 10:00:51,212 - INFO - Processing sentinel2_grid_362_2024_08.tiff
+2025-08-05 10:00:51,221 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:51,302 - INFO - Successfully inserted record for grid 362, 2024-08
+2025-08-05 10:00:51,302 - INFO - Processing sentinel2_grid_361_2020_08.tiff
+2025-08-05 10:00:51,312 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:51,363 - INFO - Successfully inserted record for grid 361, 2020-08
+2025-08-05 10:00:51,364 - INFO - Processing sentinel2_grid_291_2019_08.tiff
+2025-08-05 10:00:51,373 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:51,444 - INFO - Successfully inserted record for grid 291, 2019-08
+2025-08-05 10:00:51,445 - INFO - Processing sentinel2_grid_296_2019_08.tiff
+2025-08-05 10:00:51,455 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:51,512 - INFO - Successfully inserted record for grid 296, 2019-08
+2025-08-05 10:00:51,512 - INFO - Processing sentinel2_grid_339_2022_08.tiff
+2025-08-05 10:00:51,522 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:51,587 - INFO - Successfully inserted record for grid 339, 2022-08
+2025-08-05 10:00:51,587 - INFO - Processing sentinel2_grid_335_2021_08.tiff
+2025-08-05 10:00:51,597 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:51,673 - INFO - Successfully inserted record for grid 335, 2021-08
+2025-08-05 10:00:51,674 - INFO - Processing sentinel2_grid_360_2021_08.tiff
+2025-08-05 10:00:51,683 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:51,829 - INFO - Successfully inserted record for grid 360, 2021-08
+2025-08-05 10:00:51,830 - INFO - Processing sentinel2_grid_382_2019_08.tiff
+2025-08-05 10:00:51,839 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:51,904 - INFO - Successfully inserted record for grid 382, 2019-08
+2025-08-05 10:00:51,905 - INFO - Processing sentinel2_grid_297_2018_08.tiff
+2025-08-05 10:00:51,914 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:51,998 - INFO - Successfully inserted record for grid 297, 2018-08
+2025-08-05 10:00:51,999 - INFO - Processing sentinel2_grid_313_2024_08.tiff
+2025-08-05 10:00:52,008 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:52,085 - INFO - Successfully inserted record for grid 313, 2024-08
+2025-08-05 10:00:52,085 - INFO - Processing sentinel2_grid_381_2022_08.tiff
+2025-08-05 10:00:52,096 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:52,166 - INFO - Successfully inserted record for grid 381, 2022-08
+2025-08-05 10:00:52,167 - INFO - Processing sentinel2_grid_293_2023_08.tiff
+2025-08-05 10:00:52,176 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:52,255 - INFO - Successfully inserted record for grid 293, 2023-08
+2025-08-05 10:00:52,256 - INFO - Processing sentinel2_grid_341_2024_08.tiff
+2025-08-05 10:00:52,267 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:52,344 - INFO - Successfully inserted record for grid 341, 2024-08
+2025-08-05 10:00:52,344 - INFO - Processing sentinel2_grid_294_2023_08.tiff
+2025-08-05 10:00:52,354 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:52,432 - INFO - Successfully inserted record for grid 294, 2023-08
+2025-08-05 10:00:52,433 - INFO - Processing sentinel2_grid_296_2024_08.tiff
+2025-08-05 10:00:52,442 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:52,507 - INFO - Successfully inserted record for grid 296, 2024-08
+2025-08-05 10:00:52,508 - INFO - Processing sentinel2_grid_291_2024_08.tiff
+2025-08-05 10:00:52,517 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:52,613 - INFO - Successfully inserted record for grid 291, 2024-08
+2025-08-05 10:00:52,614 - INFO - Processing sentinel2_grid_380_2021_08.tiff
+2025-08-05 10:00:52,623 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:52,674 - INFO - Successfully inserted record for grid 380, 2021-08
+2025-08-05 10:00:52,675 - INFO - Processing sentinel2_grid_362_2019_08.tiff
+2025-08-05 10:00:52,684 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:52,754 - INFO - Successfully inserted record for grid 362, 2019-08
+2025-08-05 10:00:52,755 - INFO - Processing sentinel2_grid_292_2020_08.tiff
+2025-08-05 10:00:52,765 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:52,825 - INFO - Successfully inserted record for grid 292, 2020-08
+2025-08-05 10:00:52,826 - INFO - Processing sentinel2_grid_295_2020_08.tiff
+2025-08-05 10:00:52,836 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:52,903 - INFO - Successfully inserted record for grid 295, 2020-08
+2025-08-05 10:00:52,904 - INFO - Processing sentinel2_grid_361_2022_08.tiff
+2025-08-05 10:00:52,914 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:52,976 - INFO - Successfully inserted record for grid 361, 2022-08
+2025-08-05 10:00:52,976 - INFO - Processing sentinel2_grid_340_2018_08.tiff
+2025-08-05 10:00:52,985 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:53,058 - INFO - Successfully inserted record for grid 340, 2018-08
+2025-08-05 10:00:53,059 - INFO - Processing sentinel2_grid_360_2023_08.tiff
+2025-08-05 10:00:53,069 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:53,125 - INFO - Successfully inserted record for grid 360, 2023-08
+2025-08-05 10:00:53,125 - INFO - Processing sentinel2_grid_335_2023_08.tiff
+2025-08-05 10:00:53,135 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:53,195 - INFO - Successfully inserted record for grid 335, 2023-08
+2025-08-05 10:00:53,196 - INFO - Processing sentinel2_grid_341_2019_08.tiff
+2025-08-05 10:00:53,206 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:53,258 - INFO - Successfully inserted record for grid 341, 2019-08
+2025-08-05 10:00:53,259 - INFO - Processing sentinel2_grid_339_2020_08.tiff
+2025-08-05 10:00:53,269 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:53,353 - INFO - Successfully inserted record for grid 339, 2020-08
+2025-08-05 10:00:53,354 - INFO - Processing sentinel2_grid_313_2019_08.tiff
+2025-08-05 10:00:53,364 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:53,428 - INFO - Successfully inserted record for grid 313, 2019-08
+2025-08-05 10:00:53,429 - INFO - Processing sentinel2_grid_382_2024_08.tiff
+2025-08-05 10:00:53,440 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:53,492 - INFO - Successfully inserted record for grid 382, 2024-08
+2025-08-05 10:00:53,493 - INFO - Processing sentinel2_grid_293_2021_08.tiff
+2025-08-05 10:00:53,504 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:53,573 - INFO - Successfully inserted record for grid 293, 2021-08
+2025-08-05 10:00:53,574 - INFO - Processing sentinel2_grid_381_2020_08.tiff
+2025-08-05 10:00:53,584 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:53,649 - INFO - Successfully inserted record for grid 381, 2020-08
+2025-08-05 10:00:53,649 - INFO - Processing sentinel2_grid_294_2021_08.tiff
+2025-08-05 10:00:53,659 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:53,729 - INFO - Successfully inserted record for grid 294, 2021-08
+2025-08-05 10:00:53,729 - INFO - Processing sentinel2_grid_360_2022_08.tiff
+2025-08-05 10:00:53,739 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:53,800 - INFO - Successfully inserted record for grid 360, 2022-08
+2025-08-05 10:00:53,800 - INFO - Processing sentinel2_grid_335_2022_08.tiff
+2025-08-05 10:00:53,810 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:53,884 - INFO - Successfully inserted record for grid 335, 2022-08
+2025-08-05 10:00:53,885 - INFO - Processing sentinel2_grid_313_2018_08.tiff
+2025-08-05 10:00:53,894 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:53,969 - INFO - Successfully inserted record for grid 313, 2018-08
+2025-08-05 10:00:53,970 - INFO - Processing sentinel2_grid_341_2018_08.tiff
+2025-08-05 10:00:53,980 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:54,052 - INFO - Successfully inserted record for grid 341, 2018-08
+2025-08-05 10:00:54,052 - INFO - Processing sentinel2_grid_339_2021_08.tiff
+2025-08-05 10:00:54,062 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:54,149 - INFO - Successfully inserted record for grid 339, 2021-08
+2025-08-05 10:00:54,149 - INFO - Processing sentinel2_grid_297_2024_08.tiff
+2025-08-05 10:00:54,160 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:54,254 - INFO - Successfully inserted record for grid 297, 2024-08
+2025-08-05 10:00:54,254 - INFO - Processing sentinel2_grid_294_2020_08.tiff
+2025-08-05 10:00:54,264 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:54,339 - INFO - Successfully inserted record for grid 294, 2020-08
+2025-08-05 10:00:54,339 - INFO - Processing sentinel2_grid_381_2021_08.tiff
+2025-08-05 10:00:54,349 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:54,413 - INFO - Successfully inserted record for grid 381, 2021-08
+2025-08-05 10:00:54,413 - INFO - Processing sentinel2_grid_293_2020_08.tiff
+2025-08-05 10:00:54,423 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:54,486 - INFO - Successfully inserted record for grid 293, 2020-08
+2025-08-05 10:00:54,487 - INFO - Processing sentinel2_grid_295_2021_08.tiff
+2025-08-05 10:00:54,498 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:54,563 - INFO - Successfully inserted record for grid 295, 2021-08
+2025-08-05 10:00:54,564 - INFO - Processing sentinel2_grid_362_2018_08.tiff
+2025-08-05 10:00:54,574 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:54,654 - INFO - Successfully inserted record for grid 362, 2018-08
+2025-08-05 10:00:54,655 - INFO - Processing sentinel2_grid_292_2021_08.tiff
+2025-08-05 10:00:54,665 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:54,732 - INFO - Successfully inserted record for grid 292, 2021-08
+2025-08-05 10:00:54,732 - INFO - Processing sentinel2_grid_380_2020_08.tiff
+2025-08-05 10:00:54,743 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:54,793 - INFO - Successfully inserted record for grid 380, 2020-08
+2025-08-05 10:00:54,793 - INFO - Processing sentinel2_grid_361_2023_08.tiff
+2025-08-05 10:00:54,803 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:54,855 - INFO - Successfully inserted record for grid 361, 2023-08
+2025-08-05 10:00:54,856 - INFO - Processing sentinel2_grid_340_2019_08.tiff
+2025-08-05 10:00:54,867 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-05 10:00:54,956 - INFO - Successfully inserted record for grid 340, 2019-08
+2025-08-05 10:00:54,957 - INFO - ============================================================
+2025-08-05 10:00:54,957 - INFO - INSERTION SUMMARY
+2025-08-05 10:00:54,957 - INFO - ============================================================
+2025-08-05 10:00:54,957 - INFO - Total files processed: 125
+2025-08-05 10:00:54,957 - INFO - Successfully inserted: 125
+2025-08-05 10:00:54,957 - INFO - Failed: 0
+2025-08-05 10:00:54,957 - INFO - Skipped (already exist): 0
+2025-08-05 10:00:54,957 - INFO - Success rate: 100.0%
+2025-08-05 10:00:54,957 - INFO - ============================================================
+2025-08-05 10:00:54,957 - INFO - Database connection closed
+2025-08-05 10:00:54,957 - INFO - Insertion process completed
