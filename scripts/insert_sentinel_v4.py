@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 
 # Configuration
 DOWNLOAD_DIR = Path("./data/images/sentinel_downloads_v4")
-GRID_FILE = Path("./grid_output/slovenia_grid_expanded.gpkg")
+GRID_FILE = Path("./data/slovenia_grid_expanded.gpkg")
 
 # Database configuration (should match your docker-compose)
 DB_CONFIG = {

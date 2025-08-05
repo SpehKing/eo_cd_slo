@@ -44,7 +44,7 @@ AUGUST_START_DAY = 1
 AUGUST_END_DAY = 31
 MAX_CLOUD_COVERAGE = 5  # Maximum cloud coverage percentage
 DOWNLOAD_DIR = Path("./data/images/sentinel_downloads_v4")
-GRID_FILE = Path("./grid_output/slovenia_grid_expanded.gpkg")
+GRID_FILE = Path("./data/slovenia_grid_expanded.gpkg")
 RATE_LIMIT_DELAY = 2.0  # Seconds between API calls
 MAX_RETRIES = 3
 
