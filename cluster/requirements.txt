@@ -1,0 +1,25 @@
+# Core libraries
+timm
+lightning
+yacs
+einops
+albumentations
+jsonargparse
+h5py
+matplotlib
+
+# Pretrained backbones
+transformers==4.48.3
+
+# Torch and related packages (Mac-compatible)
+torch==2.3.0
+torchvision
+torchmetrics==1.7.2
+
+# Optional
+wandb
+ruff
+
+# If using HF datasets and checkpoints
+datasets==3.6
+huggingface_hub

@@ -1,0 +1,9 @@
+Sentinel-2 Download Configuration
+Generated: 2025-08-06 13:57:13.295420
+
+Grid IDs: [496, 497, 498, 499, 500, 532, 533, 534, 535, 536]
+Years: [2024]
+Bands: ['B02', 'B03', 'B04']
+Target CRS: EPSG:4326
+Pixel Size: 9e-05
+Total Tasks: 10
