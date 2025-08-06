@@ -41,7 +41,7 @@ class EoRepository:
 
         if bbox:
             min_lon, min_lat, max_lon, max_lat = bbox
-            query += " AND ST_Intersects(bbox, ST_MakeEnvelope(:min_lon, :min_lat, :max_lon, :max_lat, 4326)::GEOGRAPHY)"
+            query += " AND ST_Intersects(bbox, ST_Transform(ST_MakeEnvelope(:min_lon, :min_lat, :max_lon, :max_lat, 4326), 32633))"
             params.update(
                 {
                     "min_lon": min_lon,
@@ -67,7 +67,7 @@ class EoRepository:
             SELECT 
                 id,
                 time,
-                ST_AsText(bbox) as bbox_wkt,
+                ST_AsText(ST_Transform(bbox, 4326)) as bbox_wkt,
                 width,
                 height,
                 data_type,
@@ -91,7 +91,7 @@ class EoRepository:
 
         if bbox:
             min_lon, min_lat, max_lon, max_lat = bbox
-            query += " AND ST_Intersects(bbox, ST_MakeEnvelope(:min_lon, :min_lat, :max_lon, :max_lat, 4326)::GEOGRAPHY)"
+            query += " AND ST_Intersects(bbox, ST_Transform(ST_MakeEnvelope(:min_lon, :min_lat, :max_lon, :max_lat, 4326), 32633))"
             params.update(
                 {
                     "min_lon": min_lon,
@@ -117,7 +117,7 @@ class EoRepository:
             SELECT 
                 id,
                 time,
-                ST_AsText(bbox) as bbox_wkt,
+                ST_AsText(ST_Transform(bbox, 4326)) as bbox_wkt,
                 width,
                 height,
                 data_type,
@@ -141,7 +141,7 @@ class EoRepository:
         """Get original image data by ID - returns RGB bands and metadata for reconstruction"""
 
         query = """
-            SELECT b02, b03, b04, time, ST_AsText(bbox) as bbox_wkt, width, height, data_type
+            SELECT b02, b03, b04, time, ST_AsText(ST_Transform(bbox, 4326)) as bbox_wkt, width, height, data_type
             FROM eo 
             WHERE id = :image_id
         """
@@ -193,7 +193,7 @@ class EoRepository:
                 img_b_id,
                 period_start,
                 period_end,
-                ST_AsText(bbox) as bbox_wkt,
+                ST_AsText(ST_Transform(bbox, 4326)) as bbox_wkt,
                 width,
                 height,
                 data_type,
@@ -213,7 +213,7 @@ class EoRepository:
 
         if bbox:
             min_lon, min_lat, max_lon, max_lat = bbox
-            query += " AND ST_Intersects(bbox, ST_MakeEnvelope(:min_lon, :min_lat, :max_lon, :max_lat, 4326)::GEOGRAPHY)"
+            query += " AND ST_Intersects(bbox, ST_Transform(ST_MakeEnvelope(:min_lon, :min_lat, :max_lon, :max_lat, 4326), 32633))"
             params.update(
                 {
                     "min_lon": min_lon,
@@ -241,7 +241,7 @@ class EoRepository:
                 img_b_id,
                 period_start,
                 period_end,
-                ST_AsText(bbox) as bbox_wkt,
+                ST_AsText(ST_Transform(bbox, 4326)) as bbox_wkt,
                 width,
                 height,
                 data_type,
@@ -262,7 +262,7 @@ class EoRepository:
 
         query = """
             SELECT 
-                id, time, ST_AsText(bbox) as bbox_wkt,
+                id, time, ST_AsText(ST_Transform(bbox, 4326)) as bbox_wkt,
                 b01, b02, b03, b04, b05, b06, b07, b08, b8a, b09, b10, b11, b12
             FROM eo 
             WHERE id = :image_id

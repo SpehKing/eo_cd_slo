@@ -6,17 +6,17 @@ Image size: 256x256
 Device: cpu
 
 Input images:
-  Image A: /Users/gasper/Documents/ViCos/eo_cd_slo/cluster/images/1_before.tiff
-  Image B: /Users/gasper/Documents/ViCos/eo_cd_slo/cluster/images/1_after.tiff
+  Image A: /Users/gasper/Documents/ViCos/eo_cd_slo/cluster/sentinel2_grid_463_2023_08_256x256.tif
+  Image B: /Users/gasper/Documents/ViCos/eo_cd_slo/cluster/sentinel2_grid_463_2024_08_256x256.tif
 
 Results:
   Total pixels: 65,536
-  Changed pixels: 4,835.0
-  Change percentage: 7.38%
-  Model output range: [-11.9758, 8.8084]
+  Changed pixels: 663.0
+  Change percentage: 1.01%
+  Model output range: [-10.9233, 9.6228]
   Probability range: [0.0000, 0.9999]
-  Mean probability: 0.0759
-  Std probability: 0.2349
+  Mean probability: 0.0089
+  Std probability: 0.0820
 
 Model Configuration:
   Normalization mean: [0.485, 0.456, 0.406]

@@ -1,0 +1,269 @@
+2025-08-06 15:24:20,637 - INFO - Starting Sentinel-2 database insertion script v4
+2025-08-06 15:24:20,637 - INFO - Loading grid data from data/slovenia_grid_expanded.gpkg
+2025-08-06 15:24:20,837 - INFO - Loaded 947 grid cells
+2025-08-06 15:24:20,838 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-06 15:24:20,843 - INFO - Connecting to database...
+2025-08-06 15:24:20,918 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-06 15:24:20,921 - INFO - Loading grid cells into database...
+2025-08-06 15:24:22,723 - INFO - Loaded 947 grid cells into database
+2025-08-06 15:24:22,724 - INFO - Found 62 image files
+2025-08-06 15:24:22,724 - INFO - Found 62 image files to process
+2025-08-06 15:24:22,733 - INFO - Processing: sentinel2_grid_501_2023_08.tiff
+2025-08-06 15:24:22,781 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:22,789 - INFO - Grid 501: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:22,947 - INFO - Successfully inserted record for grid 501, 2023-08
+2025-08-06 15:24:22,947 - INFO - Processing: sentinel2_grid_464_2023_08.tiff
+2025-08-06 15:24:22,955 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:22,958 - INFO - Grid 464: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:23,053 - INFO - Successfully inserted record for grid 464, 2023-08
+2025-08-06 15:24:23,054 - INFO - Processing: sentinel2_grid_463_2023_08.tiff
+2025-08-06 15:24:23,061 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:23,063 - INFO - Grid 463: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:23,162 - INFO - Successfully inserted record for grid 463, 2023-08
+2025-08-06 15:24:23,163 - INFO - Processing: sentinel2_grid_133_2024_08.tiff
+2025-08-06 15:24:23,171 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:23,173 - INFO - Grid 133: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:23,270 - INFO - Successfully inserted record for grid 133, 2024-08
+2025-08-06 15:24:23,270 - INFO - Processing: sentinel2_grid_570_2023_08.tiff
+2025-08-06 15:24:23,279 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:23,281 - INFO - Grid 570: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:23,379 - INFO - Successfully inserted record for grid 570, 2023-08
+2025-08-06 15:24:23,379 - INFO - Processing: sentinel2_grid_605_2024_08.tiff
+2025-08-06 15:24:23,387 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:23,389 - INFO - Grid 605: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:23,487 - INFO - Successfully inserted record for grid 605, 2024-08
+2025-08-06 15:24:23,487 - INFO - Processing: sentinel2_grid_465_2023_08.tiff
+2025-08-06 15:24:23,495 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:23,497 - INFO - Grid 465: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:23,592 - INFO - Successfully inserted record for grid 465, 2023-08
+2025-08-06 15:24:23,593 - INFO - Processing: sentinel2_grid_500_2023_08.tiff
+2025-08-06 15:24:23,601 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:23,603 - INFO - Grid 500: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:23,696 - INFO - Successfully inserted record for grid 500, 2023-08
+2025-08-06 15:24:23,697 - INFO - Processing: sentinel2_grid_604_2024_08.tiff
+2025-08-06 15:24:23,705 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:23,706 - INFO - Grid 604: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:23,804 - INFO - Successfully inserted record for grid 604, 2024-08
+2025-08-06 15:24:23,804 - INFO - Processing: sentinel2_grid_603_2024_08.tiff
+2025-08-06 15:24:23,812 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:23,814 - INFO - Grid 603: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:23,915 - INFO - Successfully inserted record for grid 603, 2024-08
+2025-08-06 15:24:23,916 - INFO - Processing: sentinel2_grid_536_2023_08.tiff
+2025-08-06 15:24:23,925 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:23,927 - INFO - Grid 536: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:24,019 - INFO - Successfully inserted record for grid 536, 2023-08
+2025-08-06 15:24:24,019 - INFO - Processing: sentinel2_grid_531_2023_08.tiff
+2025-08-06 15:24:24,027 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:24,029 - INFO - Grid 531: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:24,123 - INFO - Successfully inserted record for grid 531, 2023-08
+2025-08-06 15:24:24,124 - INFO - Processing: sentinel2_grid_571_2023_08.tiff
+2025-08-06 15:24:24,132 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:24,133 - INFO - Grid 571: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:24,240 - INFO - Successfully inserted record for grid 571, 2023-08
+2025-08-06 15:24:24,240 - INFO - Processing: sentinel2_grid_606_2023_08.tiff
+2025-08-06 15:24:24,249 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:24,251 - INFO - Grid 606: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:24,349 - INFO - Successfully inserted record for grid 606, 2023-08
+2025-08-06 15:24:24,350 - INFO - Processing: sentinel2_grid_444_2024_08.tiff
+2025-08-06 15:24:24,360 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:24,362 - INFO - Grid 444: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:24,467 - INFO - Successfully inserted record for grid 444, 2024-08
+2025-08-06 15:24:24,468 - INFO - Processing: sentinel2_grid_533_2024_08.tiff
+2025-08-06 15:24:24,476 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:24,478 - INFO - Grid 533: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:24,567 - INFO - Successfully inserted record for grid 533, 2024-08
+2025-08-06 15:24:24,568 - INFO - Processing: sentinel2_grid_569_2023_08.tiff
+2025-08-06 15:24:24,575 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:24,577 - INFO - Grid 569: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:24,668 - INFO - Successfully inserted record for grid 569, 2023-08
+2025-08-06 15:24:24,669 - INFO - Processing: sentinel2_grid_534_2024_08.tiff
+2025-08-06 15:24:24,677 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:24,679 - INFO - Grid 534: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:24,772 - INFO - Successfully inserted record for grid 534, 2024-08
+2025-08-06 15:24:24,773 - INFO - Processing: sentinel2_grid_502_2024_08.tiff
+2025-08-06 15:24:24,780 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:24,782 - INFO - Grid 502: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:24,876 - INFO - Successfully inserted record for grid 502, 2024-08
+2025-08-06 15:24:24,876 - INFO - Processing: sentinel2_grid_498_2024_08.tiff
+2025-08-06 15:24:24,884 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:24,886 - INFO - Grid 498: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:25,030 - INFO - Successfully inserted record for grid 498, 2024-08
+2025-08-06 15:24:25,031 - INFO - Processing: sentinel2_grid_467_2024_08.tiff
+2025-08-06 15:24:25,042 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:25,044 - INFO - Grid 467: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:25,135 - INFO - Successfully inserted record for grid 467, 2024-08
+2025-08-06 15:24:25,135 - INFO - Processing: sentinel2_grid_468_2023_08.tiff
+2025-08-06 15:24:25,143 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:25,145 - INFO - Grid 468: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:25,231 - INFO - Successfully inserted record for grid 468, 2023-08
+2025-08-06 15:24:25,232 - INFO - Processing: sentinel2_grid_497_2023_08.tiff
+2025-08-06 15:24:25,240 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:25,242 - INFO - Grid 497: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:25,333 - INFO - Successfully inserted record for grid 497, 2023-08
+2025-08-06 15:24:25,334 - INFO - Processing: sentinel2_grid_607_2023_08.tiff
+2025-08-06 15:24:25,341 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:25,343 - INFO - Grid 607: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:25,433 - INFO - Successfully inserted record for grid 607, 2023-08
+2025-08-06 15:24:25,434 - INFO - Processing: sentinel2_grid_608_2024_08.tiff
+2025-08-06 15:24:25,442 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:25,444 - INFO - Grid 608: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:25,537 - INFO - Successfully inserted record for grid 608, 2024-08
+2025-08-06 15:24:25,537 - INFO - Processing: sentinel2_grid_535_2024_08.tiff
+2025-08-06 15:24:25,545 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:25,547 - INFO - Grid 535: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:25,642 - INFO - Successfully inserted record for grid 535, 2024-08
+2025-08-06 15:24:25,643 - INFO - Processing: sentinel2_grid_568_2023_08.tiff
+2025-08-06 15:24:25,651 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:25,653 - INFO - Grid 568: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:25,803 - INFO - Successfully inserted record for grid 568, 2023-08
+2025-08-06 15:24:25,805 - INFO - Processing: sentinel2_grid_532_2024_08.tiff
+2025-08-06 15:24:25,814 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:25,816 - INFO - Grid 532: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:25,905 - INFO - Successfully inserted record for grid 532, 2024-08
+2025-08-06 15:24:25,906 - INFO - Processing: sentinel2_grid_567_2024_08.tiff
+2025-08-06 15:24:25,913 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:25,915 - INFO - Grid 567: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:26,005 - INFO - Successfully inserted record for grid 567, 2024-08
+2025-08-06 15:24:26,005 - INFO - Processing: sentinel2_grid_572_2024_08.tiff
+2025-08-06 15:24:26,013 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:26,015 - INFO - Grid 572: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:26,103 - INFO - Successfully inserted record for grid 572, 2024-08
+2025-08-06 15:24:26,104 - INFO - Processing: sentinel2_grid_466_2024_08.tiff
+2025-08-06 15:24:26,112 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:26,114 - INFO - Grid 466: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:26,203 - INFO - Successfully inserted record for grid 466, 2024-08
+2025-08-06 15:24:26,203 - INFO - Processing: sentinel2_grid_499_2024_08.tiff
+2025-08-06 15:24:26,212 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:26,213 - INFO - Grid 499: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:26,323 - INFO - Successfully inserted record for grid 499, 2024-08
+2025-08-06 15:24:26,324 - INFO - Processing: sentinel2_grid_605_2023_08.tiff
+2025-08-06 15:24:26,332 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:26,334 - INFO - Grid 605: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:26,419 - INFO - Successfully inserted record for grid 605, 2023-08
+2025-08-06 15:24:26,420 - INFO - Processing: sentinel2_grid_570_2024_08.tiff
+2025-08-06 15:24:26,427 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:26,429 - INFO - Grid 570: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:26,540 - INFO - Successfully inserted record for grid 570, 2024-08
+2025-08-06 15:24:26,541 - INFO - Processing: sentinel2_grid_464_2024_08.tiff
+2025-08-06 15:24:26,549 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:26,551 - INFO - Grid 464: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:26,657 - INFO - Successfully inserted record for grid 464, 2024-08
+2025-08-06 15:24:26,658 - INFO - Processing: sentinel2_grid_463_2024_08.tiff
+2025-08-06 15:24:26,666 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:26,668 - INFO - Grid 463: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:26,781 - INFO - Successfully inserted record for grid 463, 2024-08
+2025-08-06 15:24:26,782 - INFO - Processing: sentinel2_grid_501_2024_08.tiff
+2025-08-06 15:24:26,789 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:26,792 - INFO - Grid 501: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:26,896 - INFO - Successfully inserted record for grid 501, 2024-08
+2025-08-06 15:24:26,897 - INFO - Processing: sentinel2_grid_571_2024_08.tiff
+2025-08-06 15:24:26,905 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:26,907 - INFO - Grid 571: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:27,015 - INFO - Successfully inserted record for grid 571, 2024-08
+2025-08-06 15:24:27,015 - INFO - Processing: sentinel2_grid_536_2024_08.tiff
+2025-08-06 15:24:27,025 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:27,027 - INFO - Grid 536: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:27,136 - INFO - Successfully inserted record for grid 536, 2024-08
+2025-08-06 15:24:27,137 - INFO - Processing: sentinel2_grid_531_2024_08.tiff
+2025-08-06 15:24:27,145 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:27,147 - INFO - Grid 531: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:27,235 - INFO - Successfully inserted record for grid 531, 2024-08
+2025-08-06 15:24:27,235 - INFO - Processing: sentinel2_grid_604_2023_08.tiff
+2025-08-06 15:24:27,243 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:27,245 - INFO - Grid 604: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:27,353 - INFO - Successfully inserted record for grid 604, 2023-08
+2025-08-06 15:24:27,354 - INFO - Processing: sentinel2_grid_603_2023_08.tiff
+2025-08-06 15:24:27,361 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:27,363 - INFO - Grid 603: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:27,463 - INFO - Successfully inserted record for grid 603, 2023-08
+2025-08-06 15:24:27,463 - INFO - Processing: sentinel2_grid_500_2024_08.tiff
+2025-08-06 15:24:27,471 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:27,473 - INFO - Grid 500: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:27,560 - INFO - Successfully inserted record for grid 500, 2024-08
+2025-08-06 15:24:27,561 - INFO - Processing: sentinel2_grid_465_2024_08.tiff
+2025-08-06 15:24:27,569 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:27,571 - INFO - Grid 465: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:27,683 - INFO - Successfully inserted record for grid 465, 2024-08
+2025-08-06 15:24:27,683 - INFO - Processing: sentinel2_grid_498_2023_08.tiff
+2025-08-06 15:24:27,692 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:27,694 - INFO - Grid 498: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:27,784 - INFO - Successfully inserted record for grid 498, 2023-08
+2025-08-06 15:24:27,785 - INFO - Processing: sentinel2_grid_467_2023_08.tiff
+2025-08-06 15:24:27,793 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:27,795 - INFO - Grid 467: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:27,880 - INFO - Successfully inserted record for grid 467, 2023-08
+2025-08-06 15:24:27,881 - INFO - Processing: sentinel2_grid_468_2024_08.tiff
+2025-08-06 15:24:27,889 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:27,890 - INFO - Grid 468: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:27,978 - INFO - Successfully inserted record for grid 468, 2024-08
+2025-08-06 15:24:27,979 - INFO - Processing: sentinel2_grid_497_2024_08.tiff
+2025-08-06 15:24:27,986 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:27,989 - INFO - Grid 497: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:28,078 - INFO - Successfully inserted record for grid 497, 2024-08
+2025-08-06 15:24:28,079 - INFO - Processing: sentinel2_grid_502_2023_08.tiff
+2025-08-06 15:24:28,086 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:28,088 - INFO - Grid 502: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:28,188 - INFO - Successfully inserted record for grid 502, 2023-08
+2025-08-06 15:24:28,189 - INFO - Processing: sentinel2_grid_533_2023_08.tiff
+2025-08-06 15:24:28,197 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:28,199 - INFO - Grid 533: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:28,318 - INFO - Successfully inserted record for grid 533, 2023-08
+2025-08-06 15:24:28,319 - INFO - Processing: sentinel2_grid_569_2024_08.tiff
+2025-08-06 15:24:28,327 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:28,329 - INFO - Grid 569: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:28,417 - INFO - Successfully inserted record for grid 569, 2024-08
+2025-08-06 15:24:28,418 - INFO - Processing: sentinel2_grid_534_2023_08.tiff
+2025-08-06 15:24:28,426 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:28,428 - INFO - Grid 534: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:28,519 - INFO - Successfully inserted record for grid 534, 2023-08
+2025-08-06 15:24:28,519 - INFO - Processing: sentinel2_grid_606_2024_08.tiff
+2025-08-06 15:24:28,527 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:28,529 - INFO - Grid 606: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:28,634 - INFO - Successfully inserted record for grid 606, 2024-08
+2025-08-06 15:24:28,635 - INFO - Processing: sentinel2_grid_466_2023_08.tiff
+2025-08-06 15:24:28,643 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:28,645 - INFO - Grid 466: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:28,732 - INFO - Successfully inserted record for grid 466, 2023-08
+2025-08-06 15:24:28,733 - INFO - Processing: sentinel2_grid_499_2023_08.tiff
+2025-08-06 15:24:28,740 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:28,742 - INFO - Grid 499: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:28,830 - INFO - Successfully inserted record for grid 499, 2023-08
+2025-08-06 15:24:28,831 - INFO - Processing: sentinel2_grid_572_2023_08.tiff
+2025-08-06 15:24:28,838 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:28,840 - INFO - Grid 572: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:28,928 - INFO - Successfully inserted record for grid 572, 2023-08
+2025-08-06 15:24:28,928 - INFO - Processing: sentinel2_grid_535_2023_08.tiff
+2025-08-06 15:24:28,937 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:28,939 - INFO - Grid 535: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:29,085 - INFO - Successfully inserted record for grid 535, 2023-08
+2025-08-06 15:24:29,086 - INFO - Processing: sentinel2_grid_568_2024_08.tiff
+2025-08-06 15:24:29,093 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:29,095 - INFO - Grid 568: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:29,185 - INFO - Successfully inserted record for grid 568, 2024-08
+2025-08-06 15:24:29,186 - INFO - Processing: sentinel2_grid_532_2023_08.tiff
+2025-08-06 15:24:29,194 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:29,196 - INFO - Grid 532: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:29,282 - INFO - Successfully inserted record for grid 532, 2023-08
+2025-08-06 15:24:29,282 - INFO - Processing: sentinel2_grid_567_2023_08.tiff
+2025-08-06 15:24:29,290 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:29,292 - INFO - Grid 567: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:29,382 - INFO - Successfully inserted record for grid 567, 2023-08
+2025-08-06 15:24:29,383 - INFO - Processing: sentinel2_grid_607_2024_08.tiff
+2025-08-06 15:24:29,391 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:29,393 - INFO - Grid 607: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:29,480 - INFO - Successfully inserted record for grid 607, 2024-08
+2025-08-06 15:24:29,481 - INFO - Processing: sentinel2_grid_608_2023_08.tiff
+2025-08-06 15:24:29,489 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:24:29,490 - INFO - Grid 608: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:24:29,621 - INFO - Successfully inserted record for grid 608, 2023-08
+2025-08-06 15:24:29,621 - INFO - ============================================================
+2025-08-06 15:24:29,621 - INFO - INSERTION SUMMARY
+2025-08-06 15:24:29,621 - INFO - ============================================================
+2025-08-06 15:24:29,621 - INFO - Total files processed: 62
+2025-08-06 15:24:29,621 - INFO - Successfully inserted: 62
+2025-08-06 15:24:29,621 - INFO - Failed: 0
+2025-08-06 15:24:29,621 - INFO - Skipped (already exist): 0
+2025-08-06 15:24:29,621 - INFO - Success rate: 100.0%
+2025-08-06 15:24:29,621 - INFO - ============================================================
+2025-08-06 15:24:29,622 - INFO - Database connection closed
+2025-08-06 15:24:29,622 - INFO - Insertion process completed
