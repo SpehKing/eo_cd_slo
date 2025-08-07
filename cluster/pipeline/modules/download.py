@@ -13,11 +13,11 @@ import geopandas as gpd
 import rasterio
 import numpy as np
 from pathlib import Path
-from typing import List, Dict, Tuple, Optional
+from typing import List, Dict, Tuple, Optional, Any
 from datetime import datetime
 import time
 
-from ..config.settings import config
+from ..config.settings import config, ProcessingMode
 from ..utils.state_manager import state_manager, TaskStatus
 
 
@@ -34,8 +34,8 @@ class SentinelDownloaderV5:
         """Initialize connection and load grid data"""
         try:
             # Load grid data
-            self.logger.info(f"Loading grid data from {config.grid_file}")
-            self.grid_data = gpd.read_file(config.grid_file)
+            self.logger.info(f"Loading grid data from {config.grid_file_path}")
+            self.grid_data = gpd.read_file(config.grid_file_path)
             self.logger.info(f"Loaded {len(self.grid_data)} grid cells")
 
             # Filter for our specific grid IDs
@@ -73,7 +73,7 @@ class SentinelDownloaderV5:
             return False
 
     def get_grid_bbox_exact(self, grid_id: int) -> Dict[str, float]:
-        """Get exact bounding box for a grid cell"""
+        """Get exact bounding box for a grid cell in EPSG:4326"""
         grid_row = self.grid_data[self.grid_data.index == grid_id]
         if grid_row.empty:
             raise ValueError(f"Grid ID {grid_id} not found")
@@ -81,11 +81,21 @@ class SentinelDownloaderV5:
         # Get exact bounds without any rounding
         bounds = grid_row.geometry.bounds.iloc[0]
 
+        # Extract exact coordinates
+        west = float(bounds[0])  # minx
+        south = float(bounds[1])  # miny
+        east = float(bounds[2])  # maxx
+        north = float(bounds[3])  # maxy
+
+        self.logger.info(
+            f"Grid {grid_id} exact bounds: W={west:.10f}, S={south:.10f}, E={east:.10f}, N={north:.10f}"
+        )
+
         return {
-            "west": float(bounds[0]),  # minx
-            "south": float(bounds[1]),  # miny
-            "east": float(bounds[2]),  # maxx
-            "north": float(bounds[3]),  # maxy
+            "west": west,
+            "south": south,
+            "east": east,
+            "north": north,
         }
 
     def generate_download_tasks_for_year(self, year: int) -> List[Dict]:
@@ -93,25 +103,30 @@ class SentinelDownloaderV5:
         tasks = []
 
         for grid_id in config.grid_ids:
-            # Get exact grid boundaries
-            grid_bbox = self.get_grid_bbox_exact(grid_id)
+            try:
+                # Get exact grid boundaries
+                grid_bbox = self.get_grid_bbox_exact(grid_id)
 
-            task = {
-                "grid_id": grid_id,
-                "year": year,
-                "start_date": f"{year}-08-{config.august_start_day:02d}",
-                "end_date": f"{year}-08-{config.august_end_day:02d}",
-                "bbox": grid_bbox,
-                "filename": f"sentinel2_grid_{grid_id}_{year}_08.tiff",
-                "task_id": f"download_{grid_id}_{year}",
-            }
-            tasks.append(task)
+                task = {
+                    "grid_id": grid_id,
+                    "year": year,
+                    "start_date": f"{year}-08-{config.august_start_day:02d}",
+                    "end_date": f"{year}-08-{config.august_end_day:02d}",
+                    "bbox": grid_bbox,
+                    "filename": f"sentinel2_grid_{grid_id}_{year}_08.tiff",
+                    "task_id": f"download_{grid_id}_{year}",
+                }
+                tasks.append(task)
+
+            except ValueError as e:
+                self.logger.error(f"Failed to get bbox for grid {grid_id}: {e}")
+                continue
 
         return tasks
 
     def get_output_filepath(self, task: Dict) -> Path:
         """Get output file path for a task"""
-        if config.mode == config.ProcessingMode.LOCAL_ONLY:
+        if config.mode == ProcessingMode.LOCAL_ONLY:
             year_dir = config.get_year_images_dir(task["year"])
             return year_dir / task["filename"]
         else:
@@ -244,82 +259,51 @@ class SentinelDownloaderV5:
         self.logger.info(f"Processing downloads for year {year}")
         self.current_year = year
 
-        # Generate tasks for this year
-        tasks = self.generate_download_tasks_for_year(year)
-        task_ids = [task["task_id"] for task in tasks]
+        try:
+            # Load grid data if not already loaded
+            if self.grid_data is None:
+                if not await self.load_grid_data():
+                    return False
 
-        # Load or create checkpoint
-        checkpoint = state_manager.load_checkpoint("download", year)
-        if not checkpoint:
-            checkpoint = state_manager.create_stage_checkpoint(
-                "download", year, task_ids
+            # Ensure OpenEO connection is established
+            if self.connection is None:
+                if not await self.connect_openeo():
+                    self.logger.error("Failed to establish OpenEO connection")
+                    return False
+
+            # Generate download tasks for this year
+            tasks = self.generate_download_tasks_for_year(year)
+            self.logger.info(f"Generated {len(tasks)} download tasks for year {year}")
+
+            if len(tasks) == 0:
+                self.logger.warning(f"No tasks generated for year {year}")
+                return True  # Not an error, just no work to do
+
+            # Process tasks sequentially (following the original script's approach)
+            success_count = 0
+            for task in tasks:
+                try:
+                    success, message, filepath = await self.download_with_retry(task)
+                    if success:
+                        success_count += 1
+                        self.logger.info(f"✓ {message}")
+                    else:
+                        self.logger.error(f"✗ {message}")
+
+                    # Rate limiting between downloads
+                    await asyncio.sleep(config.openeo_rate_limit)
+
+                except Exception as e:
+                    self.logger.error(f"Failed to process task {task['task_id']}: {e}")
+
+            self.logger.info(
+                f"Completed {success_count}/{len(tasks)} downloads for year {year}"
             )
+            return success_count > 0
 
-        # Get pending tasks
-        pending_task_ids = state_manager.get_pending_tasks("download", year)
-        pending_tasks = [task for task in tasks if task["task_id"] in pending_task_ids]
-
-        self.logger.info(
-            f"Found {len(pending_tasks)} pending download tasks for {year}"
-        )
-
-        if not pending_tasks:
-            self.logger.info(f"All downloads for {year} already completed")
-            return True
-
-        # Process downloads
-        success_count = 0
-        for task in pending_tasks:
-            task_id = task["task_id"]
-
-            # Update status to running
-            state_manager.update_task_status(
-                "download", year, task_id, TaskStatus.RUNNING
-            )
-
-            try:
-                # Download with retry
-                success, message, filepath = await self.download_with_retry(task)
-
-                if success:
-                    # Update status to completed
-                    metadata = {"filepath": str(filepath), "message": message}
-                    state_manager.update_task_status(
-                        "download",
-                        year,
-                        task_id,
-                        TaskStatus.COMPLETED,
-                        metadata=metadata,
-                    )
-                    success_count += 1
-                else:
-                    # Update status to failed
-                    state_manager.update_task_status(
-                        "download",
-                        year,
-                        task_id,
-                        TaskStatus.FAILED,
-                        error_message=message,
-                    )
-
-                # Rate limiting
-                await asyncio.sleep(config.openeo_rate_limit)
-
-            except Exception as e:
-                error_msg = f"Unexpected error processing {task_id}: {e}"
-                self.logger.error(error_msg)
-                state_manager.update_task_status(
-                    "download",
-                    year,
-                    task_id,
-                    TaskStatus.FAILED,
-                    error_message=error_msg,
-                )
-
-        self.logger.info(
-            f"Completed downloads for {year}: {success_count}/{len(pending_tasks)} successful"
-        )
-        return success_count == len(pending_tasks)
+        except Exception as e:
+            self.logger.error(f"Error in process_year for {year}: {e}")
+            return False
 
     async def run_downloads(self) -> bool:
         """Execute downloads for all years"""
@@ -349,6 +333,33 @@ class SentinelDownloaderV5:
 
         return overall_success
 
+    async def load_grid_data(self) -> bool:
+        """Load grid data from file"""
+        try:
+            self.logger.info(f"Loading grid data from {config.grid_file_path}")
+            self.grid_data = gpd.read_file(config.grid_file_path)
+            self.logger.info(f"Loaded {len(self.grid_data)} grid cells")
 
-# Export the downloader class
-__all__ = ["SentinelDownloaderV5"]
+            # Filter for our specific grid IDs using the DataFrame index
+            # The original script uses index-based filtering, not the 'grid_id' column
+            self.logger.debug(
+                f"Original indices: {self.grid_data.index[:10].tolist()}..."
+            )
+            self.grid_data = self.grid_data[self.grid_data.index.isin(config.grid_ids)]
+
+            self.logger.info(f"Filtered to {len(self.grid_data)} target grid cells")
+            self.logger.debug(f"Filtered indices: {self.grid_data.index.tolist()}")
+
+            # Ensure CRS is correct
+            if self.grid_data.crs != config.target_crs:
+                self.logger.info(
+                    f"Converting CRS from {self.grid_data.crs} to {config.target_crs}"
+                )
+                self.grid_data = self.grid_data.to_crs(config.target_crs)
+                self.logger.debug(f"Post-CRS indices: {self.grid_data.index.tolist()}")
+
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Failed to load grid data: {e}")
+            return False

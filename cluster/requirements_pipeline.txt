@@ -1,49 +1,60 @@
-# Core Python libraries
-asyncio
-logging
-pathlib
-datetime
-argparse
+# Core dependencies (CPU-only PyTorch installed separately via index URL)
+numpy>=1.21.0
+# torch and torchvision are installed separately with CPU-only index
+Pillow>=9.0.0
+matplotlib>=3.5.0
+tqdm>=4.64.0
 
-# Geospatial and image processing
-rasterio>=1.3.9
-geopandas>=0.14.0
+# Geospatial and data processing
+rasterio>=1.3.0
+geopandas>=0.12.0
 shapely>=2.0.0
-Pillow>=10.1.0
-opencv-python>=4.8.0
-numpy>=1.24.3
-matplotlib>=3.7.2
+fiona>=1.8.0
+pyproj>=3.4.0
 
-# Machine Learning (BTC model dependencies)
-torch>=2.3.0
-torchvision>=0.18.0
-torchmetrics>=1.7.2
-transformers>=4.48.3
-timm
-lightning
-yacs
-einops
-albumentations
-jsonargparse
-h5py
-
-# OpenEO for satellite data download
-openeo>=0.23.0
-
-# Database (for database mode)
+# Database connectivity
 psycopg2-binary>=2.9.0
+sqlalchemy>=1.4.0
+
+# OpenEO and Earth Observation
+openeo>=0.13.0
 
 # Web framework for monitoring
-aiohttp>=3.9.0
-aiofiles>=23.2.0
+aiohttp>=3.8.0
+aiofiles>=23.0.0
 
-# Progress tracking
-tqdm>=4.65.0
+# Configuration and utilities
+pyyaml>=6.0
+python-dotenv>=1.0.0
+click>=8.0.0
+jsonargparse>=4.20.0
 
-# HuggingFace for model downloads
-datasets>=3.6
-huggingface_hub
+# BTC model dependencies
+transformers>=4.21.0
+torchmetrics>=0.11.0
+albumentations>=1.3.0
+opencv-python-headless>=4.7.0
 
-# Optional dependencies
-wandb  # For model training (optional)
-ruff   # Code formatting (optional)
+# Additional ML dependencies
+scikit-learn>=1.1.0
+pandas>=1.5.0
+
+# Missing deep learning dependencies
+einops>=0.6.0
+timm>=0.9.0
+lightning>=2.0.0
+scipy>=1.9.0
+
+# HuggingFace and datasets
+datasets>=2.12.0
+huggingface-hub>=0.15.0
+
+# Additional scientific computing
+h5py>=3.7.0
+
+# Attributes for dataclasses
+attrs>=22.1.0
+
+# Optional: Jupyter for notebooks
+# jupyter>=1.0.0
+# ipykernel>=6.15.0

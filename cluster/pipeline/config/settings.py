@@ -38,20 +38,22 @@ class PipelineConfig:
     mode: ProcessingMode = ProcessingMode.LOCAL_ONLY
 
     # Target data specification
-    grid_ids: List[int] = field(default_factory=lambda: [463, 464, 465, 466, 467, 468])
-    years: List[int] = field(default_factory=lambda: list(range(2022, 2025)))
+    grid_ids: List[int] = field(default_factory=lambda: [463, 464])
+    years: List[int] = field(default_factory=lambda: list(range(2023, 2025)))
 
     # Processing parameters
     max_workers: int = 4  # CPU cores
     memory_limit_gb: int = 4  # Memory limit for BTC model
     batch_size: int = 1  # Images processed in parallel per year
 
-    # Directories (local mode)
-    base_data_dir: Path = Path("./data")
-    images_dir: Path = Path("./data/images")
-    masks_dir: Path = Path("./data/masks")
-    checkpoints_dir: Path = Path("./data/checkpoints")
-    logs_dir: Path = Path("./data/logs")
+    # Base directories - all relative to pipeline directory
+    _pipeline_root: Path = field(init=False)
+    base_data_dir: Path = field(init=False)
+    images_dir: Path = field(init=False)
+    masks_dir: Path = field(init=False)
+    checkpoints_dir: Path = field(init=False)
+    logs_dir: Path = field(init=False)
+    grid_file: Path = field(init=False)
 
     # Database configuration (database mode)
     db_host: str = "localhost"
@@ -80,16 +82,30 @@ class PipelineConfig:
     bands: List[str] = field(default_factory=lambda: ["B02", "B03", "B04"])
 
     # Monitoring and logging
-    log_level: LogLevel = LogLevel.INFO
+    log_level: LogLevel = LogLevel.DEBUG
     enable_progress_bar: bool = True
     enable_real_time_monitoring: bool = True
     monitoring_port: int = 8080
 
-    # Grid file path
-    grid_file: Path = Path("./data/slovenia_grid_expanded.gpkg")
-
     def __post_init__(self):
-        """Post-initialization setup"""
+        """Post-initialization setup - establish clean path resolution"""
+        # Get the pipeline root directory (cluster/pipeline/)
+        # This file is in cluster/pipeline/config/settings.py
+        current_file = Path(__file__).resolve()
+        self._pipeline_root = current_file.parent.parent  # Go up to pipeline/
+
+        # Set all paths relative to pipeline root
+        self.base_data_dir = self._pipeline_root / "data"
+        self.images_dir = self.base_data_dir / "images"
+        self.masks_dir = self.base_data_dir / "masks"
+        self.checkpoints_dir = self.base_data_dir / "checkpoints"
+        self.logs_dir = self.base_data_dir / "logs"
+
+        # Grid file in main data directory (cluster/../data/)
+        self.grid_file = (
+            self._pipeline_root.parent.parent / "data" / "slovenia_grid_expanded.gpkg"
+        )
+
         # Ensure directories exist in local mode
         if self.mode in [ProcessingMode.LOCAL_ONLY, ProcessingMode.HYBRID]:
             for directory in [
@@ -121,8 +137,13 @@ class PipelineConfig:
             "B04": "b04",  # Red
         }
 
+    @property
+    def grid_file_path(self) -> Path:
+        """Path to the Slovenia grid file"""
+        return self.grid_file
+
     def get_year_images_dir(self, year: int) -> Path:
-        """Get images directory for specific year"""
+        """Get images directory for a specific year"""
         year_dir = self.images_dir / str(year)
         year_dir.mkdir(parents=True, exist_ok=True)
         return year_dir
@@ -134,11 +155,8 @@ class PipelineConfig:
         return year_dir
 
     def get_checkpoint_file(self, stage: str, year: Optional[int] = None) -> Path:
-        """Get checkpoint file path for a specific stage"""
-        if year:
-            filename = f"{stage}_{year}.json"
-        else:
-            filename = f"{stage}.json"
+        """Get checkpoint file path for a stage"""
+        filename = f"{stage}_{year}.json" if year else f"{stage}.json"
         return self.checkpoints_dir / filename
 
     def get_log_file(self, component: str) -> Path:
@@ -179,12 +197,14 @@ def load_config_from_env():
 
     # Data directories
     if os.getenv("DATA_DIR"):
+        # If DATA_DIR is set, use it as base but maintain relative structure
         base_dir = Path(os.getenv("DATA_DIR"))
         config.base_data_dir = base_dir
         config.images_dir = base_dir / "images"
         config.masks_dir = base_dir / "masks"
         config.checkpoints_dir = base_dir / "checkpoints"
         config.logs_dir = base_dir / "logs"
+        # Note: grid_file remains in the main data directory
 
     # BTC model configuration
     if os.getenv("BTC_MODEL_CHECKPOINT"):

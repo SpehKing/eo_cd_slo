@@ -84,6 +84,26 @@ class PipelineController:
             if config.enable_real_time_monitoring:
                 await self._start_monitoring()
 
+            # Initialize pipeline modules
+            self.logger.info("Initializing pipeline modules...")
+
+            # Initialize downloader (loads grid data)
+            if not await self.downloader.initialize():
+                self.logger.error("Failed to initialize downloader")
+                return False
+
+            # Initialize inserter (loads grid data and DB connection)
+            if not await self.inserter.initialize():
+                self.logger.error("Failed to initialize inserter")
+                return False
+
+            # Initialize BTC processor
+            if not await self.btc_processor.initialize():
+                self.logger.error("Failed to initialize BTC processor")
+                return False
+
+            self.logger.info("✓ All modules initialized successfully")
+
             overall_success = True
 
             # Process each year sequentially as requested

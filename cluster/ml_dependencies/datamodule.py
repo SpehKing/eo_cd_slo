@@ -3,10 +3,10 @@ from pathlib import Path
 import lightning as L
 from torch.utils.data import DataLoader
 
-from data.dataset import CDDataset
-from data.transforms import build_transforms
+from ml_dependencies.dataset import CDDataset
+from ml_dependencies.transforms import build_transforms
 
-from data.hf_datasets import (
+from ml_dependencies.hf_datasets import (
     get_levircd,
     get_sysu,
     get_egybcd,

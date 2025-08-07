@@ -13,10 +13,10 @@ import geopandas as gpd
 import rasterio
 import numpy as np
 from pathlib import Path
-from typing import List, Dict, Tuple, Optional
+from typing import List, Dict, Tuple, Optional, Any
 from datetime import datetime
 
-from ..config.settings import config
+from ..config.settings import config, ProcessingMode
 from ..utils.state_manager import state_manager, TaskStatus
 
 
@@ -33,11 +33,12 @@ class SentinelInserterV5:
         """Initialize database connection and load grid data"""
         try:
             # Load grid data
-            self.logger.info(f"Loading grid data from {config.grid_file}")
-            self.grid_data = gpd.read_file(config.grid_file)
+            self.logger.info(f"Loading grid data from {config.grid_file_path}")
+            self.grid_data = gpd.read_file(config.grid_file_path)
             self.logger.info(f"Loaded {len(self.grid_data)} grid cells")
 
-            # Filter for our specific grid IDs
+            # Filter for our specific grid IDs using the DataFrame index
+            # The original script uses index-based filtering, not the 'grid_id' column
             self.grid_data = self.grid_data[self.grid_data.index.isin(config.grid_ids)]
 
             # Ensure CRS is correct
@@ -47,6 +48,10 @@ class SentinelInserterV5:
                 )
                 self.grid_data = self.grid_data.to_crs(config.target_crs)
 
+            # Connect to database if needed
+            if not await self.connect_database():
+                return False
+
             return True
 
         except Exception as e:
@@ -55,7 +60,7 @@ class SentinelInserterV5:
 
     async def connect_database(self) -> bool:
         """Connect to the database (only for database mode)"""
-        if config.mode == config.ProcessingMode.LOCAL_ONLY:
+        if config.mode == ProcessingMode.LOCAL_ONLY:
             self.logger.info("Local mode: skipping database connection")
             return True
 
@@ -84,10 +89,15 @@ class SentinelInserterV5:
 
     def find_image_files_for_year(self, year: int) -> List[Path]:
         """Find all downloaded image files for a specific year"""
-        if config.mode == config.ProcessingMode.LOCAL_ONLY:
+        # In database mode, downloaded images are stored in temp directory
+        # In local mode, they're in year-specific directories
+        if config.mode == ProcessingMode.LOCAL_ONLY:
             year_dir = config.get_year_images_dir(year)
         else:
+            # For database mode, look in the temp directory where download module stores files
             year_dir = config.images_dir / "temp"
+
+        self.logger.info(f"Looking for images in: {year_dir}")
 
         if not year_dir.exists():
             self.logger.warning(
@@ -233,7 +243,7 @@ class SentinelInserterV5:
 
     def check_existing_record(self, grid_id: int, date: datetime) -> bool:
         """Check if record already exists in database"""
-        if config.mode == config.ProcessingMode.LOCAL_ONLY:
+        if config.mode == ProcessingMode.LOCAL_ONLY:
             # For local mode, check if metadata file exists
             year_dir = config.get_year_images_dir(date.year)
             filename = f"sentinel2_grid_{grid_id}_{date.year}_08.json"
@@ -266,7 +276,7 @@ class SentinelInserterV5:
                 )
                 return True
 
-            if config.mode == config.ProcessingMode.LOCAL_ONLY:
+            if config.mode == ProcessingMode.LOCAL_ONLY:
                 # Store locally
                 return await self.store_image_locally(filepath, file_info, metadata)
             else:
@@ -293,6 +303,14 @@ class SentinelInserterV5:
                 self.logger.error(f"Could not get grid bbox for {grid_id}")
                 return False
 
+            # Check if the grid_id is valid by trying to find it in our filtered grid data
+            if grid_id not in self.grid_data.index:
+                self.logger.error(f"Grid ID {grid_id} not found in filtered grid data")
+                return False
+
+            # Log the grid_id we're trying to insert
+            self.logger.info(f"Attempting to insert grid_id: {grid_id}")
+
             # Prepare insert statement using exact grid bbox
             insert_sql = """
                 INSERT INTO eo (
@@ -317,6 +335,48 @@ class SentinelInserterV5:
             )
 
             with self.conn.cursor() as cur:
+                # Check if grid_id exists in grid_cells table, if not insert it
+                cur.execute(
+                    "SELECT grid_id FROM grid_cells WHERE grid_id = %s", (grid_id,)
+                )
+                if not cur.fetchone():
+                    self.logger.info(
+                        f"Grid ID {grid_id} not found in grid_cells, inserting..."
+                    )
+
+                    # Get grid geometry from our loaded grid data
+                    grid_row = self.grid_data[self.grid_data.index == grid_id]
+                    if not grid_row.empty:
+                        geometry = grid_row.geometry.iloc[0]
+
+                        # Convert to EPSG:3857 for geom column
+                        grid_data_3857 = self.grid_data.to_crs("EPSG:3857")
+                        geom_3857 = grid_data_3857[
+                            grid_data_3857.index == grid_id
+                        ].geometry.iloc[0]
+
+                        # Insert into grid_cells table
+                        grid_insert_sql = """
+                            INSERT INTO grid_cells (grid_id, index_x, index_y, geom, bbox_4326)
+                            VALUES (%s, %s, %s, ST_GeomFromText(%s, 3857), ST_GeogFromText(%s))
+                        """
+
+                        # Use grid_id as both index_x and index_y for simplicity
+                        cur.execute(
+                            grid_insert_sql,
+                            (
+                                grid_id,
+                                grid_id,  # index_x
+                                0,  # index_y
+                                geom_3857.wkt,
+                                geometry.wkt,
+                            ),
+                        )
+                        self.logger.info(
+                            f"✓ Inserted grid_id {grid_id} into grid_cells table"
+                        )
+
+                # Now insert the eo record
                 cur.execute(insert_sql, values)
                 self.conn.commit()
 
@@ -348,7 +408,7 @@ class SentinelInserterV5:
 
             # Extract band data (only needed for database mode)
             band_data = {}
-            if config.mode != config.ProcessingMode.LOCAL_ONLY:
+            if config.mode != ProcessingMode.LOCAL_ONLY:
                 band_data = self.extract_band_data(filepath, metadata)
                 if not band_data:
                     return False
@@ -362,85 +422,54 @@ class SentinelInserterV5:
             self.logger.error(f"Failed to process {filepath}: {e}")
             return False
 
-    async def process_year(self, year: int) -> bool:
-        """Process insertions for a specific year"""
+    async def process_year(self, year: int) -> Dict[str, Any]:
+        """Process images for a specific year"""
         self.logger.info(f"Processing insertions for year {year}")
-        self.current_year = year
 
-        # Find image files for this year
-        image_files = self.find_image_files_for_year(year)
-        if not image_files:
-            self.logger.warning(f"No image files found for year {year}")
-            return True
+        try:
+            # Use the dedicated method to find image files for this year
+            image_files = self.find_image_files_for_year(year)
 
-        # Generate task IDs
-        task_ids = [
-            f"insert_{self.parse_filename(f)['grid_id']}_{year}" for f in image_files
-        ]
+            if not image_files:
+                self.logger.warning(f"No image files found for year {year}")
+                return {
+                    "year": year,
+                    "processed": 0,
+                    "successful": 0,
+                    "failed": 0,
+                    "errors": [],
+                }
 
-        # Load or create checkpoint
-        checkpoint = state_manager.load_checkpoint("insert", year)
-        if not checkpoint:
-            checkpoint = state_manager.create_stage_checkpoint("insert", year, task_ids)
+            self.logger.info(f"Found {len(image_files)} image files for year {year}")
 
-        # Get pending tasks
-        pending_task_ids = state_manager.get_pending_tasks("insert", year)
-        pending_files = []
+            results = {
+                "year": year,
+                "processed": len(image_files),
+                "successful": 0,
+                "failed": 0,
+                "errors": [],
+            }
 
-        for filepath in image_files:
-            file_info = self.parse_filename(filepath)
-            if file_info:
-                task_id = f"insert_{file_info['grid_id']}_{year}"
-                if task_id in pending_task_ids:
-                    pending_files.append((filepath, task_id))
+            # Process each image
+            for image_file in image_files:
+                try:
+                    success = await self.process_image_file(image_file)
 
-        self.logger.info(
-            f"Found {len(pending_files)} pending insertion tasks for {year}"
-        )
+                    if success:
+                        results["successful"] += 1
+                    else:
+                        results["failed"] += 1
 
-        if not pending_files:
-            self.logger.info(f"All insertions for {year} already completed")
-            return True
+                except Exception as e:
+                    self.logger.error(f"Error processing {image_file}: {e}")
+                    results["failed"] += 1
+                    results["errors"].append(f"{image_file.name}: {str(e)}")
 
-        # Process insertions
-        success_count = 0
-        for filepath, task_id in pending_files:
-            # Update status to running
-            state_manager.update_task_status(
-                "insert", year, task_id, TaskStatus.RUNNING
-            )
+            return results
 
-            try:
-                success = await self.process_image_file(filepath)
-
-                if success:
-                    # Update status to completed
-                    metadata = {"filepath": str(filepath)}
-                    state_manager.update_task_status(
-                        "insert", year, task_id, TaskStatus.COMPLETED, metadata=metadata
-                    )
-                    success_count += 1
-                else:
-                    # Update status to failed
-                    state_manager.update_task_status(
-                        "insert",
-                        year,
-                        task_id,
-                        TaskStatus.FAILED,
-                        error_message=f"Failed to process {filepath.name}",
-                    )
-
-            except Exception as e:
-                error_msg = f"Unexpected error processing {filepath.name}: {e}"
-                self.logger.error(error_msg)
-                state_manager.update_task_status(
-                    "insert", year, task_id, TaskStatus.FAILED, error_message=error_msg
-                )
-
-        self.logger.info(
-            f"Completed insertions for {year}: {success_count}/{len(pending_files)} successful"
-        )
-        return success_count == len(pending_files)
+        except Exception as e:
+            self.logger.error(f"Error in process_year for {year}: {e}")
+            raise
 
     async def run_insertions(self) -> bool:
         """Execute insertions for all years"""

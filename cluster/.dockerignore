@@ -1,0 +1,79 @@
+# Python virtual environments
+btc_env/
+venv/
+env/
+.venv/
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Log files
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Data files (if they shouldn't be in the image)
+# Uncomment if you don't want data files in the image
+# data/images/
+# data/masks/
+# *.tiff
+# *.tif
+
+# Model checkpoints (if they're too large)
+# Uncomment if model files are too large
+# *.pth
+# *.pt
+# *.ckpt
+
+# Documentation
+README.md
+QUICKSTART.md
+*.md
+
+# Notebooks (optional - uncomment if you don't need them in production)
+# *.ipynb

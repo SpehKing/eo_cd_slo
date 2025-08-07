@@ -21,16 +21,21 @@ from typing import List, Dict, Tuple, Optional, Any
 from datetime import datetime
 import json
 
-# Add current directory to path for BTC imports
-current_dir = Path(__file__).parent.parent.parent
-sys.path.insert(0, str(current_dir))
+# Clean path resolution for BTC imports - exactly like in the working Jupyter notebook
+current_file = Path(__file__).resolve()
+pipeline_root = current_file.parent.parent  # Go up to pipeline/
+cluster_root = pipeline_root.parent  # Go up to cluster/
 
-# Import BTC modules
+# Add cluster directory to path for BTC imports (same as notebook)
+if str(cluster_root) not in sys.path:
+    sys.path.insert(0, str(cluster_root))
+
+# Import BTC modules directly (same as notebook)
 from configs.config_parser import get_parser
 from models.finetune_framework import FinetuneFramework
-from data.transforms import build_transforms
+from ml_dependencies.transforms import build_transforms
 
-from ..config.settings import config
+from ..config.settings import config, ProcessingMode
 from ..utils.state_manager import state_manager, TaskStatus
 
 
@@ -142,7 +147,7 @@ class BTCProcessorV5:
             # Get all years to find consecutive pairs
             all_years = sorted(config.years)
 
-            if config.mode == config.ProcessingMode.LOCAL_ONLY:
+            if config.mode == ProcessingMode.LOCAL_ONLY:
                 current_year_dir = config.get_year_images_dir(year)
 
                 # Find next year for pairing
@@ -387,7 +392,7 @@ class BTCProcessorV5:
         except:
             grid_id = "unknown"
 
-        if config.mode == config.ProcessingMode.LOCAL_ONLY:
+        if config.mode == ProcessingMode.LOCAL_ONLY:
             year_masks_dir = config.get_year_masks_dir(year)
         else:
             year_masks_dir = config.masks_dir / "temp" / str(year)
@@ -410,7 +415,7 @@ class BTCProcessorV5:
             # Save mask
             output_path = self.get_mask_output_path(img_a_path, img_b_path, year)
 
-            if config.mode == config.ProcessingMode.LOCAL_ONLY:
+            if config.mode == ProcessingMode.LOCAL_ONLY:
                 success = self.save_mask_locally(mask, metadata, output_path)
             else:
                 # Try database first, fallback to local

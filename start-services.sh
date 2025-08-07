@@ -26,10 +26,16 @@ echo "📦 Building and starting services..."
 echo "  • TimescaleDB (Database): http://localhost:5432"
 echo "  • FastAPI Backend: http://localhost:8000"
 echo "  • API Documentation: http://localhost:8000/docs"
+echo "  • EO Pipeline (Monitoring): http://localhost:8080"
 echo ""
 
-# Build and start services
-$COMPOSE_CMD up --build -d
+# Clean up old images before building to save space
+echo "🧹 Cleaning up old Docker images..."
+docker image prune -f --filter "label=maintainer" > /dev/null 2>&1 || true
+docker system prune -f --filter "until=24h" > /dev/null 2>&1 || true
+
+# Build and start services with forced cleanup
+$COMPOSE_CMD up --build --force-recreate --remove-orphans -d
 
 echo ""
 echo "⏳ Waiting for services to be ready..."
@@ -64,12 +70,28 @@ for i in {1..30}; do
     sleep 2
 done
 
+# Wait for EO Pipeline to be ready
+echo "  Checking EO Pipeline..."
+for i in {1..30}; do
+    if curl -s http://localhost:8080 > /dev/null 2>&1; then
+        echo "  ✅ EO Pipeline is ready"
+        break
+    fi
+    if [ $i -eq 30 ]; then
+        echo "  ❌ EO Pipeline failed to start after 30 attempts"
+        $COMPOSE_CMD logs eo-pipeline
+        exit 1
+    fi
+    sleep 2
+done
+
 echo ""
 echo "🎉 All services are running successfully!"
 echo ""
 echo "🔗 Service URLs:"
 echo "  • API Documentation: http://localhost:8000/docs"
 echo "  • API Interactive: http://localhost:8000/redoc"
+echo "  • EO Pipeline Dashboard: http://localhost:8080"
 echo "  • Database (external): postgresql://postgres:password@localhost:5432/eo_db"
 echo ""
 echo "📋 Useful commands:"

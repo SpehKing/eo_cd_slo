@@ -1,0 +1,25 @@
+2025-08-07 11:48:53,041 - matplotlib.font_manager - INFO - generated new fontManager
+2025-08-07 11:56:21,911 - matplotlib.font_manager - INFO - generated new fontManager
+2025-08-07 12:01:54,619 - matplotlib.font_manager - INFO - generated new fontManager
+2025-08-07 12:15:00,994 - matplotlib.font_manager - INFO - generated new fontManager
+2025-08-07 12:30:26,194 - rasterio.session - DEBUG - Could not import boto3, continuing with reduced functionality.
+2025-08-07 12:30:26,196 - rasterio.env - DEBUG - GDAL data files are available at built-in paths.
+2025-08-07 12:30:26,201 - rasterio.env - DEBUG - PROJ data files are available at built-in paths.
+2025-08-07 12:30:27,932 - matplotlib - DEBUG - matplotlib data path: /usr/local/lib/python3.10/site-packages/matplotlib/mpl-data
+2025-08-07 12:30:27,936 - matplotlib - DEBUG - CONFIGDIR=/root/.config/matplotlib
+2025-08-07 12:30:27,937 - matplotlib - DEBUG - interactive is False
+2025-08-07 12:30:27,937 - matplotlib - DEBUG - platform is linux
+2025-08-07 12:30:28,109 - matplotlib - DEBUG - CACHEDIR=/root/.cache/matplotlib
+2025-08-07 12:30:28,109 - matplotlib.font_manager - DEBUG - font search path [PosixPath('/usr/local/lib/python3.10/site-packages/matplotlib/mpl-data/fonts/ttf'), PosixPath('/usr/local/lib/python3.10/site-packages/matplotlib/mpl-data/fonts/afm'), PosixPath('/usr/local/lib/python3.10/site-packages/matplotlib/mpl-data/fonts/pdfcorefonts')]
+2025-08-07 12:30:28,185 - matplotlib.font_manager - INFO - generated new fontManager
+2025-08-07 12:30:47,717 - rasterio.session - DEBUG - Could not import boto3, continuing with reduced functionality.
+2025-08-07 12:30:47,719 - rasterio.env - DEBUG - GDAL data files are available at built-in paths.
+2025-08-07 12:30:47,724 - rasterio.env - DEBUG - PROJ data files are available at built-in paths.
+2025-08-07 12:30:49,732 - matplotlib - DEBUG - matplotlib data path: /usr/local/lib/python3.10/site-packages/matplotlib/mpl-data
+2025-08-07 12:30:49,735 - matplotlib - DEBUG - CONFIGDIR=/root/.config/matplotlib
+2025-08-07 12:30:49,736 - matplotlib - DEBUG - interactive is False
+2025-08-07 12:30:49,736 - matplotlib - DEBUG - platform is linux
+2025-08-07 12:30:49,922 - matplotlib - DEBUG - CACHEDIR=/root/.cache/matplotlib
+2025-08-07 12:30:49,923 - matplotlib.font_manager - DEBUG - font search path [PosixPath('/usr/local/lib/python3.10/site-packages/matplotlib/mpl-data/fonts/ttf'), PosixPath('/usr/local/lib/python3.10/site-packages/matplotlib/mpl-data/fonts/afm'), PosixPath('/usr/local/lib/python3.10/site-packages/matplotlib/mpl-data/fonts/pdfcorefonts')]
+2025-08-07 12:30:50,001 - matplotlib.font_manager - INFO - generated new fontManager
+2025-08-07 12:30:57,091 - asyncio - DEBUG - Using selector: EpollSelector

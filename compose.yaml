@@ -71,6 +71,58 @@ services:
         "--reload",
       ]
 
+  # EO Pipeline Service
+  eo-pipeline:
+    build:
+      context: ./cluster
+      dockerfile: Dockerfile
+      args:
+        BUILDKIT_INLINE_CACHE: 1
+    container_name: eo_pipeline_container
+    restart: unless-stopped
+    environment:
+      # Pipeline Configuration
+      PIPELINE_MODE: local_only # local_only, database_only, hybrid
+      MAX_WORKERS: 4
+      MEMORY_LIMIT_GB: 4
+
+      # Data processing
+      DATA_DIR: /app/data
+
+      # BTC Model Configuration
+      BTC_MODEL_CHECKPOINT: blaz-r/BTC-B_oscd96
+      BTC_THRESHOLD: 0.2
+
+      # Monitoring
+      MONITORING_PORT: 8080
+      LOG_LEVEL: INFO
+
+      # Database Configuration (for database mode)
+      DB_HOST: timescaledb
+      DB_PORT: 5432
+      DB_NAME: eo_db
+      DB_USER: postgres
+      DB_PASSWORD: password
+
+      # CUDA Configuration (uncomment for GPU support)
+      # CUDA_VISIBLE_DEVICES: all
+    ports:
+      - "8080:8080" # Monitoring dashboard
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+    networks:
+      - eo_network
+    volumes:
+      # Mount data directory for pipeline outputs
+      - ./data:/app/data
+      # Optional: Mount for development (comment out for production)
+      # - ./cluster:/app
+    # Uncomment for GPU support:
+    # runtime: nvidia
+    # environment:
+    #   - NVIDIA_VISIBLE_DEVICES=all
+
 networks:
   eo_network:
     driver: bridge
