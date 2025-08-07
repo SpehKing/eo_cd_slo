@@ -267,3 +267,220 @@
 2025-08-06 15:24:29,621 - INFO - ============================================================
 2025-08-06 15:24:29,622 - INFO - Database connection closed
 2025-08-06 15:24:29,622 - INFO - Insertion process completed
+2025-08-06 15:56:29,200 - INFO - Starting Sentinel-2 database insertion script v4 (with change detection masks)
+2025-08-06 15:56:29,200 - INFO - Loading grid data from data/slovenia_grid_expanded.gpkg
+2025-08-06 15:56:29,377 - INFO - Loaded 947 grid cells
+2025-08-06 15:56:29,377 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-06 15:56:29,382 - INFO - Connecting to database...
+2025-08-06 15:56:29,511 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-06 15:56:29,515 - INFO - Loading grid cells into database...
+2025-08-06 15:56:32,023 - INFO - Loaded 947 grid cells into database
+2025-08-06 15:56:32,024 - INFO - Found 2 image files
+2025-08-06 15:56:32,025 - INFO - Found 2 image files to process
+2025-08-06 15:56:32,035 - INFO - Processing: sentinel2_grid_463_2023_08.tiff
+2025-08-06 15:56:32,069 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:56:32,084 - INFO - Grid 463: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:56:32,296 - INFO - Successfully inserted record for grid 463, 2023-08
+2025-08-06 15:56:32,297 - INFO - Processing: sentinel2_grid_463_2024_08.tiff
+2025-08-06 15:56:32,309 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:56:32,311 - INFO - Grid 463: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 15:56:32,430 - INFO - Successfully inserted record for grid 463, 2024-08
+2025-08-06 15:56:32,431 - INFO - Creating change detection masks...
+2025-08-06 15:56:32,431 - INFO - Finding consecutive image pairs for change detection...
+2025-08-06 15:56:32,432 - INFO - Found 1 consecutive image pairs for change detection
+2025-08-06 15:56:32,433 - ERROR - Failed to create change masks: column "id" does not exist
+LINE 2:                             SELECT id FROM eo_change 
+                                           ^
+
+2025-08-06 15:56:32,434 - INFO - ============================================================
+2025-08-06 15:56:32,434 - INFO - INSERTION SUMMARY
+2025-08-06 15:56:32,434 - INFO - ============================================================
+2025-08-06 15:56:32,434 - INFO - Total files processed: 2
+2025-08-06 15:56:32,434 - INFO - Successfully inserted: 2
+2025-08-06 15:56:32,434 - INFO - Failed: 0
+2025-08-06 15:56:32,434 - INFO - Skipped (already exist): 0
+2025-08-06 15:56:32,434 - INFO - Change masks inserted: 0
+2025-08-06 15:56:32,434 - INFO - Change masks failed: 0
+2025-08-06 15:56:32,434 - INFO - Image success rate: 100.0%
+2025-08-06 15:56:32,434 - INFO - ============================================================
+2025-08-06 15:56:32,434 - INFO - Database connection closed
+2025-08-06 15:56:32,434 - INFO - Insertion process completed successfully
+2025-08-06 15:58:44,861 - INFO - Starting Sentinel-2 database insertion script v4 (with change detection masks)
+2025-08-06 15:58:44,861 - INFO - Loading grid data from data/slovenia_grid_expanded.gpkg
+2025-08-06 15:58:45,022 - INFO - Loaded 947 grid cells
+2025-08-06 15:58:45,023 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-06 15:58:45,028 - INFO - Connecting to database...
+2025-08-06 15:58:45,087 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-06 15:58:45,090 - INFO - Grid cells table already contains 947 records
+2025-08-06 15:58:45,090 - INFO - Found 2 image files
+2025-08-06 15:58:45,090 - INFO - Found 2 image files to process
+2025-08-06 15:58:45,099 - INFO - Processing: sentinel2_grid_463_2023_08.tiff
+2025-08-06 15:58:45,118 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:58:45,123 - INFO - Record already exists for grid 463, 2023-08
+2025-08-06 15:58:45,124 - INFO - Processing: sentinel2_grid_463_2024_08.tiff
+2025-08-06 15:58:45,131 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 15:58:45,132 - INFO - Record already exists for grid 463, 2024-08
+2025-08-06 15:58:45,133 - INFO - Creating change detection masks...
+2025-08-06 15:58:45,133 - INFO - Finding consecutive image pairs for change detection...
+2025-08-06 15:58:45,145 - INFO - Found 1 consecutive image pairs for change detection
+2025-08-06 15:58:45,147 - ERROR - Failed to read change mask plus_sign_mask.tif: Mask file not found: data/sentinel_downloads_v4/images/masks/plus_sign_mask.tif
+2025-08-06 15:58:45,147 - ERROR - ✗ Failed to insert change mask for grid 463: Mask file not found: data/sentinel_downloads_v4/images/masks/plus_sign_mask.tif
+2025-08-06 15:58:45,147 - INFO - ============================================================
+2025-08-06 15:58:45,147 - INFO - INSERTION SUMMARY
+2025-08-06 15:58:45,147 - INFO - ============================================================
+2025-08-06 15:58:45,147 - INFO - Total files processed: 2
+2025-08-06 15:58:45,147 - INFO - Successfully inserted: 0
+2025-08-06 15:58:45,147 - INFO - Failed: 0
+2025-08-06 15:58:45,147 - INFO - Skipped (already exist): 2
+2025-08-06 15:58:45,148 - INFO - Change masks inserted: 0
+2025-08-06 15:58:45,148 - INFO - Change masks failed: 1
+2025-08-06 15:58:45,148 - INFO - Image success rate: 0.0%
+2025-08-06 15:58:45,148 - INFO - Mask success rate: 0.0%
+2025-08-06 15:58:45,148 - INFO - ============================================================
+2025-08-06 15:58:45,148 - INFO - Database connection closed
+2025-08-06 15:58:45,148 - INFO - Insertion process completed successfully
+2025-08-06 16:00:36,030 - INFO - Starting Sentinel-2 database insertion script v4 (with change detection masks)
+2025-08-06 16:00:36,031 - INFO - Loading grid data from data/slovenia_grid_expanded.gpkg
+2025-08-06 16:00:36,214 - INFO - Loaded 947 grid cells
+2025-08-06 16:00:36,215 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-06 16:00:36,219 - INFO - Connecting to database...
+2025-08-06 16:00:36,283 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-06 16:00:36,287 - INFO - Grid cells table already contains 947 records
+2025-08-06 16:00:36,288 - INFO - Found 2 image files
+2025-08-06 16:00:36,288 - INFO - Found 2 image files to process
+2025-08-06 16:00:36,297 - INFO - Processing: sentinel2_grid_463_2023_08.tiff
+2025-08-06 16:00:36,325 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 16:00:36,331 - INFO - Record already exists for grid 463, 2023-08
+2025-08-06 16:00:36,331 - INFO - Processing: sentinel2_grid_463_2024_08.tiff
+2025-08-06 16:00:36,339 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 16:00:36,340 - INFO - Record already exists for grid 463, 2024-08
+2025-08-06 16:00:36,340 - INFO - Creating change detection masks...
+2025-08-06 16:00:36,340 - INFO - Finding consecutive image pairs for change detection...
+2025-08-06 16:00:36,354 - INFO - Found 1 consecutive image pairs for change detection
+2025-08-06 16:00:36,396 - INFO - ✓ Inserted change mask for grid 463: 2023-08 -> 2024-08 (256x256, uint8)
+2025-08-06 16:00:36,396 - INFO - ============================================================
+2025-08-06 16:00:36,397 - INFO - INSERTION SUMMARY
+2025-08-06 16:00:36,397 - INFO - ============================================================
+2025-08-06 16:00:36,397 - INFO - Total files processed: 2
+2025-08-06 16:00:36,397 - INFO - Successfully inserted: 0
+2025-08-06 16:00:36,397 - INFO - Failed: 0
+2025-08-06 16:00:36,397 - INFO - Skipped (already exist): 2
+2025-08-06 16:00:36,397 - INFO - Change masks inserted: 1
+2025-08-06 16:00:36,397 - INFO - Change masks failed: 0
+2025-08-06 16:00:36,397 - INFO - Image success rate: 0.0%
+2025-08-06 16:00:36,397 - INFO - Mask success rate: 100.0%
+2025-08-06 16:00:36,397 - INFO - ============================================================
+2025-08-06 16:00:36,397 - INFO - Database connection closed
+2025-08-06 16:00:36,397 - INFO - Insertion process completed successfully
+2025-08-06 16:01:32,810 - INFO - Starting Sentinel-2 database insertion script v4 (with change detection masks)
+2025-08-06 16:01:32,810 - INFO - Loading grid data from data/slovenia_grid_expanded.gpkg
+2025-08-06 16:01:32,966 - INFO - Loaded 947 grid cells
+2025-08-06 16:01:32,966 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-06 16:01:32,970 - INFO - Connecting to database...
+2025-08-06 16:01:33,021 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-06 16:01:33,023 - INFO - Loading grid cells into database...
+2025-08-06 16:01:35,265 - INFO - Loaded 947 grid cells into database
+2025-08-06 16:01:35,266 - INFO - Found 2 image files
+2025-08-06 16:01:35,266 - INFO - Found 2 image files to process
+2025-08-06 16:01:35,276 - INFO - Processing: sentinel2_grid_463_2023_08.tiff
+2025-08-06 16:01:35,295 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 16:01:35,303 - INFO - Grid 463: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 16:01:35,428 - INFO - Successfully inserted record for grid 463, 2023-08
+2025-08-06 16:01:35,429 - INFO - Processing: sentinel2_grid_463_2024_08.tiff
+2025-08-06 16:01:35,437 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-06 16:01:35,439 - INFO - Grid 463: Bbox alignment validated (overlap: 1.000000)
+2025-08-06 16:01:35,534 - INFO - Successfully inserted record for grid 463, 2024-08
+2025-08-06 16:01:35,534 - INFO - Creating change detection masks...
+2025-08-06 16:01:35,534 - INFO - Finding consecutive image pairs for change detection...
+2025-08-06 16:01:35,536 - INFO - Found 1 consecutive image pairs for change detection
+2025-08-06 16:01:35,544 - INFO - ✓ Inserted change mask for grid 463: 2023-08 -> 2024-08 (256x256, uint8)
+2025-08-06 16:01:35,544 - INFO - ============================================================
+2025-08-06 16:01:35,544 - INFO - INSERTION SUMMARY
+2025-08-06 16:01:35,544 - INFO - ============================================================
+2025-08-06 16:01:35,544 - INFO - Total files processed: 2
+2025-08-06 16:01:35,544 - INFO - Successfully inserted: 2
+2025-08-06 16:01:35,544 - INFO - Failed: 0
+2025-08-06 16:01:35,544 - INFO - Skipped (already exist): 0
+2025-08-06 16:01:35,544 - INFO - Change masks inserted: 1
+2025-08-06 16:01:35,544 - INFO - Change masks failed: 0
+2025-08-06 16:01:35,544 - INFO - Image success rate: 100.0%
+2025-08-06 16:01:35,544 - INFO - Mask success rate: 100.0%
+2025-08-06 16:01:35,544 - INFO - ============================================================
+2025-08-06 16:01:35,544 - INFO - Database connection closed
+2025-08-06 16:01:35,544 - INFO - Insertion process completed successfully
+2025-08-07 09:49:49,475 - INFO - Starting Sentinel-2 database insertion script v4 (with change detection masks)
+2025-08-07 09:49:49,475 - INFO - Loading grid data from data/slovenia_grid_expanded.gpkg
+2025-08-07 09:49:49,647 - INFO - Loaded 947 grid cells
+2025-08-07 09:49:49,647 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-07 09:49:49,652 - INFO - Connecting to database...
+2025-08-07 09:49:49,788 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-07 09:49:49,791 - INFO - Loading grid cells into database...
+2025-08-07 09:49:52,478 - INFO - Loaded 947 grid cells into database
+2025-08-07 09:49:52,479 - INFO - Found 2 image files
+2025-08-07 09:49:52,479 - INFO - Found 2 image files to process
+2025-08-07 09:49:52,489 - INFO - Processing: sentinel2_grid_463_2023_08.tiff
+2025-08-07 09:49:52,556 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-07 09:49:52,570 - INFO - Grid 463: Bbox alignment validated (overlap: 1.000000)
+2025-08-07 09:49:52,749 - INFO - Successfully inserted record for grid 463, 2023-08
+2025-08-07 09:49:52,749 - INFO - Processing: sentinel2_grid_463_2024_08.tiff
+2025-08-07 09:49:52,757 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-07 09:49:52,759 - INFO - Grid 463: Bbox alignment validated (overlap: 1.000000)
+2025-08-07 09:49:52,863 - INFO - Successfully inserted record for grid 463, 2024-08
+2025-08-07 09:49:52,863 - INFO - Creating change detection masks...
+2025-08-07 09:49:52,863 - INFO - Finding consecutive image pairs for change detection...
+2025-08-07 09:49:52,865 - INFO - Found 1 consecutive image pairs for change detection
+2025-08-07 09:49:52,875 - INFO - ✓ Inserted change mask for grid 463: 2023-08 -> 2024-08 (256x256, uint8)
+2025-08-07 09:49:52,876 - INFO - ============================================================
+2025-08-07 09:49:52,876 - INFO - INSERTION SUMMARY
+2025-08-07 09:49:52,876 - INFO - ============================================================
+2025-08-07 09:49:52,876 - INFO - Total files processed: 2
+2025-08-07 09:49:52,876 - INFO - Successfully inserted: 2
+2025-08-07 09:49:52,876 - INFO - Failed: 0
+2025-08-07 09:49:52,876 - INFO - Skipped (already exist): 0
+2025-08-07 09:49:52,876 - INFO - Change masks inserted: 1
+2025-08-07 09:49:52,876 - INFO - Change masks failed: 0
+2025-08-07 09:49:52,876 - INFO - Image success rate: 100.0%
+2025-08-07 09:49:52,876 - INFO - Mask success rate: 100.0%
+2025-08-07 09:49:52,876 - INFO - ============================================================
+2025-08-07 09:49:52,876 - INFO - Database connection closed
+2025-08-07 09:49:52,876 - INFO - Insertion process completed successfully
+2025-08-07 09:56:07,514 - INFO - Starting Sentinel-2 database insertion script v4
+2025-08-07 09:56:07,515 - INFO - Loading grid data from data/slovenia_grid_expanded.gpkg
+2025-08-07 09:56:07,666 - INFO - Loaded 947 grid cells
+2025-08-07 09:56:07,666 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-07 09:56:07,671 - INFO - Connecting to database...
+2025-08-07 09:56:07,782 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-07 09:56:07,783 - INFO - Loading grid cells into database...
+2025-08-07 09:56:10,088 - INFO - Loaded 947 grid cells into database
+2025-08-07 09:56:10,089 - INFO - Found 0 image files
+2025-08-07 09:56:10,089 - ERROR - No image files found
+2025-08-07 09:56:10,090 - INFO - Database connection closed
+2025-08-07 09:56:10,090 - ERROR - Insertion process failed
+2025-08-07 09:56:29,588 - INFO - Starting Sentinel-2 database insertion script v4
+2025-08-07 09:56:29,588 - INFO - Loading grid data from data/slovenia_grid_expanded.gpkg
+2025-08-07 09:56:29,754 - INFO - Loaded 947 grid cells
+2025-08-07 09:56:29,754 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-07 09:56:29,759 - INFO - Connecting to database...
+2025-08-07 09:56:29,815 - INFO - Connected to: PostgreSQL 17.5 (Ubuntu 17.5-1.pgdg22.04+1) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, 64-bit
+2025-08-07 09:56:29,822 - INFO - Grid cells table already contains 947 records
+2025-08-07 09:56:29,823 - INFO - Found 2 image files
+2025-08-07 09:56:29,823 - INFO - Found 2 image files to process
+2025-08-07 09:56:29,831 - INFO - Processing: sentinel2_grid_463_2023_08.tiff
+2025-08-07 09:56:29,901 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-07 09:56:29,916 - INFO - Grid 463: Bbox alignment validated (overlap: 1.000000)
+2025-08-07 09:56:30,126 - INFO - Successfully inserted record for grid 463, 2023-08
+2025-08-07 09:56:30,127 - INFO - Processing: sentinel2_grid_463_2024_08.tiff
+2025-08-07 09:56:30,134 - INFO - Extracted 3 bands: ['b02', 'b03', 'b04']
+2025-08-07 09:56:30,136 - INFO - Grid 463: Bbox alignment validated (overlap: 1.000000)
+2025-08-07 09:56:30,251 - INFO - Successfully inserted record for grid 463, 2024-08
+2025-08-07 09:56:30,252 - INFO - ============================================================
+2025-08-07 09:56:30,252 - INFO - INSERTION SUMMARY
+2025-08-07 09:56:30,252 - INFO - ============================================================
+2025-08-07 09:56:30,252 - INFO - Total files processed: 2
+2025-08-07 09:56:30,252 - INFO - Successfully inserted: 2
+2025-08-07 09:56:30,252 - INFO - Failed: 0
+2025-08-07 09:56:30,252 - INFO - Skipped (already exist): 0
+2025-08-07 09:56:30,252 - INFO - Success rate: 100.0%
+2025-08-07 09:56:30,252 - INFO - ============================================================
+2025-08-07 09:56:30,252 - INFO - Database connection closed
+2025-08-07 09:56:30,252 - INFO - Insertion process completed

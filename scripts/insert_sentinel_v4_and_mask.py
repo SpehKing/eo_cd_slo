@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """
-Database Insertion Script v4 for Sentinel-2 Images
+Database Insertion Script v4 for Sentinel-2 Images and Change Detection Masks
 
 This script processes downloaded Sentinel-2 images and inserts them into the
 TimescaleDB database with perfect grid alignment. It uses the expanded Slovenia
-grid and ensures bbox consistency with zero tolerance.
+grid and ensures bbox consistency with zero tolerance. After inserting all images,
+it creates change detection masks for consecutive time periods using a fixed mask
+from the masks directory.
 
 Requirements:
 - rasterio
@@ -12,9 +14,10 @@ Requirements:
 - psycopg2-binary
 - tqdm
 - numpy
+- cv2
 
 Usage:
-    python insert_sentinel_v4.py
+    python insert_sentinel_v4_and_mask.py
 """
 
 import logging
@@ -22,6 +25,7 @@ import psycopg2
 import geopandas as gpd
 import rasterio
 import numpy as np
+import cv2
 from pathlib import Path
 from typing import List, Dict, Tuple, Optional
 from tqdm import tqdm
@@ -38,6 +42,7 @@ logger = logging.getLogger(__name__)
 # Configuration
 DOWNLOAD_DIR = Path("./data/images/sentinel_downloads_v4/images")
 GRID_FILE = Path("./data/slovenia_grid_expanded.gpkg")
+MASKS_DIR = Path("./data/images/sentinel_downloads_v4/mask")
 
 # Database configuration (should match your docker-compose)
 DB_CONFIG = {
@@ -73,6 +78,8 @@ class SentinelInserterV4:
             "successful": 0,
             "failed": 0,
             "skipped": 0,
+            "masks_inserted": 0,
+            "masks_failed": 0,
         }
 
     def initialize(self) -> bool:
@@ -287,6 +294,50 @@ class SentinelInserterV4:
             logger.error(f"Failed to extract band data from {filepath}: {e}")
             return {}
 
+    def read_change_mask(
+        self, mask_filename: str = "binary_mask.png"
+    ) -> Tuple[bytes, Dict[str, any]]:
+        """
+        Read the change detection mask from masks directory
+
+        Args:
+            mask_filename: Name of the mask file to read
+
+        Returns:
+            Tuple of (mask data as bytes, metadata dictionary)
+        """
+        try:
+            mask_file = MASKS_DIR / mask_filename
+
+            if not mask_file.exists():
+                raise FileNotFoundError(f"Mask file not found: {mask_file}")
+
+            with rasterio.open(mask_file) as src:
+                mask_data = src.read(1)  # Read first (and only) band
+
+                metadata = {
+                    "width": src.width,
+                    "height": src.height,
+                    "data_type": str(src.dtypes[0]),
+                }
+
+                # Convert mask to binary format (0 for no change, 255 for change)
+                # Assuming the mask has values where non-zero indicates change
+                mask_visualization = np.where(mask_data > 0, 255, 0).astype(np.uint8)
+
+                logger.debug(
+                    f"Read mask {mask_filename}: {metadata['width']}x{metadata['height']}, type: {metadata['data_type']}"
+                )
+                logger.debug(
+                    f"Mask values: min={np.min(mask_data)}, max={np.max(mask_data)}"
+                )
+
+                return mask_visualization.tobytes(), metadata
+
+        except Exception as e:
+            logger.error(f"Failed to read change mask {mask_filename}: {e}")
+            raise
+
     def check_existing_record(self, grid_id: int, date: datetime) -> bool:
         """Check if record already exists in database"""
         try:
@@ -410,6 +461,167 @@ class SentinelInserterV4:
             self.insertion_stats["failed"] += 1
             return False
 
+    def insert_change_mask(
+        self,
+        grid_id: int,
+        img_a_id: int,
+        img_b_id: int,
+        timestamp_a: datetime,
+        timestamp_b: datetime,
+        bbox_wkt: str,
+        mask_filename: str = "binary_mask.png",
+    ) -> bool:
+        """
+        Insert a change detection mask for two images
+
+        Args:
+            grid_id: Grid cell ID
+            img_a_id: ID of first image (earlier)
+            img_b_id: ID of second image (later)
+            timestamp_a: First timestamp
+            timestamp_b: Second timestamp
+            bbox_wkt: PostGIS geography polygon string
+            mask_filename: Name of the mask file to use
+
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            # Ensure img_a is earlier than img_b
+            if timestamp_a > timestamp_b:
+                img_a_id, img_b_id = img_b_id, img_a_id
+                timestamp_a, timestamp_b = timestamp_b, timestamp_a
+
+            # Read change mask
+            mask_data, mask_metadata = self.read_change_mask(mask_filename)
+
+            # Insert into eo_change table
+            insert_sql = """
+                INSERT INTO eo_change (img_a_id, img_b_id, grid_id, period_start, period_end, bbox, width, height, data_type, mask)
+                VALUES (%s, %s, %s, %s, %s, ST_GeogFromText(%s), %s, %s, %s, %s)
+            """
+
+            values = (
+                img_a_id,
+                img_b_id,
+                grid_id,
+                timestamp_a,
+                timestamp_b,
+                bbox_wkt,
+                mask_metadata["width"],
+                mask_metadata["height"],
+                mask_metadata["data_type"],
+                mask_data,
+            )
+
+            with self.conn.cursor() as cur:
+                cur.execute(insert_sql, values)
+                self.conn.commit()
+
+            logger.info(
+                f"✓ Inserted change mask for grid {grid_id}: {timestamp_a.strftime('%Y-%m')} -> {timestamp_b.strftime('%Y-%m')} "
+                f"({mask_metadata['width']}x{mask_metadata['height']}, {mask_metadata['data_type']})"
+            )
+            self.insertion_stats["masks_inserted"] += 1
+            return True
+
+        except Exception as e:
+            logger.error(f"✗ Failed to insert change mask for grid {grid_id}: {e}")
+            if self.conn:
+                self.conn.rollback()
+            self.insertion_stats["masks_failed"] += 1
+            return False
+
+    def create_change_masks(self) -> None:
+        """
+        Create change detection masks for consecutive time periods within each grid cell
+        """
+        try:
+            logger.info("Finding consecutive image pairs for change detection...")
+
+            with self.conn.cursor() as cur:
+                # Find all consecutive image pairs within each grid_id
+                cur.execute(
+                    """
+                    WITH consecutive_pairs AS (
+                        SELECT 
+                            grid_id,
+                            id as img_id,
+                            time as img_time,
+                            bbox,
+                            LAG(id) OVER (PARTITION BY grid_id ORDER BY time) as prev_img_id,
+                            LAG(time) OVER (PARTITION BY grid_id ORDER BY time) as prev_img_time
+                        FROM eo 
+                        WHERE grid_id IS NOT NULL
+                        ORDER BY grid_id, time
+                    )
+                    SELECT 
+                        grid_id,
+                        prev_img_id as img_a_id,
+                        img_id as img_b_id,
+                        prev_img_time as timestamp_a,
+                        img_time as timestamp_b,
+                        ST_AsText(bbox) as bbox_wkt
+                    FROM consecutive_pairs 
+                    WHERE prev_img_id IS NOT NULL
+                    ORDER BY grid_id, timestamp_a
+                """
+                )
+
+                pairs = cur.fetchall()
+                logger.info(
+                    f"Found {len(pairs)} consecutive image pairs for change detection"
+                )
+
+                if not pairs:
+                    logger.info("No consecutive image pairs found")
+                    return
+
+                # Process each pair with progress bar
+                with tqdm(total=len(pairs), desc="Creating change masks") as pbar:
+                    for (
+                        grid_id,
+                        img_a_id,
+                        img_b_id,
+                        timestamp_a,
+                        timestamp_b,
+                        bbox_wkt,
+                    ) in pairs:
+                        pbar.set_description(f"Mask for grid {grid_id}")
+
+                        # Check if change mask already exists
+                        cur.execute(
+                            """
+                            SELECT img_a_id FROM eo_change 
+                            WHERE img_a_id = %s AND img_b_id = %s
+                        """,
+                            (img_a_id, img_b_id),
+                        )
+
+                        if cur.fetchone():
+                            logger.debug(
+                                f"Change mask already exists for images {img_a_id} -> {img_b_id}"
+                            )
+                            pbar.update(1)
+                            continue
+
+                        # Create change mask for this pair
+                        self.insert_change_mask(
+                            grid_id=grid_id,
+                            img_a_id=img_a_id,
+                            img_b_id=img_b_id,
+                            timestamp_a=timestamp_a,
+                            timestamp_b=timestamp_b,
+                            bbox_wkt=bbox_wkt,
+                        )
+
+                        pbar.update(1)
+
+        except Exception as e:
+            logger.error(f"Failed to create change masks: {e}")
+            if self.conn:
+                self.conn.rollback()
+
     def process_image_file(self, filepath: Path) -> bool:
         """Process a single image file"""
         try:
@@ -468,6 +680,10 @@ class SentinelInserterV4:
                     self.process_image_file(filepath)
                     pbar.update(1)
 
+            # After all images are processed, create change masks for consecutive time periods
+            logger.info("Creating change detection masks...")
+            self.create_change_masks()
+
             # Print final statistics
             self.print_final_stats()
             return True
@@ -485,22 +701,32 @@ class SentinelInserterV4:
         logger.info(f"Successfully inserted: {stats['successful']}")
         logger.info(f"Failed: {stats['failed']}")
         logger.info(f"Skipped (already exist): {stats['skipped']}")
+        logger.info(f"Change masks inserted: {stats['masks_inserted']}")
+        logger.info(f"Change masks failed: {stats['masks_failed']}")
         if stats["total_files"] > 0:
             success_rate = (stats["successful"] / stats["total_files"]) * 100
-            logger.info(f"Success rate: {success_rate:.1f}%")
+            logger.info(f"Image success rate: {success_rate:.1f}%")
+        if (stats["masks_inserted"] + stats["masks_failed"]) > 0:
+            mask_success_rate = (
+                stats["masks_inserted"]
+                / (stats["masks_inserted"] + stats["masks_failed"])
+            ) * 100
+            logger.info(f"Mask success rate: {mask_success_rate:.1f}%")
         logger.info("=" * 60)
 
 
 def main():
     """Main function"""
-    logger.info("Starting Sentinel-2 database insertion script v4")
+    logger.info(
+        "Starting Sentinel-2 database insertion script v4 (with change detection masks)"
+    )
 
     try:
         inserter = SentinelInserterV4()
         success = inserter.run_insertion()
 
         if success:
-            logger.info("Insertion process completed")
+            logger.info("Insertion process completed successfully")
         else:
             logger.error("Insertion process failed")
             return 1

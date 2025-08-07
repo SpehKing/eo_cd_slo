@@ -1,0 +1,106 @@
+2025-08-06 15:46:06,133 - INFO - Starting Sentinel-2 download script v4
+2025-08-06 15:46:06,133 - INFO - Target grid IDs: [463]
+2025-08-06 15:46:06,133 - INFO - Years: [2023, 2024]
+2025-08-06 15:46:06,133 - INFO - Target CRS: EPSG:4326
+2025-08-06 15:46:06,133 - INFO - Loading grid data from data/slovenia_grid_expanded.gpkg
+2025-08-06 15:46:06,321 - INFO - Loaded 947 grid cells
+2025-08-06 15:46:06,325 - INFO - Filtered to 1 target grid cells
+2025-08-06 15:46:06,325 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-06 15:46:06,330 - INFO - Connecting to OpenEO Copernicus Data Space Ecosystem...
+2025-08-06 15:46:06,330 - INFO - Loaded openEO client config from sources: []
+2025-08-06 15:46:06,803 - INFO - Please authenticate in your browser...
+2025-08-06 15:46:06,853 - INFO - Found OIDC providers: ['CDSE']
+2025-08-06 15:46:06,853 - INFO - No OIDC provider given, but only one available: 'CDSE'. Using that one.
+2025-08-06 15:46:07,042 - INFO - Using default client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e' from OIDC provider 'CDSE' info.
+2025-08-06 15:46:07,044 - INFO - Found refresh token: trying refresh token based authentication.
+2025-08-06 15:46:07,044 - INFO - Doing 'refresh_token' token request 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token' with post data fields ['grant_type', 'client_id', 'refresh_token'] (client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-06 15:46:07,419 - INFO - Obtained tokens: ['access_token', 'id_token', 'refresh_token']
+2025-08-06 15:46:07,420 - INFO - Storing refresh token for issuer 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE' (client 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-06 15:46:07,422 - INFO - Successfully connected and authenticated
+2025-08-06 15:46:07,424 - INFO - Grid 463 exact bounds: W=14.3428766358, S=46.1235841685, E=14.4081249741, N=46.1689357309
+2025-08-06 15:46:07,424 - INFO - Using exact grid boundaries for pixel alignment
+2025-08-06 15:46:07,425 - INFO - Grid 463 exact bounds: W=14.3428766358, S=46.1235841685, E=14.4081249741, N=46.1689357309
+2025-08-06 15:46:07,425 - INFO - Using exact grid boundaries for pixel alignment
+2025-08-06 15:46:07,425 - INFO - Generated 2 download tasks
+2025-08-06 15:46:07,425 - INFO - Grid IDs: [463]
+2025-08-06 15:46:07,425 - INFO - Years: [2023, 2024]
+2025-08-06 15:46:07,425 - INFO - Target CRS: EPSG:4326
+2025-08-06 15:46:07,425 - INFO - Pixel size: 9e-05 degrees
+2025-08-06 15:46:07,425 - INFO - Download directory: /Users/gasper/Documents/ViCos/eo_cd_slo/data/images/sentinel_downloads_v4/images
+2025-08-06 15:46:07,434 - INFO - Processing grid 463 for 2023-08
+2025-08-06 15:46:07,434 - INFO - Using exact bbox: {'west': 14.342876635750468, 'south': 46.12358416845685, 'east': 14.408124974052836, 'north': 46.1689357308968}
+2025-08-06 15:46:07,536 - INFO - Downloading sentinel2_grid_463_2023_08.tiff...
+2025-08-06 15:46:07,637 - WARNING - Failed to parse API error response: [502] 'Bad Gateway' (headers: {'Date': 'Wed, 06 Aug 2025 13:46:07 GMT', 'Content-Length': '11'})
+2025-08-06 15:46:07,637 - ERROR - Preflight process graph validation failed: [502] Bad Gateway
+2025-08-06 15:46:31,680 - INFO - Download interrupted by user
+2025-08-06 15:46:33,175 - INFO - Starting Sentinel-2 download script v4
+2025-08-06 15:46:33,175 - INFO - Target grid IDs: [463]
+2025-08-06 15:46:33,175 - INFO - Years: [2023, 2024]
+2025-08-06 15:46:33,175 - INFO - Target CRS: EPSG:4326
+2025-08-06 15:46:33,175 - INFO - Loading grid data from data/slovenia_grid_expanded.gpkg
+2025-08-06 15:46:33,289 - INFO - Loaded 947 grid cells
+2025-08-06 15:46:33,290 - INFO - Filtered to 1 target grid cells
+2025-08-06 15:46:33,290 - INFO - Converting CRS from EPSG:32633 to EPSG:4326
+2025-08-06 15:46:33,291 - INFO - Connecting to OpenEO Copernicus Data Space Ecosystem...
+2025-08-06 15:46:33,291 - INFO - Loaded openEO client config from sources: []
+2025-08-06 15:46:33,657 - INFO - Please authenticate in your browser...
+2025-08-06 15:46:33,736 - INFO - Found OIDC providers: ['CDSE']
+2025-08-06 15:46:33,736 - INFO - No OIDC provider given, but only one available: 'CDSE'. Using that one.
+2025-08-06 15:46:33,891 - INFO - Using default client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e' from OIDC provider 'CDSE' info.
+2025-08-06 15:46:33,892 - INFO - Found refresh token: trying refresh token based authentication.
+2025-08-06 15:46:33,893 - INFO - Doing 'refresh_token' token request 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token' with post data fields ['grant_type', 'client_id', 'refresh_token'] (client_id 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-06 15:46:34,248 - INFO - Obtained tokens: ['access_token', 'id_token', 'refresh_token']
+2025-08-06 15:46:34,250 - INFO - Storing refresh token for issuer 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE' (client 'sh-b1c3a958-52d4-40fe-a333-153595d1c71e')
+2025-08-06 15:46:34,251 - INFO - Successfully connected and authenticated
+2025-08-06 15:46:34,253 - INFO - Grid 463 exact bounds: W=14.3428766358, S=46.1235841685, E=14.4081249741, N=46.1689357309
+2025-08-06 15:46:34,253 - INFO - Using exact grid boundaries for pixel alignment
+2025-08-06 15:46:34,253 - INFO - Grid 463 exact bounds: W=14.3428766358, S=46.1235841685, E=14.4081249741, N=46.1689357309
+2025-08-06 15:46:34,253 - INFO - Using exact grid boundaries for pixel alignment
+2025-08-06 15:46:34,254 - INFO - Generated 2 download tasks
+2025-08-06 15:46:34,254 - INFO - Grid IDs: [463]
+2025-08-06 15:46:34,254 - INFO - Years: [2023, 2024]
+2025-08-06 15:46:34,254 - INFO - Target CRS: EPSG:4326
+2025-08-06 15:46:34,254 - INFO - Pixel size: 9e-05 degrees
+2025-08-06 15:46:34,254 - INFO - Download directory: /Users/gasper/Documents/ViCos/eo_cd_slo/data/images/sentinel_downloads_v4/images
+2025-08-06 15:46:34,262 - INFO - Processing grid 463 for 2023-08
+2025-08-06 15:46:34,263 - INFO - Using exact bbox: {'west': 14.342876635750468, 'south': 46.12358416845685, 'east': 14.408124974052836, 'north': 46.1689357308968}
+2025-08-06 15:46:34,367 - INFO - Downloading sentinel2_grid_463_2023_08.tiff...
+2025-08-06 15:47:06,921 - INFO - Downloaded image properties:
+2025-08-06 15:47:06,921 - INFO -   File: sentinel2_grid_463_2023_08.tiff
+2025-08-06 15:47:06,921 - INFO -   Size: 726x505
+2025-08-06 15:47:06,921 - INFO -   CRS: EPSG:4326
+2025-08-06 15:47:06,921 - INFO -   Bounds: BoundingBox(left=14.34286538383303, bottom=46.12350714464384, right=14.408205383833028, top=46.16895714464384)
+2025-08-06 15:47:06,921 - INFO -   Transform: | 0.00, 0.00, 14.34|
+| 0.00,-0.00, 46.17|
+| 0.00, 0.00, 1.00|
+2025-08-06 15:47:06,921 - INFO -   Data type: ('int16', 'int16', 'int16')
+2025-08-06 15:47:06,922 - INFO - Bbox validation:
+2025-08-06 15:47:06,922 - INFO -   Expected: W=14.3428766358, S=46.1235841685, E=14.4081249741, N=46.1689357309
+2025-08-06 15:47:06,922 - INFO -   Actual:   W=14.3428653838, S=46.1235071446, E=14.4082053838, N=46.1689571446
+2025-08-06 15:47:06,922 - INFO - Successfully downloaded: sentinel2_grid_463_2023_08.tiff
+2025-08-06 15:47:08,928 - INFO - Processing grid 463 for 2024-08
+2025-08-06 15:47:08,928 - INFO - Using exact bbox: {'west': 14.342876635750468, 'south': 46.12358416845685, 'east': 14.408124974052836, 'north': 46.1689357308968}
+2025-08-06 15:47:08,988 - INFO - Downloading sentinel2_grid_463_2024_08.tiff...
+2025-08-06 15:47:35,684 - INFO - Downloaded image properties:
+2025-08-06 15:47:35,685 - INFO -   File: sentinel2_grid_463_2024_08.tiff
+2025-08-06 15:47:35,685 - INFO -   Size: 726x505
+2025-08-06 15:47:35,685 - INFO -   CRS: EPSG:4326
+2025-08-06 15:47:35,685 - INFO -   Bounds: BoundingBox(left=14.34286538383303, bottom=46.12350714464384, right=14.408205383833028, top=46.16895714464384)
+2025-08-06 15:47:35,685 - INFO -   Transform: | 0.00, 0.00, 14.34|
+| 0.00,-0.00, 46.17|
+| 0.00, 0.00, 1.00|
+2025-08-06 15:47:35,685 - INFO -   Data type: ('int16', 'int16', 'int16')
+2025-08-06 15:47:35,685 - INFO - Bbox validation:
+2025-08-06 15:47:35,685 - INFO -   Expected: W=14.3428766358, S=46.1235841685, E=14.4081249741, N=46.1689357309
+2025-08-06 15:47:35,685 - INFO -   Actual:   W=14.3428653838, S=46.1235071446, E=14.4082053838, N=46.1689571446
+2025-08-06 15:47:35,685 - INFO - Successfully downloaded: sentinel2_grid_463_2024_08.tiff
+2025-08-06 15:47:37,691 - INFO - ============================================================
+2025-08-06 15:47:37,692 - INFO - DOWNLOAD SUMMARY
+2025-08-06 15:47:37,692 - INFO - ============================================================
+2025-08-06 15:47:37,692 - INFO - Total requested: 2
+2025-08-06 15:47:37,692 - INFO - Successfully downloaded: 2
+2025-08-06 15:47:37,692 - INFO - Failed: 0
+2025-08-06 15:47:37,692 - INFO - Skipped (already exist): 0
+2025-08-06 15:47:37,692 - INFO - Success rate: 100.0%
+2025-08-06 15:47:37,692 - INFO - ============================================================
+2025-08-06 15:47:37,692 - INFO - Download process completed
