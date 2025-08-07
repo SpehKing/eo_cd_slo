@@ -21,7 +21,7 @@ async def test_imports():
     print("🔍 Testing imports...")
 
     try:
-        from pipeline.config.settings import get_pipeline_config
+        from pipeline.config.settings import config
 
         print("  ✅ Config module imported successfully")
     except Exception as e:
@@ -84,13 +84,11 @@ async def test_configuration():
     print("\n⚙️  Testing configuration...")
 
     try:
-        from pipeline.config.settings import get_pipeline_config
-
-        config = get_pipeline_config()
+        from pipeline.config.settings import config
 
         print(f"  ✅ Configuration loaded successfully")
-        print(f"  📁 Data directory: {config.data_dir}")
-        print(f"  🔄 Processing mode: {config.processing_mode}")
+        print(f"  📁 Data directory: {config.base_data_dir}")
+        print(f"  🔄 Processing mode: {config.mode}")
         print(f"  👥 Max workers: {config.max_workers}")
         print(
             f"  📊 Grid IDs: {config.grid_ids[:3]}..."
@@ -110,16 +108,14 @@ async def test_directories():
     print("\n📁 Testing directory structure...")
 
     try:
-        from pipeline.config.settings import get_pipeline_config
-
-        config = get_pipeline_config()
+        from pipeline.config.settings import config
 
         # Test creating directories
         test_dirs = [
-            config.data_dir / "images",
-            config.data_dir / "masks",
-            config.data_dir / "checkpoints",
-            config.data_dir / "logs",
+            config.base_data_dir / "images",
+            config.base_data_dir / "masks",
+            config.base_data_dir / "checkpoints",
+            config.base_data_dir / "logs",
         ]
 
         for test_dir in test_dirs:
@@ -145,9 +141,8 @@ async def test_state_manager():
 
     try:
         from pipeline.utils.state_manager import StateManager
-        from pipeline.config.settings import get_pipeline_config
+        from pipeline.config.settings import config
 
-        config = get_pipeline_config()
         state_manager = StateManager()
 
         # Test checkpoint creation
@@ -160,16 +155,28 @@ async def test_state_manager():
             "skipped_tasks": 0,
             "tasks": {
                 "test_task_1": {
+                    "task_id": "test_task_1",
                     "status": "completed",
                     "started_at": "2024-01-01T10:00:00",
                     "completed_at": "2024-01-01T10:15:00",
+                    "error_message": None,
+                    "metadata": {},
                 },
-                "test_task_2": {"status": "pending"},
+                "test_task_2": {
+                    "task_id": "test_task_2",
+                    "status": "pending",
+                    "started_at": None,
+                    "completed_at": None,
+                    "error_message": None,
+                    "metadata": {},
+                },
             },
+            "started_at": "2024-01-01T10:00:00",
+            "completed_at": None,
         }
 
         # Save checkpoint
-        checkpoint_file = config.data_dir / "checkpoints" / "test_2023.json"
+        checkpoint_file = config.base_data_dir / "checkpoints" / "test_2023.json"
         with open(checkpoint_file, "w") as f:
             json.dump(test_checkpoint, f, indent=2)
 
@@ -179,7 +186,7 @@ async def test_state_manager():
         if loaded_checkpoint:
             print("  ✅ Checkpoint save/load working")
             print(
-                f"  📊 Loaded checkpoint: {loaded_checkpoint['stage_name']} {loaded_checkpoint['year']}"
+                f"  📊 Loaded checkpoint: {loaded_checkpoint.stage_name} {loaded_checkpoint.year}"
             )
         else:
             print("  ❌ Checkpoint load failed")
@@ -212,7 +219,7 @@ async def test_module_initialization():
         print("  ✅ Inserter initialized")
 
         # Test BTC processor initialization (without loading the model)
-        processor = BTCProcessorV5(load_model=False)
+        processor = BTCProcessorV5()
         print("  ✅ BTC processor initialized (without model)")
 
         return True
@@ -232,8 +239,9 @@ async def test_controller_initialization():
         print("  ✅ Controller initialized")
 
         # Test status check without starting
-        await controller._update_status("Testing pipeline setup")
-        print("  ✅ Status update working")
+        status = controller.get_pipeline_status()
+        print("  ✅ Status check working")
+        print(f"    Running: {status['is_running']}, Mode: {status['config']['mode']}")
 
         return True
     except Exception as e:

@@ -1,0 +1,6 @@
+2025-08-07 10:50:54,000 - pipeline.utils.state_manager.StateManager - ERROR - Failed to load checkpoint for test: 'task_id'
+2025-08-07 10:53:05,353 - pipeline.utils.state_manager.StateManager - INFO - Loaded checkpoint for test_2023: 1/2 completed
+2025-08-07 10:53:49,274 - pipeline.utils.state_manager.StateManager - INFO - Loaded checkpoint for test_2023: 1/2 completed
+2025-08-07 10:54:51,373 - pipeline.utils.state_manager.StateManager - INFO - Loaded checkpoint for test_2023: 1/2 completed
+2025-08-07 10:55:49,483 - pipeline.utils.state_manager.StateManager - INFO - Loaded checkpoint for test_2023: 1/2 completed
+2025-08-07 10:56:36,485 - pipeline.utils.state_manager.StateManager - INFO - Loaded checkpoint for test_2023: 1/2 completed
