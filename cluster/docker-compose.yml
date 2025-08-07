@@ -1,0 +1,114 @@
+version: "3.8"
+
+services:
+  # EO Change Detection Pipeline
+  eo-pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: eo_pipeline_container
+    restart: unless-stopped
+    environment:
+      # Pipeline Configuration
+      PIPELINE_MODE: "local_only" # or "database_only" or "hybrid"
+      MAX_WORKERS: 4
+      MEMORY_LIMIT_GB: 4
+      LOG_LEVEL: "INFO"
+
+      # Data directories (mounted volumes)
+      DATA_DIR: "/app/data"
+
+      # OpenEO Configuration
+      OPENEO_RATE_LIMIT: 2.0
+      OPENEO_MAX_RETRIES: 3
+
+      # BTC Model Configuration
+      BTC_MODEL_CHECKPOINT: "blaz-r/BTC-B_oscd96"
+      BTC_THRESHOLD: 0.2
+
+      # Monitoring
+      MONITORING_PORT: 8080
+
+      # Database Configuration (for database mode)
+      DB_HOST: "timescaledb"
+      DB_PORT: 5432
+      DB_NAME: "eo_db"
+      DB_USER: "postgres"
+      DB_PASSWORD: "password"
+
+    ports:
+      - "8080:8080" # Monitoring dashboard
+
+    volumes:
+      # Persistent data storage
+      - pipeline_data:/app/data
+      # Grid file (required)
+      - ./data/slovenia_grid_expanded.gpkg:/app/data/slovenia_grid_expanded.gpkg:ro
+      # Optional: mount existing downloaded data
+      # - ./data/images:/app/data/images
+
+    networks:
+      - eo_network
+
+    # GPU support (uncomment if you have NVIDIA GPU)
+    # runtime: nvidia
+    # environment:
+    #   - NVIDIA_VISIBLE_DEVICES=all
+
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: "4"
+        reservations:
+          memory: 2G
+          cpus: "2"
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+    # Only start if database is available (for database mode)
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+
+  # TimescaleDB Database Service (existing)
+  timescaledb:
+    build:
+      context: ./timescaledb-stack
+      dockerfile: Dockerfile
+    container_name: timescaledb_container
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: eo_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - timescale_data:/var/lib/postgresql/data
+      - ./timescaledb-stack/db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+    networks:
+      - eo_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d eo_db"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  pipeline_data:
+    driver: local
+  timescale_data:
+    driver: local
+
+networks:
+  eo_network:
+    driver: bridge
