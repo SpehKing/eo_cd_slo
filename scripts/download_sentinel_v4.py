@@ -39,8 +39,8 @@ logger = logging.getLogger(__name__)
 
 # Configuration
 # Define grid IDs for Slovenia - these are the exact IDs from the expanded grid
-GRID_IDS = [463]  # Target grid IDs
-YEARS = list(range(2023, 2025))  # 2024
+GRID_IDS = [463, 464, 465, 466, 467, 468]  # Target grid IDs
+YEARS = list(range(2022, 2025))  # 2024
 AUGUST_START_DAY = 1
 AUGUST_END_DAY = 31
 MAX_CLOUD_COVERAGE = 0  # Maximum cloud coverage percentage
