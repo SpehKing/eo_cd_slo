@@ -8,6 +8,7 @@ Supports both local storage and database modes with state management.
 
 import asyncio
 import logging
+import os
 import openeo
 import geopandas as gpd
 import rasterio
@@ -56,21 +57,104 @@ class SentinelDownloaderV5:
             return False
 
     async def connect_openeo(self) -> bool:
-        """Establish connection to OpenEO backend"""
+        """Establish connection to OpenEO backend with hardcoded credentials"""
         try:
             self.logger.info("Connecting to OpenEO Copernicus Data Space Ecosystem...")
             self.connection = openeo.connect(url=config.openeo_url)
 
-            # Authenticate - this will open browser for user login
-            self.logger.info("Please authenticate in your browser...")
-            self.connection = self.connection.authenticate_oidc()
+            # Use hardcoded client ID for all authentication methods
+            client_id = config.openeo_client_id
+            self.logger.info(f"Using hardcoded Client ID: {client_id}")
 
-            self.logger.info("Successfully connected and authenticated")
-            return True
+            # Priority 1: Client Secret Flow (if you have a client secret)
+            if config.openeo_client_secret:
+                self.logger.info("Using Client Credentials Flow")
+                try:
+                    self.connection = (
+                        self.connection.authenticate_oidc_client_credentials(
+                            client_id=client_id,
+                            client_secret=config.openeo_client_secret,
+                        )
+                    )
+                    self.logger.info(
+                        "✓ Successfully authenticated with Client Credentials!"
+                    )
+                    return True
+                except Exception as e:
+                    self.logger.error(f"Client Credentials authentication failed: {e}")
+                    # Fall through to next method
+
+            # Priority 2: Refresh Token Flow (if you have a refresh token)
+            elif config.openeo_refresh_token:
+                self.logger.info("Using Refresh Token Flow")
+                try:
+                    self.connection = self.connection.authenticate_oidc_refresh_token(
+                        refresh_token=config.openeo_refresh_token
+                    )
+                    self.logger.info("✓ Successfully authenticated with Refresh Token!")
+                    return True
+                except Exception as e:
+                    self.logger.error(f"Refresh Token authentication failed: {e}")
+                    # Fall through to next method
+
+            # Priority 3: Device Flow (works for Docker and automation)
+            else:
+                self.logger.info("Using Device Flow authentication")
+                self.logger.info(
+                    "This will show a URL and code for browser authentication"
+                )
+                try:
+                    self.connection = self.connection.authenticate_oidc_device()
+                    self.logger.info("✓ Successfully authenticated with Device Flow!")
+                    return True
+                except Exception as e:
+                    self.logger.error(f"Device Flow authentication failed: {e}")
+
+                    # Final fallback: Default openEO authentication
+                    self.logger.info(
+                        "Trying default openEO authentication as final fallback..."
+                    )
+                    try:
+                        self.connection = self.connection.authenticate_oidc()
+                        self.logger.info(
+                            "✓ Successfully authenticated with default method!"
+                        )
+                        return True
+                    except Exception as fallback_e:
+                        self.logger.error(
+                            f"All authentication methods failed: {fallback_e}"
+                        )
+                        return False
 
         except Exception as e:
             self.logger.error(f"Failed to connect to OpenEO: {e}")
+            self.logger.error("Troubleshooting:")
+            self.logger.error("1. Check internet connectivity")
+            self.logger.error("2. Verify openeo.dataspace.copernicus.eu is accessible")
+            self.logger.error("3. Ensure your Copernicus account is active")
             return False
+
+    def _is_running_in_docker(self) -> bool:
+        """Check if running inside a Docker container"""
+        try:
+            # Check for .dockerenv file
+            if Path("/.dockerenv").exists():
+                return True
+
+            # Check cgroup for docker
+            with open("/proc/1/cgroup", "r") as f:
+                content = f.read()
+                if "docker" in content or "containerd" in content:
+                    return True
+
+        except (FileNotFoundError, PermissionError):
+            pass
+
+        # Check environment variables commonly set in Docker
+        return any(
+            env_var in os.environ
+            for env_var in ["DOCKER_CONTAINER", "CONTAINER", "KUBERNETES_SERVICE_HOST"]
+        )
 
     def get_grid_bbox_exact(self, grid_id: int) -> Dict[str, float]:
         """Get exact bounding box for a grid cell in EPSG:4326"""

@@ -82,7 +82,7 @@ services:
     restart: unless-stopped
     environment:
       # Pipeline Configuration
-      PIPELINE_MODE: local_only # local_only, database_only, hybrid
+      PIPELINE_MODE: database_only # local_only, database_only, hybrid
       MAX_WORKERS: 4
       MEMORY_LIMIT_GB: 4
 

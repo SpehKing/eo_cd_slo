@@ -67,7 +67,16 @@ class PipelineConfig:
     openeo_rate_limit: float = 2.0  # seconds between API calls
     openeo_max_retries: int = 3
 
-    # BTC model configuration
+    # OpenEO Authentication - Hardcoded Client Credentials (WORKING!)
+    openeo_client_id: str = (
+        "sh-709a7af8-09ba-46e8-bcfc-f4d0d20461d4"  # Your working client ID
+    )
+    openeo_client_secret: str = (
+        "v9dPYitFLccIhtRohuIrvT0EwnsiJUIJ"  # Your working client secret
+    )
+
+    # OpenEO Authentication - Optional refresh token
+    openeo_refresh_token: Optional[str] = None  # Set this if you get a refresh token
     btc_model_checkpoint: str = "blaz-r/BTC-B_oscd96"
     btc_config_path: str = "configs/exp/BTC-B.yaml"
     btc_image_size: int = 256
@@ -101,9 +110,12 @@ class PipelineConfig:
         self.checkpoints_dir = self.base_data_dir / "checkpoints"
         self.logs_dir = self.base_data_dir / "logs"
 
-        # Grid file in main data directory (cluster/../data/)
+        # Grid file in cluster/pipeline/config/ directory
         self.grid_file = (
-            self._pipeline_root.parent.parent / "data" / "slovenia_grid_expanded.gpkg"
+            self._pipeline_root.parent
+            / "pipeline"
+            / "config"
+            / "slovenia_grid_expanded.gpkg"
         )
 
         # Ensure directories exist in local mode
@@ -211,6 +223,14 @@ def load_config_from_env():
         config.btc_model_checkpoint = os.getenv("BTC_MODEL_CHECKPOINT")
     if os.getenv("BTC_THRESHOLD"):
         config.btc_threshold = float(os.getenv("BTC_THRESHOLD"))
+
+    # OpenEO authentication
+    if os.getenv("OPENEO_CLIENT_ID"):
+        config.openeo_client_id = os.getenv("OPENEO_CLIENT_ID")
+    if os.getenv("OPENEO_CLIENT_SECRET"):
+        config.openeo_client_secret = os.getenv("OPENEO_CLIENT_SECRET")
+    if os.getenv("OPENEO_REFRESH_TOKEN"):
+        config.openeo_refresh_token = os.getenv("OPENEO_REFRESH_TOKEN")
 
     # Monitoring
     if os.getenv("MONITORING_PORT"):

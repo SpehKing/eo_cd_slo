@@ -170,14 +170,24 @@ class SentinelInserterV5:
                 bbox_polygon = box(bounds.left, bounds.bottom, bounds.right, bounds.top)
                 bbox_wkt = bbox_polygon.wkt
 
+                # Make bounds and transform JSON-serializable
+                bounds_json = {
+                    "left": float(bounds.left),
+                    "bottom": float(bounds.bottom),
+                    "right": float(bounds.right),
+                    "top": float(bounds.top),
+                }
+                # Affine is iterable -> 6 numbers (a, b, c, d, e, f)
+                transform_json = list(src.transform)
+
                 metadata = {
-                    "width": src.width,
-                    "height": src.height,
+                    "width": int(src.width),
+                    "height": int(src.height),
                     "data_type": str(src.dtypes[0]),
                     "crs": str(src.crs),
-                    "bounds": bounds,
+                    "bounds": bounds_json,
                     "bbox_wkt": bbox_wkt,
-                    "transform": src.transform,
+                    "transform": transform_json,
                 }
 
                 self.logger.debug(f"Image metadata for {filepath.name}:")
@@ -220,19 +230,34 @@ class SentinelInserterV5:
             # Create metadata file alongside the image
             metadata_file = filepath.with_suffix(".json")
 
+            # Ensure nested values are JSON-serializable
+            file_info_json = dict(file_info)
+            if isinstance(file_info_json.get("date"), datetime):
+                file_info_json["date"] = file_info_json["date"].isoformat()
+
+            image_metadata_json = dict(metadata)
+            # Coerce potential numpy types just in case
+            for k in ("width", "height"):
+                if k in image_metadata_json:
+                    image_metadata_json[k] = int(image_metadata_json[k])
+
             full_metadata = {
-                "file_info": file_info,
-                "image_metadata": metadata,
+                "file_info": file_info_json,
+                "image_metadata": image_metadata_json,
                 "stored_at": datetime.now().isoformat(),
                 "grid_id": file_info["grid_id"],
-                "date": file_info["date"].isoformat(),
-                "bands": config.bands,
+                "date": (
+                    file_info["date"].isoformat()
+                    if isinstance(file_info.get("date"), datetime)
+                    else file_info.get("date")
+                ),
+                "bands": list(config.bands),
             }
 
             import json
 
             with open(metadata_file, "w") as f:
-                json.dump(full_metadata, f, indent=2)
+                json.dump(full_metadata, f, indent=2, default=str)
 
             self.logger.debug(f"Stored metadata locally: {metadata_file}")
             return True
@@ -251,9 +276,15 @@ class SentinelInserterV5:
 
         try:
             with self.conn.cursor() as cur:
+                # Compare by month using date_trunc on the time column
                 cur.execute(
-                    "SELECT id FROM eo WHERE grid_id = %s AND month = %s",
-                    (grid_id, date.replace(day=1).date()),
+                    """
+                    SELECT id FROM eo
+                    WHERE grid_id = %s
+                      AND date_trunc('month', time) = date_trunc('month', %s::timestamp)
+                    LIMIT 1
+                    """,
+                    (grid_id, date),
                 )
                 return cur.fetchone() is not None
 

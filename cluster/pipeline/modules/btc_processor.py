@@ -20,6 +20,7 @@ import rasterio
 from typing import List, Dict, Tuple, Optional, Any
 from datetime import datetime
 import json
+import psycopg2
 
 # Clean path resolution for BTC imports - exactly like in the working Jupyter notebook
 current_file = Path(__file__).resolve()
@@ -49,6 +50,29 @@ class BTCProcessorV5:
         self.device = None
         self.btc_config = None
         self.current_year = None
+
+    def get_mask_output_path(
+        self, img_a_path: Path, img_b_path: Path, year: int
+    ) -> Path:
+        """Build the destination path for the generated mask.
+        Uses naming convention:
+        - data/masks/{year}/change_mask_grid_{grid_id}_{year}.png
+        Falls back to a generic name if parsing fails.
+        """
+        try:
+            parts = img_a_path.stem.split("_")
+            # Expecting stem like: sentinel2_grid_{grid}_{year}_08
+            grid_id = int(parts[2]) if len(parts) >= 4 else None
+        except Exception:
+            grid_id = None
+
+        masks_dir = config.get_year_masks_dir(year)
+        if grid_id is not None:
+            filename = f"change_mask_grid_{grid_id}_{year}.png"
+        else:
+            # Fallback, include stems to avoid collisions
+            filename = f"change_mask_{year}_{img_a_path.stem}_to_{img_b_path.stem}.png"
+        return masks_dir / filename
 
     async def initialize(self) -> bool:
         """Initialize BTC model and transforms"""
@@ -375,32 +399,129 @@ class BTCProcessorV5:
     async def save_mask_to_database(
         self, mask: np.ndarray, metadata: Dict, img_a_path: Path, img_b_path: Path
     ) -> bool:
-        """Save mask to database (placeholder for now)"""
-        # TODO: Implement database insertion for masks
-        self.logger.warning("Database storage for masks not yet implemented")
-        return False
-
-    def get_mask_output_path(
-        self, img_a_path: Path, img_b_path: Path, year: int
-    ) -> Path:
-        """Get output path for change mask"""
-        # Parse grid ID from filename
-        grid_id = None
+        """Save mask to database by inserting a row into eo_change.
+        Uses corresponding eo table rows for img_a and img_b to fetch ids and geometry.
+        """
         try:
-            parts = img_a_path.stem.split("_")
-            grid_id = int(parts[2])
-        except:
-            grid_id = "unknown"
+            if config.mode == ProcessingMode.LOCAL_ONLY:
+                self.logger.info("Local mode: skipping database storage for masks")
+                return False
 
-        if config.mode == ProcessingMode.LOCAL_ONLY:
-            year_masks_dir = config.get_year_masks_dir(year)
-        else:
-            year_masks_dir = config.masks_dir / "temp" / str(year)
-            year_masks_dir.mkdir(parents=True, exist_ok=True)
+            # Parse grid_id and years from filenames: sentinel2_grid_{grid}_{year}_08.*
+            def parse_info(p: Path) -> Tuple[int, int]:
+                parts = p.stem.split("_")
+                grid_id = int(parts[2])
+                year = int(parts[3])
+                return grid_id, year
 
-        # Create filename
-        filename = f"change_mask_grid_{grid_id}_{year}.png"
-        return year_masks_dir / filename
+            grid_a, year_a = parse_info(img_a_path)
+            grid_b, year_b = parse_info(img_b_path)
+            if grid_a != grid_b:
+                self.logger.error("Image pair grid_id mismatch, cannot insert mask")
+                return False
+            grid_id = grid_a
+
+            # Build representative dates (15th of August)
+            date_a = datetime(year_a, 8, 15)
+            date_b = datetime(year_b, 8, 15)
+
+            # Connect to DB
+            conn = psycopg2.connect(**config.db_config)
+            try:
+                with conn.cursor() as cur:
+                    # Find eo rows for each image by month
+                    cur.execute(
+                        """
+                        SELECT id, time, ST_AsText(bbox) AS bbox_wkt, width, height, data_type
+                        FROM eo
+                        WHERE grid_id = %s
+                          AND date_trunc('month', time) = date_trunc('month', %s::timestamp)
+                        LIMIT 1
+                        """,
+                        (grid_id, date_a),
+                    )
+                    row_a = cur.fetchone()
+
+                    cur.execute(
+                        """
+                        SELECT id, time, ST_AsText(bbox) AS bbox_wkt, width, height, data_type
+                        FROM eo
+                        WHERE grid_id = %s
+                          AND date_trunc('month', time) = date_trunc('month', %s::timestamp)
+                        LIMIT 1
+                        """,
+                        (grid_id, date_b),
+                    )
+                    row_b = cur.fetchone()
+
+                    if not row_a or not row_b:
+                        self.logger.error(
+                            f"EO records not found for grid {grid_id} years {year_a} and/or {year_b}"
+                        )
+                        return False
+
+                    img_a_id, time_a, bbox_wkt_a, width_a, height_a, dtype_a = row_a
+                    img_b_id, time_b, bbox_wkt_b, width_b, height_b, dtype_b = row_b
+
+                    # Enforce img_a_id < img_b_id due to constraint
+                    if img_a_id > img_b_id:
+                        img_a_id, img_b_id = img_b_id, img_a_id
+                        time_a, time_b = time_b, time_a
+                        bbox_wkt_a, bbox_wkt_b = bbox_wkt_b, bbox_wkt_a
+                        width_a, width_b = width_b, width_a
+                        height_a, height_b = height_b, height_a
+                        dtype_a, dtype_b = dtype_b, dtype_a
+
+                    # Choose metadata for eo_change
+                    period_start = datetime(
+                        time_a.year, time_a.month, 1, tzinfo=time_a.tzinfo
+                    )
+                    period_end = datetime(
+                        time_b.year, time_b.month, 1, tzinfo=time_b.tzinfo
+                    )
+                    # Prefer bbox from first image
+                    bbox_wkt = bbox_wkt_a
+                    width = min(int(width_a), int(width_b))
+                    height = min(int(height_a), int(height_b))
+                    data_type = str(dtype_a)
+
+                    # Prepare insert with upsert-safe behavior
+                    insert_sql = """
+                        INSERT INTO eo_change (
+                            img_a_id, img_b_id, grid_id, period_start, period_end,
+                            bbox, width, height, data_type, mask
+                        ) VALUES (
+                            %s, %s, %s, %s, %s,
+                            ST_GeogFromText(%s), %s, %s, %s, %s
+                        )
+                        ON CONFLICT (img_a_id, img_b_id, period_start) DO NOTHING
+                    """
+
+                    cur.execute(
+                        insert_sql,
+                        (
+                            img_a_id,
+                            img_b_id,
+                            grid_id,
+                            time_a,
+                            time_b,
+                            bbox_wkt,
+                            width,
+                            height,
+                            data_type,
+                            bytes(mask.tobytes()),
+                        ),
+                    )
+                    conn.commit()
+                    self.logger.info(
+                        f"✓ Inserted eo_change for grid {grid_id}: {year_a}-08 -> {year_b}-08 (ids {img_a_id},{img_b_id})"
+                    )
+                    return True
+            finally:
+                conn.close()
+        except Exception as e:
+            self.logger.error(f"Error saving mask to database: {e}")
+            return False
 
     async def process_image_pair(
         self, img_a_path: Path, img_b_path: Path, year: int
@@ -460,11 +581,31 @@ class BTCProcessorV5:
             checkpoint = state_manager.create_stage_checkpoint(
                 "btc_process", year, task_ids
             )
+        else:
+            # If the task set has changed (e.g., new pairs), recreate checkpoint
+            existing_ids = set(checkpoint.tasks.keys())
+            desired_ids = set(task_ids)
+            if existing_ids != desired_ids:
+                self.logger.warning(
+                    "BTC task list changed since last run; recreating checkpoint"
+                )
+                checkpoint = state_manager.create_stage_checkpoint(
+                    "btc_process", year, task_ids
+                )
 
         # Get pending tasks
         pending_task_ids = state_manager.get_pending_tasks("btc_process", year)
-        pending_pairs = []
+        # If none pending but there are failed tasks, reset them
+        if not pending_task_ids:
+            failed_ids = state_manager.get_failed_tasks("btc_process", year)
+            if failed_ids:
+                self.logger.info(
+                    f"No pending tasks but {len(failed_ids)} failed tasks found; resetting failed tasks"
+                )
+                state_manager.reset_failed_tasks("btc_process", year)
+                pending_task_ids = state_manager.get_pending_tasks("btc_process", year)
 
+        pending_pairs = []
         for i, pair in enumerate(image_pairs):
             task_id = f"btc_{year}_{i}"
             if task_id in pending_task_ids:
@@ -473,6 +614,10 @@ class BTCProcessorV5:
         self.logger.info(f"Found {len(pending_pairs)} pending BTC tasks for {year}")
 
         if not pending_pairs:
+            # Provide more context about checkpoint state
+            self.logger.info(
+                f"No pending pairs. Completed: {checkpoint.completed_tasks}, Failed: {checkpoint.failed_tasks}, Skipped: {checkpoint.skipped_tasks}, Total: {checkpoint.total_tasks}"
+            )
             self.logger.info(f"All BTC processing for {year} already completed")
             return True
 

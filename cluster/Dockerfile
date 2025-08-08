@@ -43,11 +43,15 @@ RUN uv pip install --system --no-cache -r requirements_pipeline.txt
 COPY . .
 
 # Create data directories
-RUN mkdir -p /app/data/images /app/data/masks /app/data/checkpoints /app/data/logs
+RUN mkdir -p /app/data/images /app/data/masks /app/data/checkpoints /app/data/logs /app/pipeline/data/hf_cache/hub
 
 # Set environment variables
 ENV PYTHONPATH="/app"
 ENV CUDA_VISIBLE_DEVICES=""
+# Align all HF caches under the same folder used by the controller
+ENV HF_HOME="/app/pipeline/data/hf_cache"
+ENV TRANSFORMERS_CACHE="/app/pipeline/data/hf_cache/hub"
+ENV HUGGINGFACE_HUB_CACHE="/app/pipeline/data/hf_cache/hub"
 
 # Expose monitoring port
 EXPOSE 8080

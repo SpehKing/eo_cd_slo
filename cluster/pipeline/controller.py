@@ -17,6 +17,7 @@ import sys
 from pathlib import Path
 from typing import Optional
 from datetime import datetime
+import os
 
 # Setup logging first
 from .config.settings import config, LogLevel
@@ -61,6 +62,43 @@ class PipelineController:
         self.logger.info(f"Received signal {signum}, initiating graceful shutdown...")
         self.should_stop = True
 
+    async def _prefetch_hf_model(self) -> bool:
+        """Pre-download the BTC model snapshot from Hugging Face and show progress.
+        Caches under DATA_DIR/hf_cache to persist across runs.
+        """
+        try:
+            from huggingface_hub import snapshot_download
+            from huggingface_hub.utils import logging as hf_logging
+
+            cache_dir = config.base_data_dir / "hf_cache"
+            cache_dir.mkdir(parents=True, exist_ok=True)
+            # Ensure hub uses our persistent cache
+            os.environ.setdefault("HF_HOME", str(cache_dir))
+            # Use standard downloader to avoid missing hf_transfer package issues
+            os.environ.setdefault("HF_HUB_ENABLE_HF_TRANSFER", "0")
+
+            self.logger.info(
+                f"Prefetching Hugging Face model: {config.btc_model_checkpoint}"
+            )
+            self.logger.info(f"HF cache: {os.environ['HF_HOME']}")
+
+            # Show per-file download progress
+            hf_logging.set_verbosity_info()
+
+            def _download():
+                return snapshot_download(
+                    repo_id=config.btc_model_checkpoint,
+                    cache_dir=str(cache_dir),
+                )
+
+            # Run the blocking download in a thread and wait until it finishes
+            path = await asyncio.to_thread(_download)
+            self.logger.info(f"Model snapshot available at: {path}")
+            return True
+        except Exception as e:
+            self.logger.error(f"Failed to prefetch Hugging Face model: {e}")
+            return False
+
     async def run_pipeline(self, resume: bool = True) -> bool:
         """Run the complete pipeline"""
         try:
@@ -97,39 +135,49 @@ class PipelineController:
                 self.logger.error("Failed to initialize inserter")
                 return False
 
-            # Initialize BTC processor
+            # Initialize BTC processor (builds transforms, sets device)
             if not await self.btc_processor.initialize():
                 self.logger.error("Failed to initialize BTC processor")
+                return False
+
+            # Prefetch HF model so it's cached before loading
+            if not await self._prefetch_hf_model():
+                self.logger.error("Failed to prefetch BTC model")
+                return False
+
+            # Ensure BTC model is loaded once up front
+            if not await self.btc_processor.load_model():
+                self.logger.error("Failed to load BTC model")
                 return False
 
             self.logger.info("✓ All modules initialized successfully")
 
             overall_success = True
 
-            # Process each year sequentially as requested
+            # NEW: Run stages grouped by type, not by year
+            # Stage 1: Download for all years first
             for year in config.years:
                 if self.should_stop:
                     self.logger.info("Pipeline stopped by user request")
                     break
-
-                self.logger.info(f"\n{'='*60}")
-                self.logger.info(f"PROCESSING YEAR {year}")
-                self.logger.info(f"{'='*60}")
-
-                # Update monitoring
                 monitor.update_pipeline_status("running", "download", year)
-
-                # Stage 1: Download images for this year
                 year_success = await self._run_download_stage(year, resume)
                 if not year_success:
                     overall_success = False
-                    if not resume:  # If not resuming, stop on failure
+                    if not resume:
                         break
 
-                if self.should_stop:
-                    break
+            if self.should_stop:
+                # Stop early before moving to next stages
+                if overall_success:
+                    monitor.update_pipeline_status("stopped")
+                return overall_success
 
-                # Stage 2: Insert/store images for this year
+            # Stage 2: Insert/store for all years next
+            for year in config.years:
+                if self.should_stop:
+                    self.logger.info("Pipeline stopped by user request")
+                    break
                 monitor.update_pipeline_status("running", "insert", year)
                 year_success = await self._run_insert_stage(year, resume)
                 if not year_success:
@@ -137,17 +185,25 @@ class PipelineController:
                     if not resume:
                         break
 
-                if self.should_stop:
-                    break
+            if self.should_stop:
+                if overall_success:
+                    monitor.update_pipeline_status("stopped")
+                return overall_success
 
-                # Stage 3: Generate change masks for this year (with next year)
-                if year < max(config.years):  # Skip if this is the last year
-                    monitor.update_pipeline_status("running", "btc_process", year)
-                    year_success = await self._run_btc_stage(year, resume)
-                    if not year_success:
-                        overall_success = False
-                        if not resume:
-                            break
+            # Stage 3: BTC processing on year pairs (e.g., 2023->2024)
+            # Only run for years that have a subsequent year
+            for year in config.years:
+                if year >= max(config.years):
+                    continue
+                if self.should_stop:
+                    self.logger.info("Pipeline stopped by user request")
+                    break
+                monitor.update_pipeline_status("running", "btc_process", year)
+                year_success = await self._run_btc_stage(year, resume)
+                if not year_success:
+                    overall_success = False
+                    if not resume:
+                        break
 
             # Final status update
             if self.should_stop:
