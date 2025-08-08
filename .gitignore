@@ -6,6 +6,7 @@ sentinel_downloads_v2/
 sentinel_downloads_v3/
 sentinel_downloads_v4/
 BTC/
+btc_model/
 oscd96/
 .DS_Store
 __pycache__/

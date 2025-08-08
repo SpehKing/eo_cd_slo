@@ -38,7 +38,7 @@ class PipelineConfig:
     mode: ProcessingMode = ProcessingMode.LOCAL_ONLY
 
     # Target data specification
-    grid_ids: List[int] = field(default_factory=lambda: [463, 464])
+    grid_ids: List[int] = field(default_factory=lambda: [465])
     years: List[int] = field(default_factory=lambda: list(range(2023, 2025)))
 
     # Processing parameters

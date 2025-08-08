@@ -100,7 +100,24 @@ class BTCProcessorV5:
                 self.btc_config, pretrain=False, test=True, has_mask=False
             )
 
+            # Log the transforms to verify normalization is included
             self.logger.info("BTC transforms built successfully")
+            self.logger.info(f"Transform pipeline: {self.transforms.transforms}")
+
+            # Extract and log normalization parameters
+            normalize_transform = None
+            for transform in self.btc_config.train.transforms:
+                if "Normalize" in transform:
+                    normalize_transform = transform["Normalize"]
+                    break
+
+            if normalize_transform:
+                self.logger.info(f"✓ Normalization found in config:")
+                self.logger.info(f"  Mean: {normalize_transform['mean']}")
+                self.logger.info(f"  Std: {normalize_transform['std']}")
+            else:
+                self.logger.warning("⚠️ No normalization transform found in BTC config!")
+                self.logger.warning("This could cause inference differences!")
 
             # Set device
             self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -223,13 +240,23 @@ class BTCProcessorV5:
     def convert_tiff_to_png(
         self, tiff_path: Path, target_size: int = 256
     ) -> Tuple[Optional[np.ndarray], Optional[Dict]]:
-        """Convert TIFF to PNG format and resize"""
+        """Convert TIFF to PNG format and resize
+        Deterministically map Sentinel-2 bands B02,B03,B04 -> RGB (R,G,B) = [B04,B03,B02].
+        This matches the insert/schema where band order is B02,B03,B04 in the file.
+        """
         try:
             with rasterio.open(tiff_path) as src:
-                # Read RGB bands
+                # Read first 3 bands (assumed B02,B03,B04 = Blue,Green,Red)
                 if src.count >= 3:
-                    img_data = src.read([1, 2, 3])  # Shape: (3, height, width)
+                    # Read as (B,G,R)
+                    img_data = src.read([1, 2, 3])  # (3, H, W)
+                    # Reorder deterministically to (R,G,B)
+                    img_data = img_data[[2, 1, 0], :, :]
+                    self.logger.debug(
+                        f"Reordered bands (B02,B03,B04)->(R,G,B) for {tiff_path.name}"
+                    )
                 else:
+                    # Single-band fallback -> gray to 3 channels
                     band1 = src.read(1)
                     img_data = np.stack([band1, band1, band1], axis=0)
 
@@ -237,37 +264,40 @@ class BTCProcessorV5:
                 if src.nodata is not None:
                     img_data = np.where(img_data == src.nodata, 0, img_data)
 
-                # Transpose to (height, width, channels)
+                # Transpose to (H, W, C)
                 img_array = np.transpose(img_data, (1, 2, 0))
 
-                # Normalize to 0-255 range
+                # Normalize to 0-255 uint8 (keep existing logic)
                 if img_array.dtype != np.uint8:
-                    if img_array.max() <= 1.0:
-                        img_array = (img_array * 255).astype(np.uint8)
-                    elif img_array.max() <= 255:
+                    max_val = float(img_array.max()) if img_array.size else 0.0
+                    min_val = float(img_array.min()) if img_array.size else 0.0
+                    if max_val <= 1.0:
+                        img_array = (img_array * 255.0).clip(0, 255).astype(np.uint8)
+                    elif max_val <= 255.0:
                         img_array = np.clip(img_array, 0, 255).astype(np.uint8)
                     else:
-                        img_min, img_max = img_array.min(), img_array.max()
-                        if img_max > img_min:
+                        if max_val > min_val:
                             img_array = (
-                                (img_array - img_min) / (img_max - img_min) * 255
-                            ).astype(np.uint8)
+                                ((img_array - min_val) / (max_val - min_val) * 255.0)
+                                .clip(0, 255)
+                                .astype(np.uint8)
+                            )
                         else:
                             img_array = np.zeros_like(img_array, dtype=np.uint8)
 
-                # Convert to PIL and resize
+                # Resize to model input size
                 img = Image.fromarray(img_array)
                 if img.size != (target_size, target_size):
                     img = img.resize((target_size, target_size), Image.LANCZOS)
 
-                # Convert back to numpy
                 final_array = np.array(img)
 
                 metadata = {
                     "original_size": f"{src.width}x{src.height}",
                     "final_size": f"{target_size}x{target_size}",
-                    "bands": src.count,
+                    "bands": int(src.count),
                     "data_type": str(src.dtypes[0]),
+                    "reordered_to_rgb": bool(src.count >= 3),
                 }
 
                 return final_array, metadata
@@ -284,14 +314,56 @@ class BTCProcessorV5:
             # Prepare data dictionary
             data = {"imageA": img_a, "imageB": img_b}
 
+            self.logger.debug(f"Input shapes - A: {img_a.shape}, B: {img_b.shape}")
+            self.logger.debug(
+                f"Input ranges - A: [{img_a.min()}, {img_a.max()}], B: [{img_b.min()}, {img_b.max()}]"
+            )
+
             # Apply BTC transforms
             transformed = self.transforms(data)
+
+            self.logger.debug(
+                f"Transformed shapes - A: {transformed['imageA'].shape}, B: {transformed['imageB'].shape}"
+            )
+            self.logger.debug(
+                f"Transformed ranges - A: [{transformed['imageA'].min():.3f}, {transformed['imageA'].max():.3f}]"
+            )
+            self.logger.debug(
+                f"Transformed ranges - B: [{transformed['imageB'].min():.3f}, {transformed['imageB'].max():.3f}]"
+            )
 
             # Add batch dimension
             batch = {
                 "imageA": transformed["imageA"].unsqueeze(0),
                 "imageB": transformed["imageB"].unsqueeze(0),
             }
+
+            # Verify normalization was applied by checking the value range
+            # After ImageNet normalization, values should typically be in range [-2.5, 2.5]
+            img_a_tensor = transformed["imageA"]
+            img_b_tensor = transformed["imageB"]
+
+            expected_mean_range = (-1.0, 1.0)  # Rough range after normalization
+
+            if (
+                img_a_tensor.min() < -3.0
+                or img_a_tensor.max() > 3.0
+                or img_b_tensor.min() < -3.0
+                or img_b_tensor.max() > 3.0
+            ):
+                self.logger.warning(
+                    "⚠️ Unusual tensor ranges after transforms - normalization may not be applied correctly!"
+                )
+                self.logger.warning(
+                    f"A range: [{img_a_tensor.min():.3f}, {img_a_tensor.max():.3f}]"
+                )
+                self.logger.warning(
+                    f"B range: [{img_b_tensor.min():.3f}, {img_b_tensor.max():.3f}]"
+                )
+            else:
+                self.logger.debug(
+                    "✓ Tensor ranges suggest normalization was applied correctly"
+                )
 
             return batch
 
@@ -344,13 +416,26 @@ class BTCProcessorV5:
                 prob_cpu = probabilities.cpu().squeeze().numpy()
                 mask_cpu = binary_mask.cpu().squeeze().numpy()
 
-            # Create output metadata
+            # Create output metadata with normalization info
             result_metadata = {
                 "input_images": [str(img_a_path), str(img_b_path)],
                 "image_size": config.btc_image_size,
                 "threshold": config.btc_threshold,
                 "model_checkpoint": config.btc_model_checkpoint,
                 "generated_at": datetime.now().isoformat(),
+                "preprocessing": {
+                    "transforms_applied": str(self.transforms.transforms),
+                    "input_tensor_ranges": {
+                        "imageA": [
+                            float(batch["imageA"].min()),
+                            float(batch["imageA"].max()),
+                        ],
+                        "imageB": [
+                            float(batch["imageB"].min()),
+                            float(batch["imageB"].max()),
+                        ],
+                    },
+                },
                 "probability_stats": {
                     "min": float(prob_cpu.min()),
                     "max": float(prob_cpu.max()),
@@ -396,12 +481,152 @@ class BTCProcessorV5:
             self.logger.error(f"Error saving mask locally: {e}")
             return False
 
+    def read_change_mask_from_memory(
+        self, mask: np.ndarray
+    ) -> Tuple[bytes, Dict[str, any]]:
+        """
+        Convert in-memory mask to raw bytes (consistent with insert script format)
+
+        Args:
+            mask: numpy array mask (uint8, 256x256)
+
+        Returns:
+            Tuple of (mask data as bytes, metadata dictionary)
+        """
+        try:
+            # Ensure it's 256x256 using PIL for consistency
+            if mask.shape != (256, 256):
+                # Use PIL for resizing (already imported)
+                mask_image = Image.fromarray(mask, mode="L")
+                mask_image = mask_image.resize((256, 256), Image.NEAREST)
+                mask = np.array(mask_image)
+
+            # Ensure it's uint8 format
+            mask = mask.astype(np.uint8)
+
+            # Create metadata (same format as insert script)
+            metadata = {"width": 256, "height": 256, "data_type": "uint8"}
+
+            # Return raw bytes (consistent with insert script approach)
+            return mask.tobytes(), metadata
+
+        except Exception as e:
+            self.logger.error(f"Error converting mask to raw bytes: {e}")
+            raise
+
+    def insert_change_mask(
+        self,
+        grid_id: int,
+        img_a_id: int,
+        img_b_id: int,
+        timestamp_a: datetime,
+        timestamp_b: datetime,
+        bbox_wkt: str,
+        mask: np.ndarray,
+    ) -> bool:
+        """
+        Insert a change detection mask for two images (exact same approach as original script)
+
+        Args:
+            grid_id: Grid cell ID
+            img_a_id: ID of first image (earlier)
+            img_b_id: ID of second image (later)
+            timestamp_a: First timestamp
+            timestamp_b: Second timestamp
+            bbox_wkt: PostGIS geography polygon string
+            mask: numpy array mask to insert
+
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            # Canonicalize to satisfy schema:
+            # - Primary key: (img_a_id, img_b_id, period_start)
+            # - Check: img_a_id < img_b_id
+            # - Periods: period_start = LEAST(time_a, time_b), period_end = GREATEST(time_a, time_b)
+            id_min, id_max = (
+                (img_a_id, img_b_id) if img_a_id < img_b_id else (img_b_id, img_a_id)
+            )
+            period_start = timestamp_a if timestamp_a <= timestamp_b else timestamp_b
+            period_end = timestamp_b if timestamp_b >= timestamp_a else timestamp_a
+
+            # Read change mask (convert to raw bytes)
+            mask_data, mask_metadata = self.read_change_mask_from_memory(mask)
+
+            # Pre-existence check to avoid unnecessary INSERTs
+            precheck_sql = "SELECT 1 FROM eo_change WHERE img_a_id=%s AND img_b_id=%s AND period_start=%s LIMIT 1"
+
+            insert_sql = """
+                INSERT INTO eo_change (
+                    img_a_id, img_b_id, grid_id,
+                    period_start, period_end, bbox,
+                    width, height, data_type, mask
+                )
+                VALUES (
+                    %s, %s, %s,
+                    %s, %s, ST_GeogFromText(%s),
+                    %s, %s, %s, %s
+                )
+                ON CONFLICT ON CONSTRAINT eo_change_pk DO NOTHING
+                """
+
+            values = (
+                id_min,
+                id_max,
+                grid_id,
+                period_start,
+                period_end,
+                bbox_wkt,
+                mask_metadata["width"],
+                mask_metadata["height"],
+                mask_metadata["data_type"],
+                mask_data,
+            )
+
+            # Connect to DB
+            conn = psycopg2.connect(**config.db_config)
+            try:
+                with conn.cursor() as cur:
+                    # Pre-check
+                    cur.execute(precheck_sql, (id_min, id_max, period_start))
+                    if cur.fetchone():
+                        self.logger.info(
+                            f"Mask already exists for grid {grid_id}: ids=({id_min},{id_max}) period_start={period_start:%Y-%m} — skipping"
+                        )
+                        return True
+
+                    # Insert
+                    cur.execute(insert_sql, values)
+                    conn.commit()
+
+                self.logger.info(
+                    f"✓ Inserted change mask for grid {grid_id}: {period_start.strftime('%Y-%m')} -> {period_end.strftime('%Y-%m')} "
+                    f"({mask_metadata['width']}x{mask_metadata['height']}, {mask_metadata['data_type']})"
+                )
+                return True
+            finally:
+                conn.close()
+
+        except psycopg2.Error as e:
+            try:
+                err_detail = getattr(e, "pgerror", str(e))
+                constraint = getattr(getattr(e, "diag", None), "constraint_name", None)
+            except Exception:
+                err_detail = str(e)
+                constraint = None
+            self.logger.error(
+                f"✗ Failed to insert change mask for grid {grid_id}: {err_detail}"
+                + (f" (constraint: {constraint})" if constraint else "")
+            )
+            return False
+        except Exception as e:
+            self.logger.error(f"✗ Failed to insert change mask for grid {grid_id}: {e}")
+            return False
+
     async def save_mask_to_database(
         self, mask: np.ndarray, metadata: Dict, img_a_path: Path, img_b_path: Path
     ) -> bool:
-        """Save mask to database by inserting a row into eo_change.
-        Uses corresponding eo table rows for img_a and img_b to fetch ids and geometry.
-        """
+        """Save mask to database using the exact same approach as original script"""
         try:
             if config.mode == ProcessingMode.LOCAL_ONLY:
                 self.logger.info("Local mode: skipping database storage for masks")
@@ -421,21 +646,22 @@ class BTCProcessorV5:
                 return False
             grid_id = grid_a
 
-            # Build representative dates (15th of August)
+            # Build representative dates for month equality (15th of August)
             date_a = datetime(year_a, 8, 15)
             date_b = datetime(year_b, 8, 15)
 
-            # Connect to DB
+            # Connect to DB to find the eo records and exact grid bbox
             conn = psycopg2.connect(**config.db_config)
             try:
                 with conn.cursor() as cur:
-                    # Find eo rows for each image by month
+                    # Prefer matching via month column for determinism
                     cur.execute(
                         """
-                        SELECT id, time, ST_AsText(bbox) AS bbox_wkt, width, height, data_type
+                        SELECT id, time
                         FROM eo
                         WHERE grid_id = %s
-                          AND date_trunc('month', time) = date_trunc('month', %s::timestamp)
+                          AND month = date_trunc('month', %s::timestamp)::date
+                        ORDER BY time
                         LIMIT 1
                         """,
                         (grid_id, date_a),
@@ -444,10 +670,11 @@ class BTCProcessorV5:
 
                     cur.execute(
                         """
-                        SELECT id, time, ST_AsText(bbox) AS bbox_wkt, width, height, data_type
+                        SELECT id, time
                         FROM eo
                         WHERE grid_id = %s
-                          AND date_trunc('month', time) = date_trunc('month', %s::timestamp)
+                          AND month = date_trunc('month', %s::timestamp)::date
+                        ORDER BY time
                         LIMIT 1
                         """,
                         (grid_id, date_b),
@@ -460,65 +687,30 @@ class BTCProcessorV5:
                         )
                         return False
 
-                    img_a_id, time_a, bbox_wkt_a, width_a, height_a, dtype_a = row_a
-                    img_b_id, time_b, bbox_wkt_b, width_b, height_b, dtype_b = row_b
+                    img_a_id, time_a = row_a
+                    img_b_id, time_b = row_b
 
-                    # Enforce img_a_id < img_b_id due to constraint
-                    if img_a_id > img_b_id:
-                        img_a_id, img_b_id = img_b_id, img_a_id
-                        time_a, time_b = time_b, time_a
-                        bbox_wkt_a, bbox_wkt_b = bbox_wkt_b, bbox_wkt_a
-                        width_a, width_b = width_b, width_a
-                        height_a, height_b = height_b, height_a
-                        dtype_a, dtype_b = dtype_b, dtype_a
-
-                    # Choose metadata for eo_change
-                    period_start = datetime(
-                        time_a.year, time_a.month, 1, tzinfo=time_a.tzinfo
-                    )
-                    period_end = datetime(
-                        time_b.year, time_b.month, 1, tzinfo=time_b.tzinfo
-                    )
-                    # Prefer bbox from first image
-                    bbox_wkt = bbox_wkt_a
-                    width = min(int(width_a), int(width_b))
-                    height = min(int(height_a), int(height_b))
-                    data_type = str(dtype_a)
-
-                    # Prepare insert with upsert-safe behavior
-                    insert_sql = """
-                        INSERT INTO eo_change (
-                            img_a_id, img_b_id, grid_id, period_start, period_end,
-                            bbox, width, height, data_type, mask
-                        ) VALUES (
-                            %s, %s, %s, %s, %s,
-                            ST_GeogFromText(%s), %s, %s, %s, %s
-                        )
-                        ON CONFLICT (img_a_id, img_b_id, period_start) DO NOTHING
-                    """
-
+                    # Fetch exact grid bbox from grid_cells to match schema
                     cur.execute(
-                        insert_sql,
-                        (
-                            img_a_id,
-                            img_b_id,
-                            grid_id,
-                            time_a,
-                            time_b,
-                            bbox_wkt,
-                            width,
-                            height,
-                            data_type,
-                            bytes(mask.tobytes()),
-                        ),
+                        "SELECT ST_AsText(bbox_4326) FROM grid_cells WHERE grid_id = %s",
+                        (grid_id,),
                     )
-                    conn.commit()
-                    self.logger.info(
-                        f"✓ Inserted eo_change for grid {grid_id}: {year_a}-08 -> {year_b}-08 (ids {img_a_id},{img_b_id})"
-                    )
-                    return True
+                    bbox_row = cur.fetchone()
+                    if not bbox_row or not bbox_row[0]:
+                        self.logger.error(
+                            f"Grid bbox not found for grid_id {grid_id} in grid_cells"
+                        )
+                        return False
+                    bbox_wkt = bbox_row[0]
+
             finally:
                 conn.close()
+
+            # Insert the change mask (insert_change_mask will canonicalize id/time order)
+            return self.insert_change_mask(
+                grid_id, img_a_id, img_b_id, time_a, time_b, bbox_wkt, mask
+            )
+
         except Exception as e:
             self.logger.error(f"Error saving mask to database: {e}")
             return False
@@ -533,23 +725,29 @@ class BTCProcessorV5:
             if mask is None:
                 return False
 
-            # Save mask
+            # Get output path for local storage
             output_path = self.get_mask_output_path(img_a_path, img_b_path, year)
 
-            if config.mode == ProcessingMode.LOCAL_ONLY:
-                success = self.save_mask_locally(mask, metadata, output_path)
-            else:
-                # Try database first, fallback to local
-                success = await self.save_mask_to_database(
+            # Always save locally for the current year (for clarity/debugging)
+            local_success = self.save_mask_locally(mask, metadata, output_path)
+            if local_success:
+                self.logger.info(f"✓ Saved local binary mask: {output_path}")
+
+            # Save to database if not in local-only mode
+            db_success = True
+            if config.mode != ProcessingMode.LOCAL_ONLY:
+                db_success = await self.save_mask_to_database(
                     mask, metadata, img_a_path, img_b_path
                 )
-                if not success:
-                    success = self.save_mask_locally(mask, metadata, output_path)
+
+            # Consider successful if either local or db save worked
+            success = local_success or db_success
 
             if success:
                 change_pct = metadata["mask_stats"]["change_percentage"]
                 self.logger.info(
-                    f"Generated mask: {output_path.name} ({change_pct:.2f}% change)"
+                    f"Generated mask: {output_path.name} ({change_pct:.2f}% change) "
+                    f"[Local: {'✓' if local_success else '✗'}, DB: {'✓' if db_success else '✗'}]"
                 )
 
             return success
