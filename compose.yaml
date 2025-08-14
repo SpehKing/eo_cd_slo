@@ -57,9 +57,9 @@ services:
         condition: service_healthy
     networks:
       - eo_network
-    volumes:
-      # Optional: Mount for development (comment out for production)
-      - ./backend:/app
+    # volumes:
+    # Optional: Mount for development (comment out for production)
+    # - ./backend:/app
     command:
       [
         "uvicorn",
@@ -113,11 +113,11 @@ services:
         condition: service_healthy
     networks:
       - eo_network
-    volumes:
-      # Mount data directory for pipeline outputs
-      - ./data:/app/data
-      # Optional: Mount for development (comment out for production)
-      # - ./cluster:/app
+    # volumes:
+    # Mount data directory for pipeline outputs
+    # - ./data:/app/data
+    # Optional: Mount for development (comment out for production)
+    # - ./cluster:/app
     # Uncomment for GPU support:
     # runtime: nvidia
     # environment:

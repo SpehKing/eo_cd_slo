@@ -15,6 +15,7 @@ import { useBoundingBoxSelection } from "@/composables/useBoundingBoxSelection";
 
 // State
 const showSidebar = ref(false);
+const visibleYears = ref(new Set<number>());
 
 let map: L.Map | null = null;
 
@@ -60,6 +61,14 @@ async function onExecuteQuery() {
     await mapImages.loadImagesForMultipleBounds(selectedBounds, timeRange);
     await mapImages.loadMasksForMultipleBounds(selectedBounds, timeRange);
 
+    // Initialize all years as visible
+    const allYears = new Set<number>();
+    mapImages.images.value.forEach((image) => {
+      const year = new Date(image.time).getFullYear();
+      allYears.add(year);
+    });
+    visibleYears.value = allYears;
+
     // Switch back to navigation mode if currently in drawing mode
     if (boundingBoxSelection.drawingMode.value) {
       boundingBoxSelection.toggleDrawingMode();
@@ -84,6 +93,22 @@ function onUpdateStartDate(value: string) {
 
 function onUpdateEndDate(value: string) {
   timeFilter.selectedEndDate.value = value;
+}
+
+// Year filtering handler
+function onToggleYearVisibility(year: number) {
+  const newVisibleYears = new Set(visibleYears.value);
+
+  if (newVisibleYears.has(year)) {
+    newVisibleYears.delete(year);
+  } else {
+    newVisibleYears.add(year);
+  }
+
+  visibleYears.value = newVisibleYears;
+
+  // Apply visibility to the map layers
+  mapImages.toggleYearVisibility(year, newVisibleYears.has(year));
 }
 
 // Download handler
@@ -113,11 +138,14 @@ function onDownloadImage(image: ImageMetadata) {
       :selected-start-date="timeFilter.selectedStartDate.value"
       :selected-end-date="timeFilter.selectedEndDate.value"
       :has-selection="boundingBoxSelection.hasSelection.value"
+      :available-images="mapImages.images.value"
+      :visible-years="visibleYears"
       @toggle-drawing-mode="onToggleDrawingMode"
       @execute-query="onExecuteQuery"
       @clear-selection="onClearSelection"
       @update:start-date="onUpdateStartDate"
       @update:end-date="onUpdateEndDate"
+      @toggle-year-visibility="onToggleYearVisibility"
     />
 
     <!-- Image Details Sidebar -->

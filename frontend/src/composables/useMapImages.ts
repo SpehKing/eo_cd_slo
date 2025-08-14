@@ -10,6 +10,9 @@ export function useMapImages() {
   const imageLayer = ref<L.LayerGroup | null>(null);
   const maskLayer = ref<L.LayerGroup | null>(null);
   const selectedImage = ref<ImageMetadata | null>(null);
+  
+  // Track image overlays by year for visibility toggling
+  const imageOverlaysByYear = ref<Map<number, L.ImageOverlay[]>>(new Map());
 
   // Initialize layers
   function initializeLayers(map: L.Map) {
@@ -108,6 +111,7 @@ export function useMapImages() {
 
     // Clear existing overlays
     imageLayer.value.clearLayers();
+    imageOverlaysByYear.value.clear();
 
     // Add each image as image overlay only
     for (const image of imageStore.images) {
@@ -131,6 +135,13 @@ export function useMapImages() {
 
         // Add image overlay to image layer
         imageLayer.value?.addLayer(imageOverlay);
+        
+        // Track overlay by year
+        const year = new Date(image.time).getFullYear();
+        if (!imageOverlaysByYear.value.has(year)) {
+          imageOverlaysByYear.value.set(year, []);
+        }
+        imageOverlaysByYear.value.get(year)!.push(imageOverlay);
       } catch (error) {
         console.warn(`Failed to load image overlay for image ${image.id}:`, error);
       }
@@ -235,6 +246,28 @@ export function useMapImages() {
     };
   }
 
+  // Toggle visibility of images for a specific year
+  function toggleYearVisibility(year: number, visible: boolean) {
+    const overlays = imageOverlaysByYear.value.get(year);
+    if (!overlays) return;
+
+    overlays.forEach(overlay => {
+      if (visible) {
+        overlay.setOpacity(1);
+        // Make sure it's part of the DOM
+        if (overlay.getElement()) {
+          overlay.getElement()!.style.display = 'block';
+        }
+      } else {
+        overlay.setOpacity(0);
+        // Hide from DOM
+        if (overlay.getElement()) {
+          overlay.getElement()!.style.display = 'none';
+        }
+      }
+    });
+  }
+
   return {
     // State
     selectedImage,
@@ -261,5 +294,6 @@ export function useMapImages() {
     getImageById,
     downloadOriginalImage,
     exposeGlobalSelectImage,
+    toggleYearVisibility,
   };
 }

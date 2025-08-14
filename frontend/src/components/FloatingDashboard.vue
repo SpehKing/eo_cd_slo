@@ -43,6 +43,63 @@
         <!-- Date Range Slider Section (5/6 of the width) -->
         <div class="flex-1 w-5/6">
           <div class="relative">
+            <!-- Year Dots Row -->
+            <div
+              v-if="availableYears.length > 0"
+              class="flex justify-center items-center !mb-4 !space-x-3"
+            >
+              <span class="text-xs text-gray-600 mr-2 font-medium">Years:</span>
+              <div class="flex !space-x-2 items-center">
+                <button
+                  v-for="yearData in availableYears"
+                  :key="yearData.year"
+                  @click="selectYear(yearData.year)"
+                  @mousedown="handleInteractionStart"
+                  @mouseup="handleInteractionEnd"
+                  :class="[
+                    'relative rounded-full border-2 transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50',
+                    getYearDotColor(yearData.year, yearData.count),
+                    getYearDotSize(yearData.count),
+                  ]"
+                  :title="`${yearData.year}: ${yearData.count} images`"
+                >
+                  <span class="sr-only"
+                    >{{ yearData.year }} ({{ yearData.count }} images)</span
+                  >
+                </button>
+              </div>
+              <div class="text-xs text-gray-500 ml-3 min-w-[120px]">
+                <span
+                  v-if="props.visibleYears && props.visibleYears.size > 0"
+                  class="font-medium text-green-600"
+                >
+                  {{ props.visibleYears.size }} layer{{
+                    props.visibleYears.size > 1 ? "s" : ""
+                  }}
+                  visible
+                </span>
+                <span v-else class="text-gray-400"> All hidden </span>
+              </div>
+
+              <!-- Color legend tooltip -->
+              <div class="group relative">
+                <button class="text-xs text-gray-400 hover:text-gray-600 ml-1">
+                  <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </button>
+                <div
+                  class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50"
+                >
+                  ⚪ Hidden · � Visible (click to toggle)
+                </div>
+              </div>
+            </div>
+
             <!-- Date range slider -->
             <div class="flex items-center !space-x-4">
               <span class="text-base text-gray-800 min-w-[80px]">
@@ -184,6 +241,8 @@ interface FloatingDashboardProps {
   selectedStartDate?: string;
   selectedEndDate?: string;
   hasSelection?: boolean;
+  availableImages?: any[];
+  visibleYears?: Set<number>;
 }
 
 interface FloatingDashboardEmits {
@@ -192,6 +251,7 @@ interface FloatingDashboardEmits {
   (e: "clear-selection"): void;
   (e: "update:start-date", value: string): void;
   (e: "update:end-date", value: string): void;
+  (e: "toggle-year-visibility", year: number): void;
 }
 
 const props = withDefaults(defineProps<FloatingDashboardProps>(), {
@@ -202,6 +262,8 @@ const props = withDefaults(defineProps<FloatingDashboardProps>(), {
   selectedStartDate: "",
   selectedEndDate: "",
   hasSelection: false,
+  availableImages: () => [],
+  visibleYears: () => new Set(),
 });
 
 const emit = defineEmits<FloatingDashboardEmits>();
@@ -216,6 +278,27 @@ const isInteracting = ref(false);
 const shouldShowTrigger = computed(
   () => isHidden.value && hasBeenHiddenOnce.value
 );
+
+// Year dots logic
+const availableYears = computed(() => {
+  if (!props.availableImages || props.availableImages.length === 0) return [];
+
+  const yearCounts = new Map<number, number>();
+
+  props.availableImages.forEach((image) => {
+    const year = new Date(image.time).getFullYear();
+    yearCounts.set(year, (yearCounts.get(year) || 0) + 1);
+  });
+
+  return Array.from(yearCounts.entries())
+    .map(([year, count]) => ({ year, count }))
+    .sort((a, b) => a.year - b.year);
+});
+
+const currentTimeRangeYear = computed(() => {
+  if (!props.selectedStartDate) return null;
+  return new Date(props.selectedStartDate).getFullYear();
+});
 
 // Watch for first selection to trigger auto-hide
 watch(
@@ -331,6 +414,46 @@ function updateEndDate(event: Event) {
   const newDate = new Date(minTime + value);
   emit("update:end-date", newDate.toISOString().split("T")[0]);
 }
+
+// Year selection functions
+function selectYear(year: number) {
+  emit("toggle-year-visibility", year);
+}
+
+function getYearDotColor(year: number, count: number): string {
+  const isVisible = props.visibleYears?.has(year);
+  const isCurrentRange = currentTimeRangeYear.value === year;
+
+  if (isVisible) {
+    if (count > 20) {
+      return "bg-emerald-600 border-emerald-700 shadow-lg";
+    } else if (count > 5) {
+      return "bg-green-500 border-green-600 shadow-lg";
+    } else if (count > 0) {
+      return "bg-yellow-500 border-yellow-600 shadow-lg";
+    }
+  } else {
+    if (count > 20) {
+      return "bg-emerald-200 border-emerald-300 hover:bg-emerald-300";
+    } else if (count > 5) {
+      return "bg-green-200 border-green-300 hover:bg-green-300";
+    } else if (count > 0) {
+      return "bg-yellow-200 border-yellow-300 hover:bg-yellow-300";
+    } else {
+      return "bg-gray-200 border-gray-300 hover:bg-gray-300";
+    }
+  }
+
+  return "bg-gray-300 border-gray-400";
+}
+
+// Get year dot size based on image count
+function getYearDotSize(count: number): string {
+  if (count > 20) return "w-5 h-5";
+  if (count > 10) return "w-4.5 h-4.5";
+  if (count > 5) return "w-4 h-4";
+  return "w-3.5 h-3.5";
+}
 </script>
 
 <style scoped>
@@ -388,5 +511,19 @@ function updateEndDate(event: Event) {
 .arrow-indicator:hover {
   background: rgba(255, 255, 255, 1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Year dots styles */
+.year-dot {
+  transition: all 0.2s ease;
+}
+
+.year-dot:hover {
+  transform: scale(1.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.year-dot:active {
+  transform: scale(1.1);
 }
 </style>
