@@ -95,7 +95,7 @@ services:
 
       # Monitoring
       MONITORING_PORT: 8080
-      LOG_LEVEL: DEBUG
+      LOG_LEVEL: INFO
 
       # Database Configuration (for database mode)
       DB_HOST: timescaledb

@@ -194,8 +194,8 @@ class SentinelDownloaderV5:
                 task = {
                     "grid_id": grid_id,
                     "year": year,
-                    "start_date": f"{year}-08-{config.august_start_day:02d}",
-                    "end_date": f"{year}-08-{config.august_end_day:02d}",
+                    "start_date": f"{year}-{config.start_month:02d}-01",
+                    "end_date": f"{year}-{config.end_month:02d}-30",
                     "bbox": grid_bbox,
                     "filename": f"sentinel2_grid_{grid_id}_{year}_08.tiff",
                     "task_id": f"download_{grid_id}_{year}",
@@ -230,7 +230,9 @@ class SentinelDownloaderV5:
         filepath = self.get_output_filepath(task)
 
         try:
-            self.logger.info(f"Processing grid {task['grid_id']} for {task['year']}-08")
+            self.logger.info(
+                f"Processing grid {task['grid_id']} for {task['year']} (Apr-Sep)"
+            )
 
             # Check if file already exists
             if self.check_existing_file(task):
@@ -247,6 +249,7 @@ class SentinelDownloaderV5:
                 spatial_extent=bbox,
                 temporal_extent=[task["start_date"], task["end_date"]],
                 bands=config.bands,
+                max_cloud_cover=20,
             )
 
             # Apply filtering and aggregation

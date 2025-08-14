@@ -38,8 +38,11 @@ class PipelineConfig:
     mode: ProcessingMode = ProcessingMode.LOCAL_ONLY
 
     # Target data specification
-    grid_ids: List[int] = field(default_factory=lambda: [465])
-    years: List[int] = field(default_factory=lambda: list(range(2023, 2025)))
+    # grid_ids: List[int] = field(
+    #     default_factory=lambda: [465, 466, 467, 499, 500, 501, 532, 533, 543]
+    # )
+    grid_ids: List[int] = field(default_factory=lambda: [465, 466, 467])
+    years: List[int] = field(default_factory=lambda: list(range(2020, 2025)))
 
     # Processing parameters
     max_workers: int = 4  # CPU cores
@@ -80,11 +83,11 @@ class PipelineConfig:
     btc_model_checkpoint: str = "blaz-r/BTC-B_oscd96"
     btc_config_path: str = "configs/exp/BTC-B.yaml"
     btc_image_size: int = 256
-    btc_threshold: float = 0.2
+    btc_threshold: float = 0.5
 
     # Processing configuration
-    august_start_day: int = 1
-    august_end_day: int = 31
+    start_month: int = 4  # April
+    end_month: int = 9  # September
     max_cloud_coverage: int = 0
     target_crs: str = "EPSG:4326"
     pixel_size: float = 0.00009  # ~10m in degrees
