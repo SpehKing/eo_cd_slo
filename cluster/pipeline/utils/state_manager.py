@@ -353,18 +353,32 @@ class StateManager:
         key = f"{stage_name}_{year}" if year else stage_name
 
         if key not in self.checkpoints:
+            # Create a new checkpoint with all tasks marked as completed
             self.checkpoints[key] = StageCheckpoint(
                 stage_name=stage_name,
                 year=year,
-                status=TaskStatus.COMPLETED,
-                last_updated=datetime.now(),
-                progress=1.0,
-                metadata={},
+                total_tasks=0,
+                completed_tasks=0,
+                failed_tasks=0,
+                skipped_tasks=0,
+                tasks={},
+                started_at=datetime.now(),
+                completed_at=datetime.now(),
             )
         else:
-            self.checkpoints[key].status = TaskStatus.COMPLETED
-            self.checkpoints[key].progress = 1.0
-            self.checkpoints[key].last_updated = datetime.now()
+            # Mark existing checkpoint as completed
+            checkpoint = self.checkpoints[key]
+            checkpoint.completed_at = datetime.now()
+
+            # Mark all remaining tasks as completed if they're not already
+            for task_info in checkpoint.tasks.values():
+                old_status = task_info.status
+                if old_status not in [TaskStatus.COMPLETED, TaskStatus.SKIPPED]:
+                    task_info.status = TaskStatus.COMPLETED
+                    task_info.completed_at = datetime.now()
+                    checkpoint.completed_tasks += 1
+                    if old_status == TaskStatus.FAILED:
+                        checkpoint.failed_tasks -= 1
 
         self.save_checkpoints()
         self.logger.info(f"Marked stage {stage_name} for year {year} as completed")

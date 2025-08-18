@@ -180,7 +180,7 @@ class BTCProcessorV5:
             self.logger.error(f"Failed to load BTC model: {e}")
             return False
 
-    def find_image_pairs_for_year(self, year: int) -> List[Tuple[Path, Path]]:
+    async def find_image_pairs_for_year(self, year: int) -> List[Tuple[Path, Path]]:
         """Find consecutive image pairs for a specific year"""
         pairs = []
 
@@ -212,23 +212,22 @@ class BTCProcessorV5:
                             pairs.append((current_file, next_file))
 
             else:
-                # For database mode, look in temp directory
-                temp_dir = config.images_dir / "temp"
-                if temp_dir.exists():
+                # For database mode, retrieve images from database and create temporary files for BTC processing
+                current_index = all_years.index(year)
+                if current_index < len(all_years) - 1:
+                    next_year = all_years[current_index + 1]
+
                     for grid_id in config.grid_ids:
-                        # Look for consecutive year pairs
-                        current_index = all_years.index(year)
-                        if current_index < len(all_years) - 1:
-                            next_year = all_years[current_index + 1]
+                        # Retrieve and create temporary image files for this grid
+                        img_a_path = await self._retrieve_image_from_database(
+                            grid_id, year
+                        )
+                        img_b_path = await self._retrieve_image_from_database(
+                            grid_id, next_year
+                        )
 
-                            current_pattern = f"sentinel2_grid_{grid_id}_{year}_08.*"
-                            next_pattern = f"sentinel2_grid_{grid_id}_{next_year}_08.*"
-
-                            current_files = list(temp_dir.glob(current_pattern))
-                            next_files = list(temp_dir.glob(next_pattern))
-
-                            if current_files and next_files:
-                                pairs.append((current_files[0], next_files[0]))
+                        if img_a_path and img_b_path:
+                            pairs.append((img_a_path, img_b_path))
 
             self.logger.info(f"Found {len(pairs)} image pairs for year {year}")
             return pairs
@@ -236,6 +235,154 @@ class BTCProcessorV5:
         except Exception as e:
             self.logger.error(f"Error finding image pairs for year {year}: {e}")
             return []
+
+    async def _retrieve_image_from_database(
+        self, grid_id: int, year: int
+    ) -> Optional[Path]:
+        """Retrieve image from database and create temporary file for BTC processing"""
+        try:
+            import psycopg2
+            from datetime import datetime
+            import tempfile
+            import numpy as np
+
+            # Connect to database
+            conn = psycopg2.connect(**config.db_config)
+
+            try:
+                with conn.cursor() as cur:
+                    # Query for the image data - looking for August data (month 8)
+                    representative_date = datetime(year, 8, 15)
+
+                    cur.execute(
+                        """
+                        SELECT id, b02, b03, b04, width, height, data_type, bbox
+                        FROM eo 
+                        WHERE grid_id = %s 
+                        AND EXTRACT(YEAR FROM time) = %s
+                        AND EXTRACT(MONTH FROM time) = 8
+                        ORDER BY time
+                        LIMIT 1
+                    """,
+                        (grid_id, year),
+                    )
+
+                    row = cur.fetchone()
+                    if not row:
+                        self.logger.warning(
+                            f"No image found in database for grid {grid_id}, year {year}"
+                        )
+                        return None
+
+                    (
+                        img_id,
+                        b02_data,
+                        b03_data,
+                        b04_data,
+                        width,
+                        height,
+                        data_type,
+                        bbox,
+                    ) = row
+
+                    # Check if we have the required band data
+                    if not all([b02_data, b03_data, b04_data]):
+                        self.logger.warning(
+                            f"Incomplete band data for grid {grid_id}, year {year}"
+                        )
+                        return None
+
+                    # Convert band data from bytes to numpy arrays
+                    b02 = np.frombuffer(b02_data, dtype=data_type).reshape(
+                        height, width
+                    )
+                    b03 = np.frombuffer(b03_data, dtype=data_type).reshape(
+                        height, width
+                    )
+                    b04 = np.frombuffer(b04_data, dtype=data_type).reshape(
+                        height, width
+                    )
+
+                    # Stack bands (B02, B03, B04 = Blue, Green, Red)
+                    img_array = np.stack([b02, b03, b04], axis=0)
+
+                    # Create temporary TIFF file
+                    btc_temp_dir = config.images_dir / "btc_temp"
+                    btc_temp_dir.mkdir(parents=True, exist_ok=True)
+
+                    temp_filename = f"sentinel2_grid_{grid_id}_{year}_08.tiff"
+                    temp_path = btc_temp_dir / temp_filename
+
+                    # Save as TIFF using rasterio (same format as original downloads)
+                    with rasterio.open(
+                        temp_path,
+                        "w",
+                        driver="GTiff",
+                        height=height,
+                        width=width,
+                        count=3,
+                        dtype=data_type,
+                        crs="EPSG:4326",
+                    ) as dst:
+                        dst.write(img_array)
+
+                    self.logger.debug(
+                        f"Created temporary TIFF for BTC processing: {temp_path}"
+                    )
+                    return temp_path
+
+            finally:
+                conn.close()
+
+        except Exception as e:
+            self.logger.error(
+                f"Failed to retrieve image from database for grid {grid_id}, year {year}: {e}"
+            )
+            return None
+
+    def cleanup_temp_files(self, year: int):
+        """Clean up temporary BTC files for a specific year"""
+        try:
+            btc_temp_dir = config.images_dir / "btc_temp"
+            if btc_temp_dir.exists():
+                # Remove files for this year
+                for grid_id in config.grid_ids:
+                    all_years = sorted(config.years)
+                    current_index = all_years.index(year)
+
+                    # Clean up current year file
+                    temp_file_a = (
+                        btc_temp_dir / f"sentinel2_grid_{grid_id}_{year}_08.tiff"
+                    )
+                    if temp_file_a.exists():
+                        temp_file_a.unlink()
+                        self.logger.debug(f"Cleaned up temporary file: {temp_file_a}")
+
+                    # Clean up next year file if this is the last processing year
+                    if current_index < len(all_years) - 1:
+                        next_year = all_years[current_index + 1]
+                        temp_file_b = (
+                            btc_temp_dir
+                            / f"sentinel2_grid_{grid_id}_{next_year}_08.tiff"
+                        )
+                        if temp_file_b.exists():
+                            temp_file_b.unlink()
+                            self.logger.debug(
+                                f"Cleaned up temporary file: {temp_file_b}"
+                            )
+
+                # Remove btc_temp directory if empty
+                try:
+                    btc_temp_dir.rmdir()
+                    self.logger.debug("Removed empty btc_temp directory")
+                except OSError:
+                    # Directory not empty, which is fine
+                    pass
+
+        except Exception as e:
+            self.logger.warning(
+                f"Error cleaning up temporary files for year {year}: {e}"
+            )
 
     def convert_tiff_to_png(
         self, tiff_path: Path, target_size: int = 256
@@ -762,7 +909,7 @@ class BTCProcessorV5:
         self.current_year = year
 
         # Find image pairs for this year
-        image_pairs = self.find_image_pairs_for_year(year)
+        image_pairs = await self.find_image_pairs_for_year(year)
         if not image_pairs:
             self.logger.warning(f"No image pairs found for year {year}")
             return True
@@ -817,6 +964,11 @@ class BTCProcessorV5:
                 f"No pending pairs. Completed: {checkpoint.completed_tasks}, Failed: {checkpoint.failed_tasks}, Skipped: {checkpoint.skipped_tasks}, Total: {checkpoint.total_tasks}"
             )
             self.logger.info(f"All BTC processing for {year} already completed")
+
+            # Clean up any leftover temporary files for database mode
+            if config.mode != ProcessingMode.LOCAL_ONLY:
+                self.cleanup_temp_files(year)
+
             return True
 
         # Process pairs
@@ -874,6 +1026,11 @@ class BTCProcessorV5:
         self.logger.info(
             f"Completed BTC processing for {year}: {success_count}/{len(pending_pairs)} successful"
         )
+
+        # Clean up temporary files for database mode
+        if config.mode != ProcessingMode.LOCAL_ONLY:
+            self.cleanup_temp_files(year)
+
         return success_count == len(pending_pairs)
 
     async def run_btc_processing(self) -> bool:
