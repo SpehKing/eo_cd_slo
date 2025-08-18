@@ -27,7 +27,56 @@ max_workers = 2        # Adjust based on your system
 
 ### Step 3: Build and Run
 
-**Option A: Docker (Recommended)**
+**Option A: Docker with Web Interface (Recommended)**
+
+```bash
+# Start the complete stack including the web-controlled pipeline
+docker compose up -d
+
+# Open the monitoring dashboard
+open http://localhost:8080
+
+# Click "Start Pipeline" in the web interface when ready
+```
+
+The pipeline will start in "wait mode" and display a monitoring dashboard at `http://localhost:8080`. You can:
+
+- ✅ **Start** the pipeline by clicking the "Start Pipeline" button
+- ⏸️ **Pause/Resume** pipeline execution
+- ⏹️ **Stop** the pipeline at any time
+- 🔄 **Retry** failed tasks
+- 📊 **Monitor** real-time progress and logs
+- ⚙️ **Configure** years, grid IDs, and processing parameters
+
+### 🔧 Web Configuration Management
+
+The monitoring dashboard now includes a **Pipeline Configuration** section where you can:
+
+**📅 Set Years to Process:**
+
+- Enter years separated by commas (e.g., `2020,2021,2022,2023,2024`)
+- Valid range: 2015-2030
+
+**🗺️ Configure Grid IDs:**
+
+- Specify which grid cells to process (e.g., `465,466,467`)
+- Valid range: 1-1000
+
+**⚡ Adjust Processing Parameters:**
+
+- Max Workers (1-32)
+- Memory Limit (1-64 GB)
+- BTC Threshold (0.0-1.0)
+- Max Cloud Coverage (0-100%)
+
+**💡 Configuration Features:**
+
+- ✅ **Load Current Config** - View current settings
+- ✅ **Apply Configuration** - Save changes
+- ✅ **Reset to Defaults** - Restore default values
+- 🔒 **Locked During Execution** - Cannot change while pipeline runs
+
+**Option B: Docker with Immediate Start**
 
 ```bash
 # Build the container
@@ -41,7 +90,7 @@ max_workers = 2        # Adjust based on your system
 # Open http://localhost:8080 in your browser
 ```
 
-**Option B: Local Development**
+**Option C: Local Development**
 
 ```bash
 # Install dependencies

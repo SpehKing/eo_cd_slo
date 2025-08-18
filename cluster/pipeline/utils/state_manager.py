@@ -316,14 +316,58 @@ class StateManager:
             if task.status == TaskStatus.FAILED
         ]
 
-    def is_stage_completed(self, stage_name: str, year: Optional[int]) -> bool:
-        """Check if a stage is completed"""
-        key = f"{stage_name}_{year}" if year else stage_name
+    def is_stage_completed(
+        self, stage: str, year: int, grid_id: Optional[str] = None
+    ) -> bool:
+        """Check if a specific stage is completed"""
+        # Support both old and new stage naming
+        if stage == "download_and_insert":
+            # For the new combined stage, check if either the combined stage is completed
+            # or if both download and insert stages are completed
+            combined_completed = self._check_stage_completion(
+                "download_and_insert", year, grid_id
+            )
+            if combined_completed:
+                return True
+
+            # Fall back to checking both old stages
+            download_completed = self._check_stage_completion("download", year, grid_id)
+            insert_completed = self._check_stage_completion("insert", year, grid_id)
+            return download_completed and insert_completed
+
+        return self._check_stage_completion(stage, year, grid_id)
+
+    def _check_stage_completion(
+        self, stage: str, year: int, grid_id: Optional[str] = None
+    ) -> bool:
+        """Helper method to check if a specific stage is completed"""
+        key = f"{stage}_{year}" if year else stage
 
         if key not in self.checkpoints:
             return False
 
         return self.checkpoints[key].is_completed
+
+    def mark_stage_completed(self, stage_name: str, year: Optional[int]):
+        """Mark a stage as completed"""
+        key = f"{stage_name}_{year}" if year else stage_name
+
+        if key not in self.checkpoints:
+            self.checkpoints[key] = StageCheckpoint(
+                stage_name=stage_name,
+                year=year,
+                status=TaskStatus.COMPLETED,
+                last_updated=datetime.now(),
+                progress=1.0,
+                metadata={},
+            )
+        else:
+            self.checkpoints[key].status = TaskStatus.COMPLETED
+            self.checkpoints[key].progress = 1.0
+            self.checkpoints[key].last_updated = datetime.now()
+
+        self.save_checkpoints()
+        self.logger.info(f"Marked stage {stage_name} for year {year} as completed")
 
     def get_stage_progress(
         self, stage_name: str, year: Optional[int]
@@ -394,6 +438,65 @@ class StateManager:
 
         self.save_checkpoint(checkpoint)
         self.logger.info(f"Reset {reset_count} failed tasks in {key}")
+
+    def reset_all_failed_tasks(self):
+        """Reset all failed tasks across all stages"""
+        total_reset = 0
+
+        # Reset failed tasks in loaded checkpoints
+        for checkpoint in self.checkpoints.values():
+            reset_count = 0
+            for task_id, task in checkpoint.tasks.items():
+                if task.status == TaskStatus.FAILED:
+                    task.status = TaskStatus.PENDING
+                    task.error_message = None
+                    task.started_at = None
+                    task.completed_at = None
+                    reset_count += 1
+
+            if reset_count > 0:
+                checkpoint.failed_tasks = 0
+                checkpoint.completed_at = None
+                self.save_checkpoint(checkpoint)
+                total_reset += reset_count
+
+        # Also check checkpoint files on disk for stages not yet loaded
+        checkpoint_dir = config.checkpoint_dir
+        if checkpoint_dir.exists():
+            for checkpoint_file in checkpoint_dir.glob("*.json"):
+                stage_key = checkpoint_file.stem
+                if stage_key not in self.checkpoints:
+                    try:
+                        with open(checkpoint_file, "r") as f:
+                            data = json.load(f)
+
+                        checkpoint = StageCheckpoint.from_dict(data)
+                        reset_count = 0
+
+                        for task_id, task in checkpoint.tasks.items():
+                            if task.status == TaskStatus.FAILED:
+                                task.status = TaskStatus.PENDING
+                                task.error_message = None
+                                task.started_at = None
+                                task.completed_at = None
+                                reset_count += 1
+
+                        if reset_count > 0:
+                            checkpoint.failed_tasks = 0
+                            checkpoint.completed_at = None
+
+                            with open(checkpoint_file, "w") as f:
+                                json.dump(checkpoint.to_dict(), f, indent=2)
+
+                            total_reset += reset_count
+
+                    except Exception as e:
+                        self.logger.warning(
+                            f"Failed to process checkpoint file {checkpoint_file}: {e}"
+                        )
+
+        self.logger.info(f"Reset {total_reset} failed tasks across all stages")
+        return total_reset
 
 
 # Global state manager instance

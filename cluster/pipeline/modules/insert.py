@@ -502,6 +502,49 @@ class SentinelInserterV5:
             self.logger.error(f"Error in process_year for {year}: {e}")
             raise
 
+    async def process_single_image(self, filepath: Path) -> bool:
+        """Process a single image file immediately after download"""
+        try:
+            self.logger.info(f"Processing single image: {filepath}")
+
+            # Parse filename to get metadata
+            file_info = self.parse_filename(filepath)
+            if not file_info:
+                self.logger.error(f"Failed to parse filename: {filepath}")
+                return False
+
+            # Extract image metadata
+            metadata = self.extract_image_metadata(filepath)
+            if not metadata:
+                self.logger.error(f"Failed to extract metadata from: {filepath}")
+                return False
+
+            # Extract band data (only for database mode)
+            band_data = {}
+            if config.mode != ProcessingMode.LOCAL_ONLY:
+                band_data = self.extract_band_data(filepath, metadata)
+                if not band_data:
+                    self.logger.error(f"Failed to extract band data from: {filepath}")
+                    return False
+
+            # Insert the record
+            success = await self.insert_image_record(
+                filepath, file_info, metadata, band_data
+            )
+
+            if success:
+                self.logger.info(
+                    f"✓ Successfully processed single image: {filepath.name}"
+                )
+            else:
+                self.logger.error(f"✗ Failed to process single image: {filepath.name}")
+
+            return success
+
+        except Exception as e:
+            self.logger.error(f"Error processing single image {filepath}: {e}")
+            return False
+
     async def run_insertions(self) -> bool:
         """Execute insertions for all years"""
         if not await self.initialize():

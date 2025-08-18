@@ -56,5 +56,5 @@ ENV HUGGINGFACE_HUB_CACHE="/app/pipeline/data/hf_cache/hub"
 # Expose monitoring port
 EXPOSE 8080
 
-# Default command
-CMD ["python", "-m", "pipeline.controller"]
+# Default command - start in wait-for-start mode for container deployment
+CMD ["python", "-m", "pipeline.controller", "--wait-for-start"]

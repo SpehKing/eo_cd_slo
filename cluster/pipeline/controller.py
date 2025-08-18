@@ -20,7 +20,7 @@ from datetime import datetime
 import os
 
 # Setup logging first
-from .config.settings import config, LogLevel
+from .config.settings import config, LogLevel, ProcessingMode
 
 # Configure logging
 logging.basicConfig(
@@ -52,6 +52,9 @@ class PipelineController:
         self.is_running = False
         self.is_paused = False
         self.should_stop = False
+
+        # Register with monitor for control
+        monitor.register_pipeline_controller(self)
 
         # Setup signal handlers for graceful shutdown
         signal.signal(signal.SIGINT, self._signal_handler)
@@ -99,7 +102,9 @@ class PipelineController:
             self.logger.error(f"Failed to prefetch Hugging Face model: {e}")
             return False
 
-    async def run_pipeline(self, resume: bool = True) -> bool:
+    async def run_pipeline(
+        self, resume: bool = True, wait_for_start: bool = False
+    ) -> bool:
         """Run the complete pipeline"""
         try:
             self.is_running = True
@@ -114,13 +119,18 @@ class PipelineController:
             self.logger.info(f"  Grid IDs: {config.grid_ids}")
             self.logger.info(f"  BTC Model: {config.btc_model_checkpoint}")
             self.logger.info(f"  Resume: {resume}")
-
-            # Update monitoring status
-            monitor.update_pipeline_status("running")
+            self.logger.info(f"  Wait for start: {wait_for_start}")
 
             # Start monitoring server if enabled
             if config.enable_real_time_monitoring:
                 await self._start_monitoring()
+
+            # Wait for start command from web interface if requested
+            if wait_for_start:
+                await monitor.wait_for_start_command()
+
+            # Update monitoring status
+            monitor.update_pipeline_status("running")
 
             # Initialize pipeline modules
             self.logger.info("Initializing pipeline modules...")
@@ -154,32 +164,20 @@ class PipelineController:
 
             overall_success = True
 
-            # NEW: Run stages grouped by type, not by year
-            # Stage 1: Download for all years first
+            # NEW: Immediate insertion workflow - download and insert each grid immediately
+            # This prevents re-downloading existing data and provides faster feedback
             for year in config.years:
                 if self.should_stop:
                     self.logger.info("Pipeline stopped by user request")
                     break
-                monitor.update_pipeline_status("running", "download", year)
-                year_success = await self._run_download_stage(year, resume)
-                if not year_success:
-                    overall_success = False
-                    if not resume:
-                        break
 
-            if self.should_stop:
-                # Stop early before moving to next stages
-                if overall_success:
-                    monitor.update_pipeline_status("stopped")
-                return overall_success
+                # Check for control commands
+                await self._handle_control_commands()
 
-            # Stage 2: Insert/store for all years next
-            for year in config.years:
-                if self.should_stop:
-                    self.logger.info("Pipeline stopped by user request")
-                    break
-                monitor.update_pipeline_status("running", "insert", year)
-                year_success = await self._run_insert_stage(year, resume)
+                monitor.update_pipeline_status("running", "download_and_insert", year)
+                year_success = await self._run_combined_download_insert_stage(
+                    year, resume
+                )
                 if not year_success:
                     overall_success = False
                     if not resume:
@@ -199,6 +197,10 @@ class PipelineController:
                     self.logger.info("Pipeline stopped by user request")
                     break
                 monitor.update_pipeline_status("running", "btc_process", year)
+
+                # Check for control commands
+                await self._handle_control_commands()
+
                 year_success = await self._run_btc_stage(year, resume)
                 if not year_success:
                     overall_success = False
@@ -224,6 +226,33 @@ class PipelineController:
             return False
         finally:
             self.is_running = False
+
+    async def _handle_control_commands(self):
+        """Handle control commands during pipeline execution"""
+        command = await monitor.check_control_commands()
+
+        if command == "stop":
+            self.logger.info("Stop command received")
+            self.should_stop = True
+            monitor.update_pipeline_status("stopping")
+
+        elif command == "pause":
+            self.logger.info("Pause command received")
+            self.is_paused = True
+            monitor.update_pipeline_status("paused")
+
+            # Wait until resumed or stopped
+            while self.is_paused and not self.should_stop:
+                await asyncio.sleep(1)
+                resume_command = await monitor.check_control_commands()
+                if resume_command == "resume":
+                    self.logger.info("Resume command received")
+                    self.is_paused = False
+                    monitor.update_pipeline_status("running")
+                elif resume_command == "stop":
+                    self.logger.info("Stop command received while paused")
+                    self.should_stop = True
+                    monitor.update_pipeline_status("stopping")
 
     async def _start_monitoring(self):
         """Start the monitoring server"""
@@ -311,6 +340,163 @@ class PipelineController:
             self.logger.error(f"BTC stage error for {year}: {e}")
             return False
 
+    async def _run_combined_download_insert_stage(
+        self, year: int, resume: bool
+    ) -> bool:
+        """Run combined download and insert stage for immediate insertion workflow"""
+        try:
+            self.logger.info(
+                f"Stage 1+2: Download and insert images for {year} (immediate insertion)"
+            )
+
+            # Check if already completed
+            if resume and state_manager.is_stage_completed("download_and_insert", year):
+                self.logger.info(
+                    f"Download+Insert stage for {year} already completed, skipping"
+                )
+                return True
+
+            # Initialize both downloader and inserter
+            if not await self.downloader.initialize():
+                self.logger.error("Failed to initialize downloader")
+                return False
+
+            if not await self.inserter.initialize():
+                self.logger.error("Failed to initialize inserter")
+                return False
+
+            # Connect OpenEO for downloads
+            if not await self.downloader.connect_openeo():
+                self.logger.error("Failed to connect to OpenEO")
+                return False
+
+            # Generate download tasks for this year
+            tasks = self.downloader.generate_download_tasks_for_year(year)
+            self.logger.info(
+                f"Generated {len(tasks)} download+insert tasks for year {year}"
+            )
+
+            if len(tasks) == 0:
+                self.logger.warning(f"No tasks generated for year {year}")
+                return True  # Not an error, just no work to do
+
+            # Process each grid cell: download then immediately insert
+            success_count = 0
+            total_tasks = len(tasks)
+
+            for i, task in enumerate(tasks, 1):
+                try:
+                    grid_id = task["grid_id"]
+
+                    # Check for control commands
+                    await self._handle_control_commands()
+
+                    if self.should_stop:
+                        self.logger.info("Pipeline stopped during combined stage")
+                        break
+
+                    self.logger.info(
+                        f"Processing grid {grid_id} ({i}/{total_tasks}) for {year}"
+                    )
+
+                    # Step 1: Check if data already exists in database/filesystem
+                    if await self._check_grid_exists(grid_id, year):
+                        self.logger.info(
+                            f"Grid {grid_id} for {year} already exists, skipping"
+                        )
+                        success_count += 1
+                        continue
+
+                    # Step 2: Download the image
+                    download_success, download_message, filepath = (
+                        await self.downloader.download_with_retry(task)
+                    )
+
+                    if not download_success:
+                        self.logger.error(
+                            f"Failed to download grid {grid_id}: {download_message}"
+                        )
+                        continue
+
+                    self.logger.info(f"✓ Downloaded grid {grid_id}: {download_message}")
+
+                    # Step 3: Immediately insert the downloaded image
+                    if filepath and filepath.exists():
+                        insert_success = await self.inserter.process_single_image(
+                            filepath
+                        )
+
+                        if insert_success:
+                            self.logger.info(
+                                f"✓ Inserted grid {grid_id} into database/storage"
+                            )
+                            success_count += 1
+
+                            # Clean up temporary file if in database mode
+                            if config.mode != ProcessingMode.LOCAL_ONLY:
+                                try:
+                                    filepath.unlink()
+                                    self.logger.debug(
+                                        f"Cleaned up temporary file: {filepath}"
+                                    )
+                                except Exception as cleanup_error:
+                                    self.logger.warning(
+                                        f"Failed to cleanup {filepath}: {cleanup_error}"
+                                    )
+                        else:
+                            self.logger.error(f"Failed to insert grid {grid_id}")
+                    else:
+                        self.logger.error(
+                            f"Downloaded file not found for grid {grid_id}"
+                        )
+
+                    # Rate limiting between downloads
+                    await asyncio.sleep(config.openeo_rate_limit)
+
+                except Exception as e:
+                    self.logger.error(
+                        f"Failed to process grid {grid_id} for {year}: {e}"
+                    )
+
+            self.logger.info(
+                f"Completed {success_count}/{total_tasks} download+insert tasks for year {year}"
+            )
+
+            # Mark stage as completed if all successful
+            if success_count == total_tasks:
+                state_manager.mark_stage_completed("download_and_insert", year)
+
+            return success_count > 0
+
+        except Exception as e:
+            self.logger.error(f"Combined download+insert stage error for {year}: {e}")
+            return False
+
+    async def _check_grid_exists(self, grid_id: int, year: int) -> bool:
+        """Check if grid data already exists to avoid re-downloading"""
+        try:
+            # For local mode, check if file exists
+            if config.mode == ProcessingMode.LOCAL_ONLY:
+                year_dir = config.get_year_images_dir(year)
+                filename = f"sentinel2_grid_{grid_id}_{year}_08.tiff"
+                return (year_dir / filename).exists()
+
+            # For database mode, check database
+            else:
+                # Use the inserter's existing check method
+                from datetime import datetime
+
+                test_date = datetime(
+                    year, 8, 15
+                )  # Use August 15th as representative date
+                return self.inserter.check_existing_record(grid_id, test_date)
+
+        except Exception as e:
+            self.logger.error(
+                f"Failed to check if grid {grid_id} exists for {year}: {e}"
+            )
+            return False
+
     async def retry_failed_tasks(
         self, stage: Optional[str] = None, year: Optional[int] = None
     ):
@@ -367,15 +553,15 @@ class PipelineController:
 
 
 # Main entry point functions
-async def run_pipeline_async(resume: bool = True) -> bool:
+async def run_pipeline_async(resume: bool = True, wait_for_start: bool = False) -> bool:
     """Run the pipeline asynchronously"""
     controller = PipelineController()
-    return await controller.run_pipeline(resume=resume)
+    return await controller.run_pipeline(resume=resume, wait_for_start=wait_for_start)
 
 
-def run_pipeline_sync(resume: bool = True) -> bool:
+def run_pipeline_sync(resume: bool = True, wait_for_start: bool = False) -> bool:
     """Run the pipeline synchronously"""
-    return asyncio.run(run_pipeline_async(resume=resume))
+    return asyncio.run(run_pipeline_async(resume=resume, wait_for_start=wait_for_start))
 
 
 async def main():
@@ -394,6 +580,11 @@ async def main():
     )
     parser.add_argument(
         "--monitor-only", action="store_true", help="Start monitoring server only"
+    )
+    parser.add_argument(
+        "--wait-for-start",
+        action="store_true",
+        help="Wait for start command from web interface",
     )
 
     args = parser.parse_args()
@@ -434,7 +625,15 @@ async def main():
 
     # Run the pipeline
     resume = not args.no_resume
-    success = await run_pipeline_async(resume=resume)
+    wait_for_start = args.wait_for_start
+
+    if wait_for_start:
+        print(
+            f"Starting pipeline in wait mode. Access dashboard at: http://localhost:{config.monitoring_port}"
+        )
+        print("Pipeline will wait for start command from web interface...")
+
+    success = await run_pipeline_async(resume=resume, wait_for_start=wait_for_start)
 
     if success:
         print("\n🎉 Pipeline completed successfully!")
