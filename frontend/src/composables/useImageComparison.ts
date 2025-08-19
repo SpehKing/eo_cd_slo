@@ -30,12 +30,6 @@ export function useImageComparison() {
     
     // Sort visible years
     const sortedYears = Array.from(visibleYears).sort((a, b) => a - b);
-    
-    console.log('FindComparisonImages:', {
-      clickedYear,
-      sortedYears,
-      availableImageYears: [...new Set(availableImages.map(img => new Date(img.time).getFullYear()))].sort()
-    });
 
     // If less than 2 years visible, can't do comparison
     if (sortedYears.length < 2) {
@@ -143,15 +137,6 @@ export function useImageComparison() {
       isLoading.value = true;
       hasError.value = false;
       errorMessage.value = "";
-
-      // Debug log
-      console.log('LoadComparisonData called with:', {
-        clickedImage: clickedImage.id,
-        clickedYear: new Date(clickedImage.time).getFullYear(),
-        visibleYears: Array.from(visibleYears),
-        availableImages: availableImages.length,
-        availableMasks: availableMasks.length
-      });
 
       // Find the comparison images
       const { previousImage, currentImage } = findComparisonImages(

@@ -76,8 +76,6 @@ export function useAutoMaskLoader() {
       const endTime = new Date(dateRange.value.max_date).toISOString();
 
 
-      console.log(`Loading masks for time range: ${startTime} to ${endTime}`);
-
       // First, get total count by making a request with limit=1
       const initialResponse = await apiService.fetchMasks({
         start_time: startTime,
@@ -128,7 +126,6 @@ export function useAutoMaskLoader() {
       }
 
       allMasks.value = allLoadedMasks;
-      console.log(`Loaded ${allLoadedMasks.length} change masks for Slovenia`);
 
     } catch (error) {
       hasError.value = true;
@@ -156,7 +153,6 @@ export function useAutoMaskLoader() {
       // Group masks by their exact spatial bounds
       const spatialGroups = groupMasksByExactBounds(allMasks.value);
       
-      console.log(`Creating composite visualizations for ${spatialGroups.size} spatial regions`);
 
       // Create composite mask for each spatial group
       for (const [boundsKey, maskGroup] of spatialGroups) {
@@ -166,7 +162,6 @@ export function useAutoMaskLoader() {
         }
       }
 
-      console.log(`Created ${compositeMaskOverlays.value.size} composite visualizations`);
 
     } catch (error) {
       hasError.value = true;

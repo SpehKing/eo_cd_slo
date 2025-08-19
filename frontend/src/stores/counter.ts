@@ -68,7 +68,6 @@ export const useImageStore = defineStore('images', () => {
     // Check cache first
     const cachedImages = cacheService.getCachedImagesByBounds(cacheKey);
     if (cachedImages) {
-      console.log('Using cached images for bounds:', cacheKey);
       images.value = cachedImages;
       total.value = cachedImages.length;
       hasMore.value = false;
@@ -99,7 +98,6 @@ export const useImageStore = defineStore('images', () => {
 
       // Cache the results
       cacheService.cacheImageMetadata(response.images, cacheKey);
-      console.log('Cached images for bounds:', cacheKey);
 
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Failed to fetch images'
@@ -132,8 +130,6 @@ export const useImageStore = defineStore('images', () => {
       hasMoreMasks.value = response.has_more;
       currentMasksOffset.value = response.masks.length;
 
-      // Cache the results - for now we'll skip caching masks as they have different structure
-      console.log('Loaded masks for bounds:', boundsKey, response.masks.length, 'masks');
 
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Failed to fetch masks'
@@ -175,7 +171,6 @@ export const useImageStore = defineStore('images', () => {
 
     if (imageIds.length === 0) return;
 
-    console.log(`Preloading ${imageIds.length} image previews...`);
     
     // Preload in batches to avoid overwhelming the server
     const batchSize = 5;

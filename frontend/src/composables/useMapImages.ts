@@ -161,7 +161,6 @@ export function useMapImages() {
         imageOverlay.on("click", () => {
           // Don't handle image clicks when in drawing mode
           if (isDrawingMode.value) {
-            console.log("Image click ignored - drawing mode is active");
             return;
           }
           
@@ -219,12 +218,9 @@ export function useMapImages() {
         maskOverlay.on("click", () => {
           // Don't handle mask clicks when in drawing mode
           if (isDrawingMode.value) {
-            console.log("Mask click ignored - drawing mode is active");
             return;
           }
-          
-          console.log(`Clicked change mask for images ${mask.img_a_id} -> ${mask.img_b_id}`);
-          console.log(`Period: ${mask.period_start} to ${mask.period_end}`);
+
           if (onImageOverlayClick.value) {
             const previousImage = imageStore.getImageById(mask.img_a_id);
             const currentImage = imageStore.getImageById(mask.img_b_id);
@@ -338,8 +334,6 @@ export function useMapImages() {
 
     if (!isVisible || compositeMasks.size === 0) return;
 
-    console.log(`Displaying ${compositeMasks.size} composite masks on map`);
-
     // Add each composite mask as image overlay
     compositeMasks.forEach((maskData, boundsKey) => {
       try {
@@ -370,13 +364,9 @@ export function useMapImages() {
           maskOverlay.on("click", () => {
             // Don't handle composite mask clicks when in drawing mode
             if (isDrawingMode.value) {
-              console.log("Composite mask click ignored - drawing mode is active");
               return;
             }
             
-            console.log(`Clicked composite change mask for bounds ${boundsKey}`);
-            console.log(`Bounds:`, maskData.bounds);
-            // You can add specific handling for composite mask clicks here
           });
 
           // Add to composite mask layer
