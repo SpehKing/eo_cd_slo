@@ -9,6 +9,7 @@ export function useMapImages() {
   const imageStore = useImageStore();
   const imageLayer = ref<L.LayerGroup | null>(null);
   const maskLayer = ref<L.LayerGroup | null>(null);
+  const compositeMaskLayer = ref<L.LayerGroup | null>(null);
   const selectedImage = ref<ImageMetadata | null>(null);
   
   // Track image overlays by year for visibility toggling
@@ -16,15 +17,37 @@ export function useMapImages() {
 
   // Event handlers for image overlay clicks
   const onImageOverlayClick = ref<((image: ImageMetadata) => void) | null>(null);
+  
+  // Drawing mode state to disable mask clicks
+  const isDrawingMode = ref(false);
+
+  // Helper function to set pointer events on overlay
+  function setOverlayPointerEvents(overlay: L.ImageOverlay, enabled: boolean) {
+    // Try to set immediately
+    const element = overlay.getElement();
+    if (element) {
+      element.style.pointerEvents = enabled ? 'auto' : 'none';
+    } else {
+      // If element not ready, wait for it to be added
+      overlay.once('add', () => {
+        const element = overlay.getElement();
+        if (element) {
+          element.style.pointerEvents = enabled ? 'auto' : 'none';
+        }
+      });
+    }
+  }
 
   // Initialize layers
   function initializeLayers(map: L.Map) {
     imageLayer.value = L.layerGroup();
     maskLayer.value = L.layerGroup();
+    compositeMaskLayer.value = L.layerGroup();
     
-    // Always add both layers to map, images first (bottom), then masks (top)
+    // Always add layers to map in order: images (bottom), masks (middle), composite masks (top)
     imageLayer.value.addTo(map);
     maskLayer.value.addTo(map);
+    compositeMaskLayer.value.addTo(map);
   }
 
   // Load images for current bounds and time range
@@ -131,8 +154,17 @@ export function useMapImages() {
           crossOrigin: true,
         });
 
+        // Set pointer events based on drawing mode
+        setOverlayPointerEvents(imageOverlay, !isDrawingMode.value);
+
         // Add click handler to image overlay
         imageOverlay.on("click", () => {
+          // Don't handle image clicks when in drawing mode
+          if (isDrawingMode.value) {
+            console.log("Image click ignored - drawing mode is active");
+            return;
+          }
+          
           if (onImageOverlayClick.value) {
             onImageOverlayClick.value(image);
           } else {
@@ -180,8 +212,17 @@ export function useMapImages() {
           zIndex: 1000, // Ensure masks are above images
         });
 
+        // Set pointer events based on drawing mode
+        setOverlayPointerEvents(maskOverlay, !isDrawingMode.value);
+
         // Add click handler to mask overlay
         maskOverlay.on("click", () => {
+          // Don't handle mask clicks when in drawing mode
+          if (isDrawingMode.value) {
+            console.log("Mask click ignored - drawing mode is active");
+            return;
+          }
+          
           console.log(`Clicked change mask for images ${mask.img_a_id} -> ${mask.img_b_id}`);
           console.log(`Period: ${mask.period_start} to ${mask.period_end}`);
           if (onImageOverlayClick.value) {
@@ -288,6 +329,114 @@ export function useMapImages() {
     onImageOverlayClick.value = handler;
   }
 
+  // Display composite masks on map
+  function displayCompositeMasks(compositeMasks: Map<string, { canvas: HTMLCanvasElement, bounds: { minLon: number; minLat: number; maxLon: number; maxLat: number } }>, isVisible: boolean = true) {
+    if (!compositeMaskLayer.value) return;
+
+    // Clear existing composite overlays
+    compositeMaskLayer.value.clearLayers();
+
+    if (!isVisible || compositeMasks.size === 0) return;
+
+    console.log(`Displaying ${compositeMasks.size} composite masks on map`);
+
+    // Add each composite mask as image overlay
+    compositeMasks.forEach((maskData, boundsKey) => {
+      try {
+        // Convert canvas to blob URL
+        maskData.canvas.toBlob((blob) => {
+          if (!blob) return;
+
+          const url = URL.createObjectURL(blob);
+          
+          // Use the actual bounds from the mask data
+          const bounds = L.latLngBounds(
+            [maskData.bounds.minLat, maskData.bounds.minLon],
+            [maskData.bounds.maxLat, maskData.bounds.maxLon]
+          );
+
+          // Create composite mask overlay with high opacity and ensure it's on top
+          const maskOverlay = L.imageOverlay(url, bounds, {
+            opacity: 0.7,
+            interactive: true,
+            crossOrigin: true,
+            zIndex: 2000, // Higher than regular masks
+          });
+
+          // Set pointer events based on drawing mode
+          setOverlayPointerEvents(maskOverlay, !isDrawingMode.value);
+
+          // Add click handler for composite mask
+          maskOverlay.on("click", () => {
+            // Don't handle composite mask clicks when in drawing mode
+            if (isDrawingMode.value) {
+              console.log("Composite mask click ignored - drawing mode is active");
+              return;
+            }
+            
+            console.log(`Clicked composite change mask for bounds ${boundsKey}`);
+            console.log(`Bounds:`, maskData.bounds);
+            // You can add specific handling for composite mask clicks here
+          });
+
+          // Add to composite mask layer
+          compositeMaskLayer.value?.addLayer(maskOverlay);
+        }, 'image/png');
+
+      } catch (error) {
+        console.warn(`Failed to display composite mask for bounds ${boundsKey}:`, error);
+      }
+    });
+  }
+
+  // Toggle composite mask visibility
+  function toggleCompositeMaskVisibility(visible: boolean) {
+    if (!compositeMaskLayer.value) return;
+
+    compositeMaskLayer.value.eachLayer((layer) => {
+      if (layer instanceof L.ImageOverlay) {
+        layer.setOpacity(visible ? 0.7 : 0);
+      }
+    });
+  }
+
+  // Clear composite masks
+  function clearCompositeMasks() {
+    if (compositeMaskLayer.value) {
+      compositeMaskLayer.value.clearLayers();
+    }
+  }
+
+  // Set drawing mode to disable/enable mask clicks
+  function setDrawingMode(drawingMode: boolean) {
+    isDrawingMode.value = drawingMode;
+    
+    // Update pointer events on all existing overlays
+    if (imageLayer.value) {
+      imageLayer.value.eachLayer((layer) => {
+        if (layer instanceof L.ImageOverlay) {
+          setOverlayPointerEvents(layer, !drawingMode);
+        }
+      });
+    }
+    
+    if (maskLayer.value) {
+      maskLayer.value.eachLayer((layer) => {
+        if (layer instanceof L.ImageOverlay) {
+          setOverlayPointerEvents(layer, !drawingMode);
+        }
+      });
+    }
+    
+    if (compositeMaskLayer.value) {
+      compositeMaskLayer.value.eachLayer((layer) => {
+        if (layer instanceof L.ImageOverlay) {
+          setOverlayPointerEvents(layer, !drawingMode);
+        }
+      });
+    }
+  }
+
   return {
     // State
     selectedImage,
@@ -310,11 +459,15 @@ export function useMapImages() {
     loadMasksForMultipleBounds,
     displayImagesOnMap,
     displayMasksOnMap,
+    displayCompositeMasks,
+    toggleCompositeMaskVisibility,
+    clearCompositeMasks,
     selectImage,
     getImageById,
     downloadOriginalImage,
     exposeGlobalSelectImage,
     toggleYearVisibility,
     setImageOverlayClickHandler,
+    setDrawingMode,
   };
 }

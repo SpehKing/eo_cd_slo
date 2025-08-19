@@ -19,7 +19,7 @@ interface MapComponentEmits {
 
 const props = withDefaults(defineProps<MapComponentProps>(), {
   center: () => [46.0569, 14.5058], // Ljubljana, Slovenia
-  zoom: 14,
+  zoom: 13,
 });
 
 const emit = defineEmits<MapComponentEmits>();
