@@ -176,17 +176,17 @@ class PipelineMonitor:
                     <div class="config-field">
                         <label for="years-input">Years to Process:</label>
                         <div class="array-input">
-                            <input type="text" id="years-input" placeholder="e.g., 2020,2021,2022,2023,2024">
+                            <input type="text" id="years-input" placeholder="e.g., 2020:2024,2027 or * for all available">
                         </div>
-                        <div class="help-text">Enter years separated by commas (2015-2030)</div>
+                        <div class="help-text">Enter years/ranges separated by commas (2016-2030), ranges like 2020:2024, or * for all available (2016-2030)</div>
                     </div>
                     
                     <div class="config-field">
                         <label for="grid-ids-input">Grid IDs to Process:</label>
                         <div class="array-input">
-                            <input type="text" id="grid-ids-input" placeholder="e.g., 465,466,467">
+                            <input type="text" id="grid-ids-input" placeholder="e.g., 465:467,500:502,600 or * for all available">
                         </div>
-                        <div class="help-text">Enter grid cell IDs separated by commas (1-1000)</div>
+                        <div class="help-text">Enter grid IDs/ranges separated by commas (1-1000), ranges like 465:467, or * for all available</div>
                     </div>
                     
                     <div class="config-field">
@@ -255,12 +255,12 @@ class PipelineMonitor:
                 <div class="inline-form">
                     <div class="config-field" style="margin-bottom: 0;">
                         <label for="new-grid-ids">Grid IDs to Add:</label>
-                        <input type="text" id="new-grid-ids" placeholder="e.g., 468,469,470">
+                        <input type="text" id="new-grid-ids" placeholder="e.g., 468:470,500:502 or * for all">
                     </div>
                     <button class="btn btn-primary" onclick="addGridCells()">Add Grid Cells</button>
                     <button class="btn btn-warning" onclick="checkGridExists()">Check if Exists in DB</button>
                 </div>
-                <div class="help-text">Add grid IDs separated by commas. System will check if data already exists before processing.</div>
+                <div class="help-text">Add grid IDs/ranges separated by commas, ranges like 468:470, or * for all available. System will check if data already exists before processing.</div>
             </div>
         </div>
         
@@ -418,6 +418,116 @@ class PipelineMonitor:
             }
         }
         
+        function parseYearsInput(input) {
+            if (!input) return [];
+            
+            // Handle wildcard for all available years (2016-2030)
+            if (input.trim() === '*') {
+                const years = [];
+                for (let year = 2016; year <= 2030; year++) {
+                    years.push(year);
+                }
+                return years;
+            }
+            
+            const years = new Set(); // Use Set to avoid duplicates
+            const parts = input.split(',');
+            
+            for (const part of parts) {
+                const trimmed = part.trim();
+                if (!trimmed) continue;
+                
+                if (trimmed.includes(':')) {
+                    // Handle range like "2020:2024"
+                    const [start, end] = trimmed.split(':');
+                    const startYear = parseInt(start.trim());
+                    const endYear = parseInt(end.trim());
+                    
+                    if (isNaN(startYear) || isNaN(endYear)) {
+                        throw new Error(`Invalid year range: ${trimmed}`);
+                    }
+                    
+                    if (startYear > endYear) {
+                        throw new Error(`Invalid range: start year ${startYear} is greater than end year ${endYear}`);
+                    }
+                    
+                    for (let year = startYear; year <= endYear; year++) {
+                        if (year < 2016 || year > 2030) {
+                            throw new Error(`Year ${year} is out of valid range (2016-2030)`);
+                        }
+                        years.add(year);
+                    }
+                } else {
+                    // Handle single year
+                    const year = parseInt(trimmed);
+                    if (isNaN(year)) {
+                        throw new Error(`Invalid year: ${trimmed}`);
+                    }
+                    if (year < 2016 || year > 2030) {
+                        throw new Error(`Year ${year} is out of valid range (2016-2030)`);
+                    }
+                    years.add(year);
+                }
+            }
+            
+            return Array.from(years).sort((a, b) => a - b);
+        }
+        
+        function parseGridIdsInput(input) {
+            if (!input) return [];
+            
+            // Handle wildcard for all available grid IDs (1-1000)
+            if (input.trim() === '*') {
+                const gridIds = [];
+                for (let id = 1; id <= 1000; id++) {
+                    gridIds.push(id);
+                }
+                return gridIds;
+            }
+            
+            const gridIds = new Set(); // Use Set to avoid duplicates
+            const parts = input.split(',');
+            
+            for (const part of parts) {
+                const trimmed = part.trim();
+                if (!trimmed) continue;
+                
+                if (trimmed.includes(':')) {
+                    // Handle range like "465:467"
+                    const [start, end] = trimmed.split(':');
+                    const startId = parseInt(start.trim());
+                    const endId = parseInt(end.trim());
+                    
+                    if (isNaN(startId) || isNaN(endId)) {
+                        throw new Error(`Invalid grid ID range: ${trimmed}`);
+                    }
+                    
+                    if (startId > endId) {
+                        throw new Error(`Invalid range: start ID ${startId} is greater than end ID ${endId}`);
+                    }
+                    
+                    for (let id = startId; id <= endId; id++) {
+                        if (id < 1 || id > 1000) {
+                            throw new Error(`Grid ID ${id} is out of valid range (1-1000)`);
+                        }
+                        gridIds.add(id);
+                    }
+                } else {
+                    // Handle single grid ID
+                    const gridId = parseInt(trimmed);
+                    if (isNaN(gridId)) {
+                        throw new Error(`Invalid grid ID: ${trimmed}`);
+                    }
+                    if (gridId < 1 || gridId > 1000) {
+                        throw new Error(`Grid ID ${gridId} is out of valid range (1-1000)`);
+                    }
+                    gridIds.add(gridId);
+                }
+            }
+            
+            return Array.from(gridIds).sort((a, b) => a - b);
+        }
+        
         async function saveConfiguration() {
             try {
                 // Validate and parse input fields
@@ -427,20 +537,17 @@ class PipelineMonitor:
                 let years = [];
                 let gridIds = [];
                 
-                if (yearsText) {
-                    years = yearsText.split(',').map(y => {
-                        const year = parseInt(y.trim());
-                        if (isNaN(year)) throw new Error(`Invalid year: ${y.trim()}`);
-                        return year;
-                    });
+                // Use new parsing functions that support ranges and wildcards
+                try {
+                    years = parseYearsInput(yearsText);
+                } catch (error) {
+                    throw new Error(`Years parsing error: ${error.message}`);
                 }
                 
-                if (gridIdsText) {
-                    gridIds = gridIdsText.split(',').map(g => {
-                        const gridId = parseInt(g.trim());
-                        if (isNaN(gridId)) throw new Error(`Invalid grid ID: ${g.trim()}`);
-                        return gridId;
-                    });
+                try {
+                    gridIds = parseGridIdsInput(gridIdsText);
+                } catch (error) {
+                    throw new Error(`Grid IDs parsing error: ${error.message}`);
                 }
                 
                 const configData = {
@@ -649,12 +756,13 @@ class PipelineMonitor:
                     return;
                 }
                 
-                // Parse new grid IDs
-                const newGridIds = newGridsText.split(',').map(g => {
-                    const gridId = parseInt(g.trim());
-                    if (isNaN(gridId)) throw new Error(`Invalid grid ID: ${g.trim()}`);
-                    return gridId;
-                });
+                // Parse new grid IDs using the enhanced parser
+                let newGridIds;
+                try {
+                    newGridIds = parseGridIdsInput(newGridsText);
+                } catch (error) {
+                    throw new Error(`Grid IDs parsing error: ${error.message}`);
+                }
                 
                 // Get current configuration
                 const configResponse = await fetch('/api/config');
@@ -699,12 +807,13 @@ class PipelineMonitor:
                     return;
                 }
                 
-                // Parse grid IDs
-                const gridIds = newGridsText.split(',').map(g => {
-                    const gridId = parseInt(g.trim());
-                    if (isNaN(gridId)) throw new Error(`Invalid grid ID: ${g.trim()}`);
-                    return gridId;
-                });
+                // Parse grid IDs using the enhanced parser
+                let gridIds;
+                try {
+                    gridIds = parseGridIdsInput(newGridsText);
+                } catch (error) {
+                    throw new Error(`Grid IDs parsing error: ${error.message}`);
+                }
                 
                 // Get current years from config
                 const configResponse = await fetch('/api/config');
@@ -986,13 +1095,13 @@ class PipelineMonitor:
             if "years" in data:
                 years = data["years"]
                 if isinstance(years, list) and all(isinstance(y, int) for y in years):
-                    if len(years) > 0 and all(2015 <= y <= 2030 for y in years):
+                    if len(years) > 0 and all(2016 <= y <= 2030 for y in years):
                         config.years = sorted(years)
                         result["updated_fields"].append("years")
                         self.logger.info(f"Updated years to: {config.years}")
                     else:
                         result["status"] = "error"
-                        result["message"] = "Years must be between 2015 and 2030"
+                        result["message"] = "Years must be between 2016 and 2030"
                         return web.json_response(result)
                 else:
                     result["status"] = "error"
