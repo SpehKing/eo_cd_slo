@@ -19,7 +19,7 @@ interface MapComponentEmits {
 
 const props = withDefaults(defineProps<MapComponentProps>(), {
   center: () => [46.0569, 14.5058], // Ljubljana, Slovenia
-  zoom: 8.5,
+  zoom: 14,
 });
 
 const emit = defineEmits<MapComponentEmits>();
@@ -64,10 +64,20 @@ function initializeMap() {
     }
   );
 
+  // Define Slovenia boundaries
+  const sloveniaBounds = L.latLngBounds(
+    [45.4, 13.4], // Southwest corner
+    [46.9, 16.6] // Northeast corner
+  );
+
   // Initialize the map with the street layer as default
   map = L.map(mapContainer.value, {
     center: props.center,
     zoom: props.zoom,
+    minZoom: 10,
+    maxZoom: 18,
+    maxBounds: sloveniaBounds,
+    maxBoundsViscosity: 1.0, // Makes the boundary restriction strong
     zoomControl: true,
     attributionControl: true,
     layers: [satelliteLayer], // Default layer
