@@ -56,3 +56,9 @@ export interface ChangeMaskListResponse {
   offset: number;
   has_more: boolean;
 }
+
+export interface DateRangeResponse {
+  min_date: string | null;
+  max_date: string | null;
+  total_count: number;
+}

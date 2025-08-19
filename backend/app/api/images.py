@@ -21,6 +21,7 @@ from ..models.schemas import (
     ImageBatchResponse,
     ChangeMaskBatchRequest,
     ChangeMaskBatchResponse,
+    DateRangeResponse,
 )
 
 router = APIRouter()
@@ -113,6 +114,43 @@ async def list_images(
             logfire_instance.error("Failed to retrieve images", error=str(e))
         raise HTTPException(
             status_code=500, detail=f"Failed to retrieve images: {str(e)}"
+        )
+
+
+@router.get("/date-range", response_model=DateRangeResponse)
+async def get_images_date_range(service: EoService = Depends(get_eo_service)):
+    """
+    Get the date range (earliest and latest dates) of all images in the database.
+
+    This endpoint efficiently retrieves the min/max dates without loading all image data,
+    making it ideal for initializing date range filters in the frontend.
+
+    Returns:
+    - **min_date**: ISO format timestamp of the earliest image
+    - **max_date**: ISO format timestamp of the latest image
+    - **total_count**: Total number of images in the database
+    """
+    if logfire_instance:
+        logfire_instance.info("Images date range request received")
+
+    try:
+        result = await service.get_date_range()
+
+        if logfire_instance:
+            logfire_instance.info(
+                "Images date range request completed successfully",
+                min_date=result.min_date,
+                max_date=result.max_date,
+                total_count=result.total_count,
+            )
+
+        return result
+
+    except Exception as e:
+        if logfire_instance:
+            logfire_instance.error("Failed to retrieve images date range", error=str(e))
+        raise HTTPException(
+            status_code=500, detail=f"Failed to retrieve images date range: {str(e)}"
         )
 
 

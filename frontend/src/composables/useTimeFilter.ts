@@ -22,19 +22,12 @@ export function useTimeFilter() {
   // Initialize date ranges
   async function initializeDateRanges() {
     try {
-      // Fetch a few images to determine the available date range
-      const response = await apiService.fetchImages({ limit: 100 });
-      const images = response.images;
+      // Fetch date range efficiently from dedicated endpoint
+      const response = await apiService.fetchDateRange();
 
-      if (images.length > 0) {
-        const dates = images
-          .map((img) => new Date(img.time))
-          .sort((a, b) => a.getTime() - b.getTime());
-        const earliest = dates[0];
-        const latest = dates[dates.length - 1];
-
-        minDate.value = earliest.toISOString().split("T")[0];
-        maxDate.value = latest.toISOString().split("T")[0];
+      if (response.min_date && response.max_date) {
+        minDate.value = new Date(response.min_date).toISOString().split("T")[0];
+        maxDate.value = new Date(response.max_date).toISOString().split("T")[0];
 
         // Set initial selection to full range
         selectedStartDate.value = minDate.value;

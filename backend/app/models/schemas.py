@@ -186,3 +186,11 @@ class ChangeMaskBatchResponse(BaseModel):
         default_factory=dict,
         description="Map of 'img_a_id_img_b_id' to error message for failed items",
     )
+
+
+class DateRangeResponse(BaseModel):
+    """Response model for date range query"""
+
+    min_date: Optional[str] = Field(None, description="Earliest date in ISO format")
+    max_date: Optional[str] = Field(None, description="Latest date in ISO format")
+    total_count: int = Field(description="Total number of images in the database")

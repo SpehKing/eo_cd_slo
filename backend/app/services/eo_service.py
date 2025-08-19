@@ -5,6 +5,7 @@ from ..models.schemas import (
     ImageListResponse,
     ChangeMaskMetadata,
     ChangeMaskListResponse,
+    DateRangeResponse,
 )
 from .image_service import ImageProcessingService, ImageMetadata as ImageMeta
 import logging
@@ -303,3 +304,13 @@ class EoService:
                 f"Failed to generate change mask preview for images {img_a_id}-{img_b_id}: {e}"
             )
             return None
+
+    async def get_date_range(self) -> DateRangeResponse:
+        """Get the earliest and latest dates in the database"""
+        min_date, max_date, total_count = await self.repository.get_date_range()
+
+        return DateRangeResponse(
+            min_date=min_date.isoformat() if min_date else None,
+            max_date=max_date.isoformat() if max_date else None,
+            total_count=total_count,
+        )

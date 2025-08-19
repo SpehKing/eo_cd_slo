@@ -270,3 +270,23 @@ class EoRepository:
         result = await self.session.execute(text(query), {"image_id": image_id})
         row = result.first()
         return dict(row._mapping) if row else None
+
+    async def get_date_range(
+        self,
+    ) -> Tuple[Optional[datetime], Optional[datetime], int]:
+        """Get the earliest and latest dates in the database along with total count"""
+
+        query = """
+            SELECT 
+                MIN(time) as min_date,
+                MAX(time) as max_date,
+                COUNT(*) as total_count
+            FROM eo
+        """
+        result = await self.session.execute(text(query))
+        row = result.first()
+
+        if row:
+            return row.min_date, row.max_date, row.total_count
+        else:
+            return None, None, 0

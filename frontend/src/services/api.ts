@@ -1,4 +1,4 @@
-import type { ImageListResponse, ImageQueryParams, ImageMetadata, ChangeMaskListResponse, MaskQueryParams } from '@/types/api';
+import type { ImageListResponse, ImageQueryParams, ImageMetadata, ChangeMaskListResponse, MaskQueryParams, DateRangeResponse } from '@/types/api';
 import { cacheService } from './cache';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
@@ -159,6 +159,23 @@ class ApiService {
     
     // Return direct URL if not cached
     return `${this.baseUrl}/change-masks?format=preview&img_a_id=${imgAId}&img_b_id=${imgBId}`;
+  }
+
+  async fetchDateRange(): Promise<DateRangeResponse> {
+    const url = `${this.baseUrl}/date-range`;
+    
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch date range: ${response.statusText}`);
+    }
+
+    return response.json();
   }
 
   async healthCheck(): Promise<boolean> {
