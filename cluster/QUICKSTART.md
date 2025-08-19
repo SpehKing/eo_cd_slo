@@ -62,6 +62,10 @@ The monitoring dashboard now includes a **Pipeline Configuration** section where
 - Specify which grid cells to process (e.g., `465,466,467`)
 - Valid range: 1-1000
 
+- predefined ranges
+
+Ljubljana - 464,465,466,467,498,499,500,501,532,533,534,535,568,569,570,571
+
 **⚡ Adjust Processing Parameters:**
 
 - Max Workers (1-32)

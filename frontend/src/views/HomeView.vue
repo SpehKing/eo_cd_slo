@@ -7,14 +7,17 @@ import type { ImageMetadata } from "@/types/api";
 import MapComponent from "@/components/MapComponent.vue";
 import FloatingDashboard from "@/components/FloatingDashboard.vue";
 import ImageSidebar from "@/components/ImageSidebar.vue";
+import ImageComparisonModal from "@/components/ImageComparisonModal.vue";
 
 // Composables
 import { useMapImages } from "@/composables/useMapImages";
 import { useTimeFilter } from "@/composables/useTimeFilter";
 import { useBoundingBoxSelection } from "@/composables/useBoundingBoxSelection";
+import { useImageComparison } from "@/composables/useImageComparison";
 
 // State
 const showSidebar = ref(false);
+const showComparisonModal = ref(false);
 const visibleYears = ref(new Set<number>());
 
 let map: L.Map | null = null;
@@ -23,6 +26,7 @@ let map: L.Map | null = null;
 const mapImages = useMapImages();
 const timeFilter = useTimeFilter();
 const boundingBoxSelection = useBoundingBoxSelection();
+const imageComparison = useImageComparison();
 
 // Event handlers
 onMounted(async () => {
@@ -33,10 +37,61 @@ onBeforeUnmount(() => {
   boundingBoxSelection.cleanup();
 });
 
+// Handle image overlay clicks for comparison modal
+async function onImageOverlayClick(clickedImage: ImageMetadata) {
+  // Get all available years from loaded images if visibleYears is not set
+  let yearsToUse = visibleYears.value;
+  if (yearsToUse.size === 0) {
+    const allYears = new Set<number>();
+    mapImages.images.value.forEach((image) => {
+      const year = new Date(image.time).getFullYear();
+      allYears.add(year);
+    });
+    yearsToUse = allYears;
+  }
+
+  if (yearsToUse.size < 2) {
+    // If less than 2 years are available, fall back to sidebar behavior
+    onImageSelected(clickedImage);
+    return;
+  }
+
+  try {
+    // Load comparison data and show modal
+    await imageComparison.loadComparisonData(
+      clickedImage,
+      mapImages.images.value,
+      mapImages.masks.value,
+      yearsToUse
+    );
+
+    // Only show modal if comparison data was successfully loaded
+    if (
+      !imageComparison.hasError.value &&
+      imageComparison.comparisonData.value
+    ) {
+      showComparisonModal.value = true;
+    } else {
+      // Fall back to sidebar behavior if comparison fails or has insufficient data
+      onImageSelected(clickedImage);
+    }
+  } catch (error) {
+    console.warn(
+      "Failed to load comparison data, falling back to sidebar:",
+      error
+    );
+    // Fall back to sidebar behavior if comparison fails
+    onImageSelected(clickedImage);
+  }
+}
+
 async function onMapReady(mapInstance: L.Map) {
   map = mapInstance;
   mapImages.initializeLayers(map);
   boundingBoxSelection.initializeBoundingBox(map);
+
+  // Set up image overlay click handler for comparison modal
+  mapImages.setImageOverlayClickHandler(onImageOverlayClick);
 }
 
 function onImageSelected(image: ImageMetadata) {
@@ -47,6 +102,11 @@ function onImageSelected(image: ImageMetadata) {
 function closeSidebar() {
   showSidebar.value = false;
   mapImages.selectImage(null as any);
+}
+
+function closeComparisonModal() {
+  showComparisonModal.value = false;
+  imageComparison.clearComparisonData();
 }
 
 // Dashboard handlers
@@ -155,6 +215,16 @@ function onDownloadImage(image: ImageMetadata) {
       :image-preview-url="mapImages.imagePreviewUrl.value"
       @close="closeSidebar"
       @download="onDownloadImage"
+    />
+
+    <!-- Image Comparison Modal -->
+    <ImageComparisonModal
+      :visible="showComparisonModal"
+      :comparison-data="imageComparison.comparisonData.value"
+      :is-loading="imageComparison.isLoading.value"
+      :has-error="imageComparison.hasError.value"
+      :error-message="imageComparison.errorMessage.value"
+      @close="closeComparisonModal"
     />
   </div>
 </template>

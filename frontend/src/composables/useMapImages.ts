@@ -14,6 +14,9 @@ export function useMapImages() {
   // Track image overlays by year for visibility toggling
   const imageOverlaysByYear = ref<Map<number, L.ImageOverlay[]>>(new Map());
 
+  // Event handlers for image overlay clicks
+  const onImageOverlayClick = ref<((image: ImageMetadata) => void) | null>(null);
+
   // Initialize layers
   function initializeLayers(map: L.Map) {
     imageLayer.value = L.layerGroup();
@@ -130,7 +133,12 @@ export function useMapImages() {
 
         // Add click handler to image overlay
         imageOverlay.on("click", () => {
-          selectImage(image);
+          if (onImageOverlayClick.value) {
+            onImageOverlayClick.value(image);
+          } else {
+            // Fallback to old behavior if no handler is set
+            selectImage(image);
+          }
         });
 
         // Add image overlay to image layer
@@ -176,6 +184,13 @@ export function useMapImages() {
         maskOverlay.on("click", () => {
           console.log(`Clicked change mask for images ${mask.img_a_id} -> ${mask.img_b_id}`);
           console.log(`Period: ${mask.period_start} to ${mask.period_end}`);
+          if (onImageOverlayClick.value) {
+            const previousImage = imageStore.getImageById(mask.img_a_id);
+            const currentImage = imageStore.getImageById(mask.img_b_id);
+            if (previousImage && currentImage) {
+              onImageOverlayClick.value(previousImage); // Trigger click on previous image
+            }
+          }
         });
 
         // Add mask overlay to mask layer
@@ -268,6 +283,11 @@ export function useMapImages() {
     });
   }
 
+  // Set the handler for image overlay clicks
+  function setImageOverlayClickHandler(handler: (image: ImageMetadata) => void) {
+    onImageOverlayClick.value = handler;
+  }
+
   return {
     // State
     selectedImage,
@@ -295,5 +315,6 @@ export function useMapImages() {
     downloadOriginalImage,
     exposeGlobalSelectImage,
     toggleYearVisibility,
+    setImageOverlayClickHandler,
   };
 }

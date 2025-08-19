@@ -1,9 +1,7 @@
 services:
   # TimescaleDB Database Service
   timescaledb:
-    build:
-      context: ./timescaledb-stack
-      dockerfile: Dockerfile
+    image: eo_cd_slo-timescaledb-snapshot:latest
     container_name: timescaledb_container
     restart: unless-stopped
     environment:
@@ -95,7 +93,7 @@ services:
 
       # Monitoring
       MONITORING_PORT: 8080
-      LOG_LEVEL: INFO
+      LOG_LEVEL: DEBUG
 
       # Database Configuration (for database mode)
       DB_HOST: timescaledb
