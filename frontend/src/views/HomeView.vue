@@ -21,6 +21,7 @@ import { useAutoMaskLoader } from "@/composables/useAutoMaskLoader";
 const showSidebar = ref(false);
 const showComparisonModal = ref(false);
 const visibleYears = ref(new Set<number>());
+const allMasksVisible = ref(true); // Track visibility of all masks
 
 let map: L.Map | null = null;
 
@@ -50,7 +51,7 @@ watch(
     if (isComplete && map) {
       mapImages.displayCompositeMasks(
         autoMaskLoader.compositeMaskOverlays.value,
-        autoMaskLoader.isCompositeVisible.value
+        allMasksVisible.value
       );
     }
   }
@@ -124,7 +125,7 @@ async function onMapReady(mapInstance: L.Map) {
   if (autoMaskLoader.isComplete.value) {
     mapImages.displayCompositeMasks(
       autoMaskLoader.compositeMaskOverlays.value,
-      autoMaskLoader.isCompositeVisible.value
+      allMasksVisible.value
     );
   }
 }
@@ -155,6 +156,11 @@ async function onExecuteQuery() {
     // Execute a single grouped query for all selected grid squares
     await mapImages.loadImagesForMultipleBounds(selectedBounds, timeRange);
     await mapImages.loadMasksForMultipleBounds(selectedBounds, timeRange);
+
+    // Apply current mask visibility state to newly loaded masks
+    if (!allMasksVisible.value) {
+      mapImages.toggleMaskVisibility(false);
+    }
 
     // Initialize all years as visible
     const allYears = new Set<number>();
@@ -213,11 +219,12 @@ function onDownloadImage(image: ImageMetadata) {
 
 // Composite mask handlers
 function onToggleCompositeMasks() {
+  allMasksVisible.value = !allMasksVisible.value;
+
+  // Toggle composite masks
   autoMaskLoader.toggleCompositeVisibility();
   if (map) {
-    mapImages.toggleCompositeMaskVisibility(
-      autoMaskLoader.isCompositeVisible.value
-    );
+    mapImages.toggleAllMasksVisibility(allMasksVisible.value);
   }
 }
 
@@ -225,11 +232,11 @@ function onToggleCompositeMasks() {
 async function onRetryLoading() {
   await autoMaskLoader.retryLoading();
 
-  // Display composite masks once reloaded
+  // Display composite masks once reloaded, respecting current visibility state
   if (autoMaskLoader.isComplete.value && map) {
     mapImages.displayCompositeMasks(
       autoMaskLoader.compositeMaskOverlays.value,
-      autoMaskLoader.isCompositeVisible.value
+      allMasksVisible.value
     );
   }
 }
@@ -275,23 +282,15 @@ async function onContinueWithoutMasks() {
         @click="onToggleCompositeMasks"
         class="flex items-center !space-x-2 !hover:bg-opacity-100 !px-4 !py-2 !rounded-lg shadow-lg transition-all"
         :class="{
-          '!ring-2  !ring-blue-500': autoMaskLoader.isCompositeVisible.value,
+          '!ring-2  !ring-blue-500': allMasksVisible,
         }"
       >
         <div
           class="!w-3 !h-3 !rounded-full"
-          :class="
-            autoMaskLoader.isCompositeVisible.value
-              ? '!bg-green-500'
-              : '!bg-gray-400'
-          "
+          :class="allMasksVisible ? '!bg-green-500' : '!bg-gray-400'"
         ></div>
         <span class="!text-sm !font-medium">
-          {{
-            autoMaskLoader.isCompositeVisible.value
-              ? "Hide Change Masks"
-              : "Show Change Masks"
-          }}
+          {{ allMasksVisible ? "Hide Change Masks" : "Show Change Masks" }}
         </span>
       </button>
     </div>
@@ -305,23 +304,15 @@ async function onContinueWithoutMasks() {
         @click="onToggleCompositeMasks"
         class="flex !items-center !space-x-2 !px-4 !py-3 rounded-full shadow-xl border transition-all text-sm font-medium"
         :class="{
-          'ring-2 ring-white': autoMaskLoader.isCompositeVisible.value,
+          'ring-2 ring-white': allMasksVisible,
         }"
       >
         <div
           class="w-3 h-3 rounded-full"
-          :class="
-            autoMaskLoader.isCompositeVisible.value
-              ? 'bg-green-500'
-              : 'bg-gray-400'
-          "
+          :class="allMasksVisible ? 'bg-green-500' : 'bg-gray-400'"
         ></div>
         <span>
-          {{
-            autoMaskLoader.isCompositeVisible.value
-              ? "Hide Masks"
-              : "Show Masks"
-          }}
+          {{ allMasksVisible ? "Hide Masks" : "Show Masks" }}
         </span>
       </button>
     </div>

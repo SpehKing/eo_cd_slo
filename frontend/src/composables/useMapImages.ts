@@ -390,6 +390,23 @@ export function useMapImages() {
     });
   }
 
+  // Toggle regular mask visibility
+  function toggleMaskVisibility(visible: boolean) {
+    if (!maskLayer.value) return;
+
+    maskLayer.value.eachLayer((layer) => {
+      if (layer instanceof L.ImageOverlay) {
+        layer.setOpacity(visible ? 0.8 : 0);
+      }
+    });
+  }
+
+  // Toggle all masks visibility (both composite and regular)
+  function toggleAllMasksVisibility(visible: boolean) {
+    toggleCompositeMaskVisibility(visible);
+    toggleMaskVisibility(visible);
+  }
+
   // Clear composite masks
   function clearCompositeMasks() {
     if (compositeMaskLayer.value) {
@@ -451,6 +468,8 @@ export function useMapImages() {
     displayMasksOnMap,
     displayCompositeMasks,
     toggleCompositeMaskVisibility,
+    toggleMaskVisibility,
+    toggleAllMasksVisibility,
     clearCompositeMasks,
     selectImage,
     getImageById,
