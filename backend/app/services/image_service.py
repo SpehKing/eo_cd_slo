@@ -266,7 +266,7 @@ class ImageProcessingService:
 
         # Set red channel for changed pixels (value 1)
         changed_pixels = mask_array > 0
-        rgba[changed_pixels] = [255, 0, 0, 255]  # Red with full opacity
+        rgba[changed_pixels] = [255, 0, 0, 180]  # Red with 70% opacity
         rgba[~changed_pixels] = [0, 0, 0, 0]  # Transparent for unchanged pixels
 
         return rgba

@@ -68,18 +68,6 @@
                   >
                 </button>
               </div>
-              <div class="text-xs text-gray-500 ml-3 min-w-[120px]">
-                <span
-                  v-if="props.visibleYears && props.visibleYears.size > 0"
-                  class="font-medium text-green-600"
-                >
-                  {{ props.visibleYears.size }} layer{{
-                    props.visibleYears.size > 1 ? "s" : ""
-                  }}
-                  visible
-                </span>
-                <span v-else class="text-gray-400"> All hidden </span>
-              </div>
             </div>
 
             <!-- Date range slider -->
@@ -465,7 +453,29 @@ function updateEndYear(event: Event) {
 
 // Year selection functions
 function selectYear(year: number) {
-  emit("toggle-year-visibility", year);
+  // If the year is already visible and it's the only one visible, hide it
+  const isCurrentlyVisible = props.visibleYears?.has(year);
+  const visibleCount = props.visibleYears?.size || 0;
+
+  if (isCurrentlyVisible && visibleCount === 1) {
+    // If this is the only visible year, hide it
+    emit("toggle-year-visibility", year);
+  } else {
+    // Otherwise, hide all other years and show only this one
+    // First hide all visible years
+    if (props.visibleYears) {
+      for (const visibleYear of props.visibleYears) {
+        if (visibleYear !== year) {
+          emit("toggle-year-visibility", visibleYear);
+        }
+      }
+    }
+
+    // Then ensure the selected year is visible
+    if (!isCurrentlyVisible) {
+      emit("toggle-year-visibility", year);
+    }
+  }
 }
 
 function getYearDotColor(year: number, count: number): string {

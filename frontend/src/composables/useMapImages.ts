@@ -305,7 +305,7 @@ export function useMapImages() {
 
     overlays.forEach(overlay => {
       if (visible) {
-        overlay.setOpacity(1);
+        overlay.setOpacity(0.7);
         // Make sure it's part of the DOM
         if (overlay.getElement()) {
           overlay.getElement()!.style.display = 'block';
