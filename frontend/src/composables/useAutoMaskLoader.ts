@@ -90,7 +90,7 @@ export function useAutoMaskLoader() {
 
       totalMasks.value = initialResponse.total;
       
-      if (totalMasks.value === 0) {
+      if (totalMasks.value === 0 && !initialResponse.has_more) {
         console.warn("No change masks found for Slovenia");
         hasError.value = true;
         errorMessage.value = "No change detection masks found in the database. The system may not have processed any satellite image pairs yet.";
@@ -100,8 +100,10 @@ export function useAutoMaskLoader() {
       // Load all masks in batches
       const batchSize = 100; // API limit per request
       const allLoadedMasks: ChangeMaskMetadata[] = [];
+      let offset = 0;
+      let hasMore = true;
 
-      for (let offset = 0; offset < totalMasks.value; offset += batchSize) {
+      while (hasMore) {
         const batchResponse = await apiService.fetchMasks({
           start_time: startTime,
           end_time: endTime,
@@ -115,11 +117,20 @@ export function useAutoMaskLoader() {
 
         allLoadedMasks.push(...batchResponse.masks);
         loadedMasks.value = allLoadedMasks.length;
+        
+        // Update total if we have more accurate information
+        if (batchResponse.total > totalMasks.value) {
+          totalMasks.value = batchResponse.total;
+        }
 
         // Update progress and speed
-        maskProgress.value = (loadedMasks.value / totalMasks.value) * 100;
+        maskProgress.value = totalMasks.value > 0 ? (loadedMasks.value / totalMasks.value) * 100 : 0;
         updateLoadSpeed();
         updateProgress();
+
+        // Check if there are more masks to load
+        hasMore = batchResponse.has_more || false;
+        offset += batchSize;
 
         // Small delay to prevent overwhelming the API
         await new Promise(resolve => setTimeout(resolve, 100));
