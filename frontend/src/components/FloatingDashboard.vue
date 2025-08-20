@@ -103,7 +103,7 @@
             <!-- Date range slider -->
             <div class="flex items-center !space-x-4">
               <span class="text-base text-gray-800 min-w-[80px]">
-                {{ formatDate(minDate) }}
+                {{ minYear }}
               </span>
               <div class="flex-1 relative">
                 <!-- Custom dual range slider -->
@@ -115,9 +115,10 @@
                   <input
                     type="range"
                     :min="0"
-                    :max="dateRange"
+                    :max="yearRange"
+                    :step="1"
                     :value="startValue"
-                    @input="updateStartDate"
+                    @input="updateStartYear"
                     @mousedown="handleInteractionStart"
                     @mouseup="handleInteractionEnd"
                     @touchstart="handleInteractionStart"
@@ -127,9 +128,10 @@
                   <input
                     type="range"
                     :min="0"
-                    :max="dateRange"
+                    :max="yearRange"
+                    :step="1"
                     :value="endValue"
-                    @input="updateEndDate"
+                    @input="updateEndYear"
                     @mousedown="handleInteractionStart"
                     @mouseup="handleInteractionEnd"
                     @touchstart="handleInteractionStart"
@@ -139,17 +141,17 @@
                 </div>
               </div>
               <span class="text-base text-gray-800 min-w-[80px]">
-                {{ formatDate(maxDate) }}
+                {{ maxYear }}
               </span>
             </div>
             <!-- Selected range display -->
             <div class="flex justify-center !mt-3 !space-x-4 !text-sm">
               <span class="text-blue-800 font-medium text-base">
-                {{ formatDate(selectedStartDate) }}
+                {{ selectedStartYear }}
               </span>
               <span class="text-gray-800 !px-2 text-base">to</span>
               <span class="text-blue-800 font-medium text-base">
-                {{ formatDate(selectedEndDate) }}
+                {{ selectedEndYear }}
               </span>
             </div>
           </div>
@@ -231,7 +233,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch, nextTick } from "vue";
+import { computed, ref, watch, nextTick, onMounted } from "vue";
+import { apiService } from "@/services/api";
+import type { DateRangeResponse } from "@/types/api";
 
 interface FloatingDashboardProps {
   drawingMode?: boolean;
@@ -267,6 +271,9 @@ const props = withDefaults(defineProps<FloatingDashboardProps>(), {
 });
 
 const emit = defineEmits<FloatingDashboardEmits>();
+
+// Date range state
+const dateRangeData = ref<DateRangeResponse | null>(null);
 
 // Dashboard hiding state
 const isHidden = ref(false);
@@ -349,31 +356,84 @@ function handleInteractionEnd() {
   }, 100);
 }
 
-// Date range calculations
-const dateRange = computed(() => {
-  if (!props.minDate || !props.maxDate) return 100;
-  const min = new Date(props.minDate).getTime();
-  const max = new Date(props.maxDate).getTime();
-  return max - min;
+// Year-based range calculations
+const availableYearsArray = computed(() => {
+  return availableYears.value.map((y) => y.year).sort((a, b) => a - b);
+});
+
+const minYear = computed(() => {
+  // Use API data as primary source, fallback to available years
+  if (dateRangeData.value?.min_date) {
+    return new Date(dateRangeData.value.min_date).getFullYear();
+  }
+  return availableYearsArray.value.length > 0
+    ? availableYearsArray.value[0]
+    : new Date().getFullYear();
+});
+
+const maxYear = computed(() => {
+  // Use API data as primary source, fallback to available years
+  if (dateRangeData.value?.max_date) {
+    return new Date(dateRangeData.value.max_date).getFullYear();
+  }
+  return availableYearsArray.value.length > 0
+    ? availableYearsArray.value[availableYearsArray.value.length - 1]
+    : new Date().getFullYear();
+});
+
+const allAvailableYears = computed(() => {
+  // Generate array of all years between min and max from API data
+  if (dateRangeData.value?.min_date && dateRangeData.value?.max_date) {
+    const startYear = new Date(dateRangeData.value.min_date).getFullYear();
+    const endYear = new Date(dateRangeData.value.max_date).getFullYear();
+    const years = [];
+    for (let year = startYear; year <= endYear; year++) {
+      years.push(year);
+    }
+    return years;
+  }
+  // Fallback to available years array
+  return availableYearsArray.value;
+});
+
+const yearRange = computed(() => {
+  return allAvailableYears.value.length - 1;
 });
 
 const startValue = computed(() => {
-  if (!props.minDate || !props.selectedStartDate) return 0;
-  const min = new Date(props.minDate).getTime();
-  const start = new Date(props.selectedStartDate).getTime();
-  return start - min;
+  if (!props.selectedStartDate || allAvailableYears.value.length === 0)
+    return 0;
+  const selectedYear = new Date(props.selectedStartDate).getFullYear();
+  const index = allAvailableYears.value.indexOf(selectedYear);
+  return index >= 0 ? index : 0;
 });
 
 const endValue = computed(() => {
-  if (!props.minDate || !props.selectedEndDate) return dateRange.value;
-  const min = new Date(props.minDate).getTime();
-  const end = new Date(props.selectedEndDate).getTime();
-  return end - min;
+  if (!props.selectedEndDate || allAvailableYears.value.length === 0)
+    return yearRange.value;
+  const selectedYear = new Date(props.selectedEndDate).getFullYear();
+  const index = allAvailableYears.value.indexOf(selectedYear);
+  return index >= 0 ? index : yearRange.value;
+});
+
+const selectedStartYear = computed(() => {
+  if (!props.selectedStartDate || allAvailableYears.value.length === 0)
+    return minYear.value;
+  return new Date(props.selectedStartDate).getFullYear();
+});
+
+const selectedEndYear = computed(() => {
+  if (!props.selectedEndDate || allAvailableYears.value.length === 0)
+    return maxYear.value;
+  return new Date(props.selectedEndDate).getFullYear();
 });
 
 const rangeStyle = computed(() => {
-  const leftPercent = (startValue.value / dateRange.value) * 100;
-  const rightPercent = (endValue.value / dateRange.value) * 100;
+  if (yearRange.value === 0) {
+    return { left: "0%", width: "100%" };
+  }
+  const leftPercent = (startValue.value / yearRange.value) * 100;
+  const rightPercent = (endValue.value / yearRange.value) * 100;
   return {
     left: `${leftPercent}%`,
     width: `${rightPercent - leftPercent}%`,
@@ -399,20 +459,26 @@ function formatDate(dateString: string): string {
   });
 }
 
-function updateStartDate(event: Event) {
+function updateStartYear(event: Event) {
   const target = event.target as HTMLInputElement;
-  const value = parseInt(target.value);
-  const minTime = new Date(props.minDate).getTime();
-  const newDate = new Date(minTime + value);
-  emit("update:start-date", newDate.toISOString().split("T")[0]);
+  const yearIndex = parseInt(target.value);
+  if (yearIndex >= 0 && yearIndex < allAvailableYears.value.length) {
+    const selectedYear = allAvailableYears.value[yearIndex];
+    // Always set to January 1st
+    const newDate = `${selectedYear}-01-01`;
+    emit("update:start-date", newDate);
+  }
 }
 
-function updateEndDate(event: Event) {
+function updateEndYear(event: Event) {
   const target = event.target as HTMLInputElement;
-  const value = parseInt(target.value);
-  const minTime = new Date(props.minDate).getTime();
-  const newDate = new Date(minTime + value);
-  emit("update:end-date", newDate.toISOString().split("T")[0]);
+  const yearIndex = parseInt(target.value);
+  if (yearIndex >= 0 && yearIndex < allAvailableYears.value.length) {
+    const selectedYear = allAvailableYears.value[yearIndex];
+    // Always set to December 31st
+    const newDate = `${selectedYear}-12-31`;
+    emit("update:end-date", newDate);
+  }
 }
 
 // Year selection functions
@@ -454,6 +520,22 @@ function getYearDotSize(count: number): string {
   if (count > 5) return "w-4 h-4";
   return "w-3.5 h-3.5";
 }
+
+// Fetch date range from API
+async function fetchDateRange() {
+  try {
+    const response = await apiService.fetchDateRange();
+    dateRangeData.value = response;
+  } catch (error) {
+    console.warn("Failed to fetch date range from API:", error);
+    // Component will fallback to using availableImages data
+  }
+}
+
+// Initialize component
+onMounted(() => {
+  fetchDateRange();
+});
 </script>
 
 <style scoped>
