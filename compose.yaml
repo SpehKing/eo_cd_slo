@@ -130,7 +130,7 @@ services:
     restart: unless-stopped
     environment:
       # API Configuration
-      VITE_API_BASE_URL: http://localhost:8000
+      VITE_API_BASE_URL: http://159.89.105.184:8000
       VITE_APP_TITLE: "EO Change Detection"
       VITE_APP_VERSION: "1.0.0"
     ports:

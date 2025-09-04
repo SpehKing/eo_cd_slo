@@ -1,7 +1,7 @@
 import type { ImageListResponse, ImageQueryParams, ImageMetadata, ChangeMaskListResponse, MaskQueryParams, DateRangeResponse } from '@/types/api';
 import { cacheService } from './cache';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://159.89.105.184:8000';
 const API_PREFIX = '/api/v1/public';
 
 class ApiService {
