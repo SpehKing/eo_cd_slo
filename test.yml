@@ -6,14 +6,18 @@ services:
     environment:
       POSTGRES_DB: eo_db
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-    ports: ["5432:5432"]
+      POSTGRES_PASSWORD: postgres
     volumes:
       - timescale_data:/var/lib/postgresql/data
-      - ./db-init:/docker-entrypoint-initdb.d:ro
+      - /opt/eo_stack/backups:/backups:ro
+      - /opt/eo_stack/db-init:/docker-entrypoint-initdb.d:ro
     networks: [eo_network]
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d eo_db && psql -U postgres -d eo_db -c 'SELECT 1;'"]
+      test:
+        [
+          "CMD-SHELL",  
+          "pg_isready -U postgres -d eo_db && psql -U postgres -d eo_db -c 'SELECT 1;'",
+        ]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -40,7 +44,12 @@ services:
         condition: service_healthy
     ports: ["8000:8000"]
     networks: [eo_network]
-    command: ["sh", "-c", "sleep 10 && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"]
+    command:
+      [
+        "sh",
+        "-c",
+        "sleep 10 && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload",
+      ]
 
   eo-pipeline:
     image: gasperazinovic/eo_cd_slo:pipeline
@@ -71,7 +80,7 @@ services:
     container_name: frontend_container
     restart: unless-stopped
     environment:
-      VITE_API_BASE_URL: http://159.89.105.184:8000
+      VITE_API_BASE_URL: http://64.225.106.137:8000
       VITE_APP_TITLE: "EO Change Detection"
       VITE_APP_VERSION: "1.0.0"
     depends_on:
